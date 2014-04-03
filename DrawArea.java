@@ -127,11 +127,11 @@ public class DrawArea extends JPanel implements MouseListener, MouseMotionListen
 		objList = new Vector<Object>();
 		undoList = new Vector<Vector<Object>>();
 		tempList = new Vector<Object>();
-		this.setFocusable(true); 
+		this.setFocusable(true);
 		this.requestFocus();
 		currUndoIndex = -1;
 		
-		//global attributes stored at index 0 of object array 
+		//global attributes stored at index 0 of object array
 		objList.add(globalList);
 		
 
@@ -146,7 +146,7 @@ public class DrawArea extends JPanel implements MouseListener, MouseMotionListen
 	    addMouseMotionListener(this);
 
 	}
-	    
+	
 	public void paintComponent(Graphics g)
 	{
 		Graphics2D g2D = (Graphics2D) g;
@@ -164,7 +164,7 @@ public class DrawArea extends JPanel implements MouseListener, MouseMotionListen
 				GeneralObj s = (GeneralObj) objList.elementAt(i);
 				s.paintComponent(g2D,currPage);
 			}
-		}  
+		}
 		if(multipleSelect)
 		{
 			g2D.setColor(Color.RED);
@@ -248,7 +248,7 @@ public class DrawArea extends JPanel implements MouseListener, MouseMotionListen
 	}
 	
 	/* The following two methods create an undo point.  It is not committed to undo list yet
-	 * because an undo point is not needed if the user is just clicking to select an 
+	 * because an undo point is not needed if the user is just clicking to select an
 	 * object (this method is triggered on mouse down)
 	 * In this method, a temp list is created to hold all the pointers to objects
 	 * before any modification occurs.  The objects to be modified, and all objects connected
@@ -286,7 +286,7 @@ public class DrawArea extends JPanel implements MouseListener, MouseMotionListen
 	}
 	
 	//for multiple select, clone all selected objects
-	private void setUndoPointMultiple() 
+	private void setUndoPointMultiple()
 	{
 		tempList = null;
 		tempList = (Vector<Object>) objList.clone();
@@ -334,7 +334,7 @@ public class DrawArea extends JPanel implements MouseListener, MouseMotionListen
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void setUndoPoint(int index, int type) 
+	private void setUndoPoint(int index, int type)
 	{
 		tempList = null;
 		tempList = (Vector<Object>) objList.clone();
@@ -395,7 +395,7 @@ public class DrawArea extends JPanel implements MouseListener, MouseMotionListen
 		objList = tempList;
 	}
 	
-	// If a modification actually occurred, 
+	// If a modification actually occurred,
 	// the temp list is stored to the undo list array
 	public void commitUndo()
 	{
@@ -590,7 +590,7 @@ public class DrawArea extends JPanel implements MouseListener, MouseMotionListen
 						else
 							setUndoPoint(i,3);
 						break;
-					} 
+					}
 				}
 			}
 			
@@ -613,7 +613,7 @@ public class DrawArea extends JPanel implements MouseListener, MouseMotionListen
 						else
 							setUndoPoint(i,type);
 						break;
-					} 
+					}
 				}
 			}
 	
@@ -831,11 +831,11 @@ public void updateTransitions()
 
         //Create the popup menu.
         JPopupMenu popup = new JPopupMenu();
-        
+
         //create submenu for moving pages
         JMenu pages = new JMenu("Move to Page...");
         FizzimGui fgui = (FizzimGui) frame;
-        
+
         for(int i = 1; i < fgui.getPages(); i++)
         {
         	if(i != currPage)
@@ -847,14 +847,14 @@ public void updateTransitions()
         }
         if(obj == null)
         	popup.add(pages);
-        
+
         if(obj != null && obj.getType() == 0)
         {
         	menuItem = new JMenuItem("Add Loopback Transition");
         	menuItem.setMnemonic(KeyEvent.VK_L);
 	        menuItem.addActionListener(this);
 	        popup.add(menuItem);
-	        
+	
 	        JMenu states = new JMenu("Add State Transition to...");
 	        states.setMnemonic(KeyEvent.VK_T);
 	        states.setDisplayedMnemonicIndex(10);
@@ -869,7 +869,7 @@ public void updateTransitions()
 	        	}
 	        }
 	        popup.add(states);
-	        
+	
         	menuItem = new JMenuItem("Edit State Properties");
         	menuItem.setMnemonic(KeyEvent.VK_E);
 	        menuItem.addActionListener(this);
@@ -898,7 +898,7 @@ public void updateTransitions()
 	            }
 	        	popup.add(pages2);
 	        }
-	                
+	
         }
         if(obj != null && obj.getType() == 2)
         {
@@ -915,7 +915,7 @@ public void updateTransitions()
 	        popup.add(menuItem);
 	        popup.add(pages);
         }
-        
+
         popup.show(e.getComponent(), e.getX(),e.getY());
 
 	}
@@ -950,23 +950,23 @@ public void updateTransitions()
         menuItem.setMnemonic(KeyEvent.VK_F);
         menuItem.addActionListener(this);
         popup.add(menuItem);
-        
+
         popup.show(e.getComponent(), e.getX(),e.getY());
 
 	}
 	
-  
+
 	// called when item on popup menu is selected
     public void actionPerformed(ActionEvent e) {
         JMenuItem source = (JMenuItem)(e.getSource());
-        
+
         //if cloned for undo
         if(tempObj == tempOld)
         	tempObj = tempClone;
-        
+
         String input = source.getText();
 
-        
+
         if(input == "Edit Text")
         {
         	editText((TextObj) tempObj);
@@ -1129,13 +1129,13 @@ public void updateTransitions()
         {
 
 	        int page = getPageIndex(input);
-	        
+	
 	        if(page != currPage)
 	        {
 	        	if(!objsSelected)
 	        	{
 	        		tempObj.setPage(page);
-		       
+		
 		        	for(int j = 1; j < objList.size(); j++)
 					{
 						GeneralObj obj = (GeneralObj) objList.elementAt(j);
@@ -1193,7 +1193,7 @@ public void updateTransitions()
         repaint();
 
     }
-    
+
     private int getPageIndex(String input) {
 		FizzimGui fgui = (FizzimGui) frame;
 		return fgui.getPageIndex(input);
@@ -1209,7 +1209,7 @@ public void updateTransitions()
         }
         return null;
     }
-    
+
     private boolean checkStateName(String input)
     {
         for(int j = 1; j < objList.size(); j++)
@@ -1499,7 +1499,7 @@ public void updateTransitions()
 		currentManager.setDoubleBufferingEnabled(true);
 	}
 
-	public int print(Graphics g, PageFormat pageFormat, int pageIndex) 
+	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
 	throws PrinterException {
 	    if (pageIndex > 0) {
 	    	return(NO_SUCH_PAGE);
@@ -1512,7 +1512,7 @@ public void updateTransitions()
 	        Graphics2D g2d = (Graphics2D)g;
 	        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 	        g2d.scale(pageFormat.getImageableWidth()/this.getWidth(),pageFormat.getImageableHeight()/this.getHeight());
-	       
+	
 	        disableDoubleBuffering((Component)this);
 	        this.paint(g2d);
 	        enableDoubleBuffering((Component)this);
@@ -1948,7 +1948,7 @@ public void updateTransitions()
 }
 
 /* class ColorChooserIcon implements Icon, MouseListener {
-	  
+	
 	  private Color color;
 	  private JColorChooser colorChooser;
 
@@ -1998,6 +1998,6 @@ public void updateTransitions()
 	}
 
 
-	  
+	
 	}
 */
