@@ -35,7 +35,7 @@ public abstract class GeneralObj implements Cloneable {
 
   public abstract void adjustShapeOrPosition(int x, int y);
 
-  public abstract int getSelectStatus();
+  public abstract SelectOptions getSelectStatus();
 
   public Object clone()
       throws CloneNotSupportedException

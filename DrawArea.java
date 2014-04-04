@@ -4,6 +4,7 @@ import java.awt.print.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
+
 import javax.swing.*;
 
 import java.awt.FontMetrics;
@@ -457,7 +458,7 @@ public class DrawArea extends JPanel implements MouseListener,
         GeneralObj obj = (GeneralObj) objList.get(i);
         if (obj.getType() == 0 || obj.getType() == 3)
         {
-          if (obj.getSelectStatus() != 0)
+          if (obj.getSelectStatus() != SelectOptions.NONE)
           {
             // deselect if clicked on when selected
             if (obj.setSelectStatus(e.getX(), e.getY()))
@@ -524,7 +525,8 @@ public class DrawArea extends JPanel implements MouseListener,
       for (int i = 1; i < objList.size(); i++)
       {
         GeneralObj s = (GeneralObj) objList.elementAt(i);
-        if (s.getSelectStatus() != 0 && s.setSelectStatus(e.getX(), e.getY()))
+        if (s.getSelectStatus() != SelectOptions.NONE
+            && s.setSelectStatus(e.getX(), e.getY()))
         {
           bestMatch = s;
 
@@ -768,7 +770,7 @@ public class DrawArea extends JPanel implements MouseListener,
       for (int i = 1; i < objList.size(); i++)
       {
         GeneralObj s = (GeneralObj) objList.elementAt(i);
-        if (s.getSelectStatus() != 0)
+        if (s.getSelectStatus() != SelectOptions.NONE)
         {
           s.adjustShapeOrPosition(x, y);
           for (int j = 1; j < objList.size(); j++)
@@ -898,7 +900,7 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-      if (obj.getSelectStatus() == StateTransitionObj.TXT)
+      if (obj.getSelectStatus() == SelectOptions.TXT)
       {
         JMenu pages2 = new JMenu("Move to Page...");
         StateTransitionObj sobj = (StateTransitionObj) obj;
@@ -1415,7 +1417,7 @@ public class DrawArea extends JPanel implements MouseListener,
       if (obj.getType() == 3 && objsSelected)
       {
         TextObj txt = (TextObj) obj;
-        if (txt.getGlobalTable() && txt.getSelectStatus() != 0)
+        if (txt.getGlobalTable() && txt.getSelectStatus() != SelectOptions.NONE)
         {
           String error = "To remove global table, go to 'File->Preferences'";
           JOptionPane.showMessageDialog(frame,
@@ -1436,7 +1438,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
 
       // for delteing single object, if it is a state remove the transitions
-      if (!objsSelected && obj.getSelectStatus() != 0)
+      if (!objsSelected && obj.getSelectStatus() != SelectOptions.NONE)
       {
         // if transition, just delete
         if ((obj.getType() == 1 || obj.getType() == 2))
@@ -1450,7 +1452,7 @@ public class DrawArea extends JPanel implements MouseListener,
         if (obj.getType() == 3)
         {
           TextObj txt = (TextObj) obj;
-          if (txt.getGlobalTable() && txt.getSelectStatus() != 0)
+          if (txt.getGlobalTable() && txt.getSelectStatus() != SelectOptions.NONE)
           {
             String error = "To remove global table, go to 'File->Preferences'";
             JOptionPane.showMessageDialog(frame,
