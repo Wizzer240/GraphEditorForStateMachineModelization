@@ -64,6 +64,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
@@ -157,19 +158,24 @@ public class FizzimGui extends javax.swing.JFrame {
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR };
     globalList.get(MACHINE).add(
-        new ObjAttribute("name", "def_name", 0, "", "", Color.black, "", "",
+        new ObjAttribute("name", "def_name", EnumVisibility.NO, "", "",
+            Color.black, "", "",
             editable));
-    globalList.get(MACHINE).add(new ObjAttribute("clock", "clk", 0,
-        "posedge", "", Color.black, "", "", editable));
+    globalList.get(MACHINE).add(
+        new ObjAttribute("clock", "clk", EnumVisibility.NO,
+            "posedge", "", Color.black, "", "", editable));
 
-    globalList.get(STATES).add(new ObjAttribute("name", "def_name", 1,
-        "def_type", "", Color.black, "", "", editable));
+    globalList.get(STATES).add(
+        new ObjAttribute("name", "def_name", EnumVisibility.YES,
+            "def_type", "", Color.black, "", "", editable));
 
-    globalList.get(TRANSITIONS).add(new ObjAttribute("name", "def_name", 0,
-        "def_type", "", Color.black, "", "", editable));
+    globalList.get(TRANSITIONS).add(
+        new ObjAttribute("name", "def_name", EnumVisibility.NO,
+            "def_type", "", Color.black, "", "", editable));
 
-    globalList.get(TRANSITIONS).add(new ObjAttribute("equation", "1", 1,
-        "def_type", "", Color.black, "", "", editable));
+    globalList.get(TRANSITIONS).add(
+        new ObjAttribute("equation", "1", EnumVisibility.YES,
+            "def_type", "", Color.black, "", "", editable));
 
   }
 

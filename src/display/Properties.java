@@ -31,6 +31,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.AbstractCellEditor;
 
+import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 import entities.GeneralObj;
 import entities.StateObj;
@@ -1012,7 +1013,7 @@ class TransProperties extends javax.swing.JDialog {
 
   // GEN-FIRST:event_TPNewActionPerformed
   private void TPNewActionPerformed(java.awt.event.ActionEvent evt) {
-    ObjAttribute newObj = new ObjAttribute("", "", ObjAttribute.NO, "", "",
+    ObjAttribute newObj = new ObjAttribute("", "", EnumVisibility.NO, "", "",
         Color.black, "", "");
     trans.getAttributeList().addLast(newObj);
     TPTable.revalidate();
@@ -1336,7 +1337,7 @@ class StateProperties extends javax.swing.JDialog {
 
   // GEN-FIRST:event_SPNewActionPerformed
   private void SPNewActionPerformed(java.awt.event.ActionEvent evt) {
-    ObjAttribute newObj = new ObjAttribute("", "", ObjAttribute.NO, "", "",
+    ObjAttribute newObj = new ObjAttribute("", "", EnumVisibility.NO, "", "",
         Color.black, "", "");
     state.getAttributeList().addLast(newObj);
     SPTable.revalidate();
@@ -1956,7 +1957,7 @@ class GlobalProperties extends javax.swing.JDialog {
   // GEN-FIRST:event_GPDeleteActionPerformed
   private void GPOption2ActionPerformed(java.awt.event.ActionEvent evt) {
 
-    ObjAttribute newObj = new ObjAttribute("", "", ObjAttribute.NO, "", "",
+    ObjAttribute newObj = new ObjAttribute("", "", EnumVisibility.NO, "", "",
         Color.black, "", "", editable);
     int tab1 = GPTabbedPane.getSelectedIndex();
     globalLists.get(tab1).addLast(newObj);
@@ -1974,14 +1975,16 @@ class GlobalProperties extends javax.swing.JDialog {
       if (!checkNames(currTable, "reset_signal"))
       {
         globalLists.get(0).add(
-            new ObjAttribute("reset_signal", "resetN", 0, "negedge", "",
+            new ObjAttribute("reset_signal", "resetN", EnumVisibility.NO,
+                "negedge", "",
                 Color.black, "", "",
                 editable2));
       }
       if (!checkNames(currTable, "reset_state"))
       {
         globalLists.get(0).add(
-            new ObjAttribute("reset_state", "state0", 0, "", "", Color.black,
+            new ObjAttribute("reset_state", "state0", EnumVisibility.NO, "",
+                "", Color.black,
                 "", "",
                 editable2));
       }
@@ -1992,7 +1995,8 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 1)
     {
       globalLists.get(1).add(
-          new ObjAttribute("in", "", 0, "", "", Color.black, "", "",
+          new ObjAttribute("in", "", EnumVisibility.NO, "", "", Color.black,
+              "", "",
               editable));
 
       currTable.revalidate();
@@ -2000,7 +2004,8 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 2)
     {
       globalLists.get(2).add(
-          new ObjAttribute("out", "", 2, "", "", Color.black, "", "",
+          new ObjAttribute("out", "", EnumVisibility.NONDEFAULT, "", "",
+              Color.black, "", "",
               editable));
       currTable.setValueAt("reg", globalLists.get(2).size() - 1, 3);
 
@@ -2010,9 +2015,10 @@ class GlobalProperties extends javax.swing.JDialog {
     {
       if (!checkNames(currTable, "graycode"))
       {
-        globalLists.get(4).add(new ObjAttribute("graycode", "", 1,
-            "", "", Color.black, "", "",
-            editable));
+        globalLists.get(4).add(
+            new ObjAttribute("graycode", "", EnumVisibility.YES,
+                "", "", Color.black, "", "",
+                editable));
       }
       GPOption3.setEnabled(false);
       currTable.revalidate();
@@ -2036,7 +2042,7 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 1)
     {
       globalLists.get(1).add(
-          new ObjAttribute("in[1:0]", "", 0, "", "", Color.black, "", "",
+          new ObjAttribute("in[1:0]", "", EnumVisibility.NO, "", "", Color.black, "", "",
               editable));
 
       currTable.revalidate();
@@ -2044,7 +2050,7 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 2)
     {
       globalLists.get(2).add(
-          new ObjAttribute("out[1:0]", "", 2, "", "", Color.black, "", "",
+          new ObjAttribute("out[1:0]", "", EnumVisibility.NONDEFAULT, "", "", Color.black, "", "",
               editable));
       currTable.setValueAt("reg", globalLists.get(2).size() - 1, 3);
 
@@ -2053,7 +2059,7 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 4)
     {
       globalLists.get(4).add(
-          new ObjAttribute("", "", 1, "output", "", Color.black, "", "",
+          new ObjAttribute("", "", EnumVisibility.YES, "output", "", Color.black, "", "",
               editable));
 
       currTable.revalidate();
@@ -2066,7 +2072,7 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 2)
     {
       globalLists.get(2).add(
-          new ObjAttribute("flag", "", 2, "", "", Color.black,
+          new ObjAttribute("flag", "", EnumVisibility.NONDEFAULT, "", "", Color.black,
               "suppress_portlist", "",
               editable));
       currTable.setValueAt("flag", globalLists.get(2).size() - 1, 3);
@@ -2078,7 +2084,7 @@ class GlobalProperties extends javax.swing.JDialog {
       if (!checkNames(currTable, "priority"))
       {
         globalLists.get(4).add(
-            new ObjAttribute("priority", "1000", 1, "", "", Color.black, "",
+            new ObjAttribute("priority", "1000", EnumVisibility.YES, "", "", Color.black, "",
                 "",
                 editable));
       }

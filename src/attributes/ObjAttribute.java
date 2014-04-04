@@ -35,13 +35,13 @@ public class ObjAttribute implements Cloneable {
 
   private String name = null;
   private String value = null;
-  private int visibility;
+  private EnumVisibility visibility;
   private String type = null;
   private String useratts = null;
   private String resetval = null;
   private Color currColor = Color.black;
   private String comment = "";
-  public static int NO = 0, YES = 1, NONDEFAULT = 2;
+  // public static int NO = 0, YES = 1, NONDEFAULT = 2;
   // global fix: fixed in global attributes
   // global var: take value from global attribute
   // local: override global attribute
@@ -61,15 +61,15 @@ public class ObjAttribute implements Cloneable {
 
   public boolean getVisible()
   {
-    if (visibility == YES)
+    if (visibility == EnumVisibility.YES)
       return true;
-    if (visibility == NONDEFAULT && (editable[1] == LOCAL))
+    if (visibility == EnumVisibility.NONDEFAULT && (editable[1] == LOCAL))
       return true;
     else
       return false;
   }
 
-  public ObjAttribute(String na, String va, int vi, String ty, String comm,
+  public ObjAttribute(String na, String va, EnumVisibility vi, String ty, String comm,
       Color color, String useratt, String resetvalue)
   {
     name = na;
@@ -82,7 +82,7 @@ public class ObjAttribute implements Cloneable {
     comment = comm;
   }
 
-  public ObjAttribute(String na, String va, int vi, String ty, String comm,
+  public ObjAttribute(String na, String va, EnumVisibility vi, String ty, String comm,
       Color color, String useratt, String resetvalue, int[] edit)
   {
     name = na;
@@ -103,7 +103,7 @@ public class ObjAttribute implements Cloneable {
       String resetval2, String resetvalStatus, int x2, int y2, int p) {
     name = name2;
     value = value2;
-    visibility = Integer.parseInt(vis);
+    visibility = EnumVisibility.fromInt(Integer.parseInt(vis));
     type = type2;
     useratts = useratts2;
     resetval = resetval2;
@@ -138,7 +138,7 @@ public class ObjAttribute implements Cloneable {
     else if (i == 1)
       return value;
     else if (i == 2)
-      return new Integer(visibility);
+      return visibility.toInt();
     else if (i == 3)
       return type;
     else if (i == 4)
@@ -162,7 +162,7 @@ public class ObjAttribute implements Cloneable {
     else if (col == 2)
     {
       Integer i = (Integer) val;
-      visibility = i.intValue();
+      visibility = EnumVisibility.fromInt(i.intValue());
     }
     else if (col == 3)
       type = (String) val;
@@ -197,12 +197,12 @@ public class ObjAttribute implements Cloneable {
     value = str;
   }
 
-  public int getVisibility()
+  public EnumVisibility getVisibility()
   {
     return visibility;
   }
 
-  public void setVisibility(int i)
+  public void setVisibility(EnumVisibility i)
   {
     visibility = i;
   }
