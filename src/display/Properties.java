@@ -22,7 +22,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
@@ -59,6 +58,7 @@ import entities.TransitionObj;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@SuppressWarnings("serial")
 class MyTableModel extends AbstractTableModel {
 
   boolean DEBUG = false;

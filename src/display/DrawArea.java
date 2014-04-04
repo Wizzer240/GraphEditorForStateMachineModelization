@@ -18,8 +18,6 @@ import entities.StateTransitionObj;
 import entities.TextObj;
 import entities.TransitionObj;
 
-import java.awt.FontMetrics;
-
 // Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
 /*
@@ -41,6 +39,7 @@ import java.awt.FontMetrics;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@SuppressWarnings("serial")
 public class DrawArea extends JPanel implements MouseListener,
     MouseMotionListener, ActionListener, Printable {
 
