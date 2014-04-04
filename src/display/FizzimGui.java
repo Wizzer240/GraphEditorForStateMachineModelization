@@ -93,7 +93,7 @@ import attributes.ObjAttribute;
  */
 public class FizzimGui extends javax.swing.JFrame {
 
-  String currVer = "14.02.28";
+  static String currVer = "14.02.28";
 
   // pointer to global lists
   LinkedList<ObjAttribute> globalMachineAttributes;
@@ -614,7 +614,7 @@ public class FizzimGui extends javax.swing.JFrame {
    * This is used to display the Help image
    */
   @SuppressWarnings("serial")
-  class HelpItemAboutActionPerformed extends JWindow
+  static class HelpItemAboutActionPerformed extends JWindow
   {
     HelpItemAboutActionPerformed() {
       /* Display the help */
@@ -1443,6 +1443,7 @@ public class FizzimGui extends javax.swing.JFrame {
         FizzimGui fzim = new FizzimGui();
         fzim.setVisible(true);
         fzim.setSize(new java.awt.Dimension(1000, 685));
+        new HelpItemAboutActionPerformed();
         // If command line filename is not null, open
         // this file.
         if (clfilename != "") {
