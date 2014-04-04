@@ -1,9 +1,13 @@
+package entities;
+
 import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
+
+import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 

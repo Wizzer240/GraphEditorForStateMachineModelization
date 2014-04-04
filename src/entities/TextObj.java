@@ -1,3 +1,5 @@
+package entities;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -9,6 +11,8 @@ import java.awt.font.TextLayout;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
+
+import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 

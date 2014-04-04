@@ -1,9 +1,13 @@
+package entities;
+
 import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
+
+import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -203,13 +207,17 @@ public class StateObj extends GeneralObj implements Cloneable {
 
         // adjust corners
 
-        if (selectStatus == SelectOptions.TL || selectStatus == SelectOptions.BL)
+        if (selectStatus == SelectOptions.TL
+            || selectStatus == SelectOptions.BL)
           x0 += x - xTemp;
-        if (selectStatus == SelectOptions.TR || selectStatus == SelectOptions.BR)
+        if (selectStatus == SelectOptions.TR
+            || selectStatus == SelectOptions.BR)
           x1 += x - xTemp;
-        if (selectStatus == SelectOptions.TL || selectStatus == SelectOptions.TR)
+        if (selectStatus == SelectOptions.TL
+            || selectStatus == SelectOptions.TR)
           y0 += y - yTemp;
-        if (selectStatus == SelectOptions.BL || selectStatus == SelectOptions.BR)
+        if (selectStatus == SelectOptions.BL
+            || selectStatus == SelectOptions.BR)
           y1 += y - yTemp;
         xTemp = x;
         yTemp = y;

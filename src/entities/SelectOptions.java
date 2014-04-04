@@ -1,3 +1,5 @@
+package entities;
+
 /*
  Copyright 2007-2011 Zimmer Design Services
  Copyright 2014 Jean-Baptiste Lespiau

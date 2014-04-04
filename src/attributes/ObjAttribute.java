@@ -1,3 +1,5 @@
+package attributes;
+
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -5,6 +7,8 @@ import java.awt.Point;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Arrays;
+
+import entities.SelectOptions;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 

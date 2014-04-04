@@ -1,3 +1,5 @@
+package display;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -9,8 +11,8 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.Vector;
-import javax.swing.border.LineBorder;
 
+import javax.swing.border.LineBorder;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -28,6 +30,12 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.AbstractCellEditor;
+
+import attributes.ObjAttribute;
+import entities.GeneralObj;
+import entities.StateObj;
+import entities.StateTransitionObj;
+import entities.TransitionObj;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 

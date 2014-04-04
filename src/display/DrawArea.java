@@ -1,3 +1,5 @@
+package display;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.*;
@@ -6,6 +8,15 @@ import java.io.IOException;
 import java.util.*;
 
 import javax.swing.*;
+
+import attributes.ObjAttribute;
+import entities.GeneralObj;
+import entities.LoopbackTransitionObj;
+import entities.SelectOptions;
+import entities.StateObj;
+import entities.StateTransitionObj;
+import entities.TextObj;
+import entities.TransitionObj;
 
 import java.awt.FontMetrics;
 
@@ -1452,7 +1463,8 @@ public class DrawArea extends JPanel implements MouseListener,
         if (obj.getType() == 3)
         {
           TextObj txt = (TextObj) obj;
-          if (txt.getGlobalTable() && txt.getSelectStatus() != SelectOptions.NONE)
+          if (txt.getGlobalTable()
+              && txt.getSelectStatus() != SelectOptions.NONE)
           {
             String error = "To remove global table, go to 'File->Preferences'";
             JOptionPane.showMessageDialog(frame,
