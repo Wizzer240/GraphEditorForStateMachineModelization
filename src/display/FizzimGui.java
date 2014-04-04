@@ -64,6 +64,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 
@@ -106,13 +107,6 @@ public class FizzimGui extends javax.swing.JFrame {
   int maxH = 1296;
   int maxW = 936;
   boolean loading = false;
-
-  /* Positions of the attributes lists in globalList */
-  private static int MACHINE = 0;
-  private static int INPUTS = 1;
-  private static int OUTPUTS = 2;
-  private static int STATES = 3;
-  private static int TRANSITIONS = 4;
 
   /** Creates new form FizzimGui */
   public FizzimGui() {
@@ -157,23 +151,23 @@ public class FizzimGui extends javax.swing.JFrame {
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR };
-    globalList.get(MACHINE).add(
+    globalList.get(EnumGlobalList.MACHINE).add(
         new ObjAttribute("name", "def_name", EnumVisibility.NO, "", "",
             Color.black, "", "",
             editable));
-    globalList.get(MACHINE).add(
+    globalList.get(EnumGlobalList.MACHINE).add(
         new ObjAttribute("clock", "clk", EnumVisibility.NO,
             "posedge", "", Color.black, "", "", editable));
 
-    globalList.get(STATES).add(
+    globalList.get(EnumGlobalList.STATES).add(
         new ObjAttribute("name", "def_name", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
 
-    globalList.get(TRANSITIONS).add(
+    globalList.get(EnumGlobalList.TRANSITIONS).add(
         new ObjAttribute("name", "def_name", EnumVisibility.NO,
             "def_type", "", Color.black, "", "", editable));
 
-    globalList.get(TRANSITIONS).add(
+    globalList.get(EnumGlobalList.TRANSITIONS).add(
         new ObjAttribute("equation", "1", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
 

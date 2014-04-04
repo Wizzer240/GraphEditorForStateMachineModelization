@@ -62,7 +62,6 @@ import entities.TransitionObj;
 class MyTableModel extends AbstractTableModel {
 
   boolean DEBUG = false;
-  // pz
   // String[] columnNames = {"Attribute Name", "Value",
   // "Visibility", "Type", "Comment", "Color" };
   String[] columnNames = { "Attribute Name", "Value",
@@ -74,7 +73,7 @@ class MyTableModel extends AbstractTableModel {
   LinkedList<ObjAttribute> attrib;
   LinkedList<LinkedList<ObjAttribute>> globalList;
   JDialog dialog;
-  int tab;
+  int positionInGlobalList;
 
   MyTableModel(GeneralObj s, JDialog dia,
       LinkedList<LinkedList<ObjAttribute>> global, int k)
@@ -83,7 +82,7 @@ class MyTableModel extends AbstractTableModel {
     attrib = obj.getAttributeList();
     globalList = global;
     dialog = dia;
-    tab = k;
+    positionInGlobalList = k;
   }
 
   MyTableModel(LinkedList<ObjAttribute> list,
@@ -329,7 +328,7 @@ class MyTableModel extends AbstractTableModel {
     // restore to default if empty string was entered
     if (col != 2 && value.equals("") && !global)
     {
-      obj.updateAttrib(globalList, tab);
+      obj.updateAttrib(globalList, positionInGlobalList);
     }
 
     fireTableCellUpdated(row, col);
@@ -338,7 +337,7 @@ class MyTableModel extends AbstractTableModel {
 
   private boolean checkValue(int row, int col, Object value)
   {
-    LinkedList<ObjAttribute> list = globalList.get(tab);
+    LinkedList<ObjAttribute> list = globalList.get(positionInGlobalList);
     String name = attrib.get(row).getName();
     Object val = attrib.get(row).get(col);
     for (int i = 0; i < list.size(); i++)
@@ -548,7 +547,7 @@ class TransProperties extends javax.swing.JDialog {
     jCheckBox1 = new javax.swing.JCheckBox();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-    setResizable(false);
+    setResizable(true);
     if (!loopback)
     {
       setTitle("Edit State Transition Properties");
@@ -1078,7 +1077,7 @@ class StateProperties extends javax.swing.JDialog {
     SPNew = new javax.swing.JButton();
     SPDelete = new javax.swing.JButton();
 
-    setResizable(false);
+    setResizable(true);
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setTitle("Edit State Properties");
