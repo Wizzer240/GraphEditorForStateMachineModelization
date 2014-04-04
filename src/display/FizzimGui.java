@@ -1,3 +1,5 @@
+package display;
+
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -62,6 +64,8 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+import attributes.ObjAttribute;
+
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
 /*
@@ -102,8 +106,14 @@ public class FizzimGui extends javax.swing.JFrame {
   int maxW = 936;
   boolean loading = false;
 
-  /** Creates new form FizzimGui */
+  /* Positions of the attributes lists in globalList */
+  private static int MACHINE = 0;
+  private static int INPUTS = 1;
+  private static int OUTPUTS = 2;
+  private static int STATES = 3;
+  private static int TRANSITIONS = 4;
 
+  /** Creates new form FizzimGui */
   public FizzimGui() {
 
     ImageIcon icon = new ImageIcon("icon.png");
@@ -146,19 +156,19 @@ public class FizzimGui extends javax.swing.JFrame {
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR };
-    globalList.get(0).add(
+    globalList.get(MACHINE).add(
         new ObjAttribute("name", "def_name", 0, "", "", Color.black, "", "",
             editable));
-    globalList.get(0).add(new ObjAttribute("clock", "clk", 0,
+    globalList.get(MACHINE).add(new ObjAttribute("clock", "clk", 0,
         "posedge", "", Color.black, "", "", editable));
 
-    globalList.get(3).add(new ObjAttribute("name", "def_name", 1,
+    globalList.get(STATES).add(new ObjAttribute("name", "def_name", 1,
         "def_type", "", Color.black, "", "", editable));
 
-    globalList.get(4).add(new ObjAttribute("name", "def_name", 0,
+    globalList.get(TRANSITIONS).add(new ObjAttribute("name", "def_name", 0,
         "def_type", "", Color.black, "", "", editable));
 
-    globalList.get(4).add(new ObjAttribute("equation", "1", 1,
+    globalList.get(TRANSITIONS).add(new ObjAttribute("equation", "1", 1,
         "def_type", "", Color.black, "", "", editable));
 
   }

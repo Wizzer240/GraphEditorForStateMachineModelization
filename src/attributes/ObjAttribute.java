@@ -1,3 +1,5 @@
+package attributes;
+
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -5,6 +7,8 @@ import java.awt.Point;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Arrays;
+
+import entities.SelectOptions;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -341,7 +345,7 @@ public class ObjAttribute implements Cloneable {
   }
 
   public void paintComponent(Graphics g, int curr,
-      Point point, int parentSelectStatus, int step) {
+      Point point, SelectOptions parentSelectStatus, int step) {
 
     currPage = curr;
     if (myPage == currPage && getVisible()) {
@@ -395,7 +399,7 @@ public class ObjAttribute implements Cloneable {
       selectboxTop = tybase - tH + 2;
 
       // if object is selected, draw red selection box around it
-      if (selectStatus != 0 || parentSelectStatus != 0) {
+      if (selectStatus != 0 || parentSelectStatus != SelectOptions.NONE) {
         g.setColor(Color.red);
 
         g.drawLine(selectboxLeft, selectboxTop, selectboxRight, selectboxTop);  // Top

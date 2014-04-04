@@ -1,9 +1,13 @@
+package entities;
+
 import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
+
+import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -28,7 +32,7 @@ import java.util.Vector;
 
 public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
-  private int selectStatus = 0;
+  private SelectOptions selectStatus = SelectOptions.NONE;
 
   public Point startPt, endPt, startCtrlPt, endCtrlPt;
   public int startStateIndex, endStateIndex;
@@ -220,7 +224,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
        */
 
       // draw control points
-      if (selectStatus != NONE)
+      if (selectStatus != SelectOptions.NONE)
       {
         g2D.setColor(Color.red);
         g2D.fillRect((int) startPt.getX() - 3, (int) startPt.getY() - 3, 7, 7);
@@ -245,7 +249,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
     if (currPage == myPage)
     {
-      if (selectStatus == START)
+      if (selectStatus == SelectOptions.START)
       {
         Point currPt = new Point(x, y);
         double temp;
@@ -262,11 +266,11 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
         startPt.setLocation(stateBorderPts.get(startStateIndex).getX(),
             stateBorderPts.get(startStateIndex).getY());
       }
-      if (selectStatus == STARTCTRL)
+      if (selectStatus == SelectOptions.STARTCTRL)
         startCtrlPt.setLocation(x, y);
-      if (selectStatus == ENDCTRL)
+      if (selectStatus == SelectOptions.ENDCTRL)
         endCtrlPt.setLocation(x, y);
-      if (selectStatus == END)
+      if (selectStatus == SelectOptions.END)
       {
         Point currPt = new Point(x, y);
         double temp;
@@ -283,7 +287,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
         endPt.setLocation(stateBorderPts.get(endStateIndex).getX(),
             stateBorderPts.get(endStateIndex).getY());
       }
-      if (selectStatus == TXT)
+      if (selectStatus == SelectOptions.TXT)
       {
         if (attrib != null)
         {
@@ -300,7 +304,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
       }
 
       // allow loopback to rotate around state
-      if (selectStatus == 5)
+      if (selectStatus == SelectOptions.BR)
       {
         // get number of index transition should move
         Point c = state.getRealCenter(myPage);
@@ -349,7 +353,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   }
 
   @Override
-  public int getSelectStatus() {
+  public SelectOptions getSelectStatus() {
     return selectStatus;
   }
 
@@ -358,9 +362,9 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
     if (currPage == myPage)
     {
-      if (selectStatus != 5 || !loop.contains(x, y))
+      if (selectStatus != SelectOptions.BR || !loop.contains(x, y))
       {
-        selectStatus = NONE;
+        selectStatus = SelectOptions.NONE;
         xTemp = x;
         yTemp = y;
         tempSI = startStateIndex;
@@ -389,42 +393,42 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
           ObjAttribute s = attrib.get(i);
           if (s.setSelectStatus(x, y))
           {
-            selectStatus = TXT;
+            selectStatus = SelectOptions.TXT;
             break;
           }
         }
       }
-      if (selectStatus != TXT)
+      if (selectStatus != SelectOptions.TXT)
       {
 
         // check control points
         if (startPt.getX() - x <= 4 && startPt.getX() - x >= -4
             && startPt.getY() - y <= 4 && startPt.getY() - y >= -4)
-          selectStatus = START;
+          selectStatus = SelectOptions.START;
         if (startCtrlPt.getX() - x <= 4 && startCtrlPt.getX() - x >= -4
             && startCtrlPt.getY() - y <= 4 && startCtrlPt.getY() - y >= -4)
-          selectStatus = STARTCTRL;
+          selectStatus = SelectOptions.STARTCTRL;
         if (endCtrlPt.getX() - x <= 4 && endCtrlPt.getX() - x >= -4
             && endCtrlPt.getY() - y <= 4 && endCtrlPt.getY() - y >= -4)
-          selectStatus = ENDCTRL;
+          selectStatus = SelectOptions.ENDCTRL;
         if (endPt.getX() - x <= 4 && endPt.getX() - x >= -4
             && endPt.getY() - y <= 4 && endPt.getY() - y >= -4)
-          selectStatus = END;
+          selectStatus = SelectOptions.END;
         // if not a control point, search around line
-        if (selectStatus == NONE)
+        if (selectStatus == SelectOptions.NONE)
           // for(int i = -4; i < 5; i++)
           // {
           // for(int j = -4; j < 5; j++)
           // {
           if (loop.contains(x, y)) // +i+j
           {
-            selectStatus = 5;
+            selectStatus = SelectOptions.BR;
             // break;
           }
         // }
         // }
       }
-      if (selectStatus == NONE)
+      if (selectStatus == SelectOptions.NONE)
         return false;
       else
         return true;
@@ -475,7 +479,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
       myPage = state.getPage();
     }
 
-    if (state.getSelectStatus() != StateObj.TXT)
+    if (state.getSelectStatus() != SelectOptions.TXT)
     {
 
       double angleS = getAngle(startCtrlPt, startPt);
@@ -517,7 +521,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
   public void unselect()
   {
-    selectStatus = NONE;
+    selectStatus = SelectOptions.NONE;
   }
 
   public boolean containsParent(GeneralObj oldObj)

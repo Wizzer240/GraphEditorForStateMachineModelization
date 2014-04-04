@@ -1,7 +1,10 @@
+package entities;
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
+
+import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -35,7 +38,7 @@ public abstract class GeneralObj implements Cloneable {
 
   public abstract void adjustShapeOrPosition(int x, int y);
 
-  public abstract int getSelectStatus();
+  public abstract SelectOptions getSelectStatus();
 
   public Object clone()
       throws CloneNotSupportedException

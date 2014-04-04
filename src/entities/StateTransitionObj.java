@@ -1,3 +1,5 @@
+package entities;
+
 import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
@@ -6,6 +8,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
+
+import display.DrawArea;
+import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -30,7 +35,7 @@ import java.util.Vector;
 
 public class StateTransitionObj extends TransitionObj implements Cloneable {
 
-  private int selectStatus = 0;
+  private SelectOptions selectStatus = SelectOptions.NONE;
   public Point startPt, endPt, startCtrlPt, endCtrlPt;
   public int startStateIndex, endStateIndex;
   public StateObj startState = null, endState = null, oldState;
@@ -449,7 +454,8 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
 
       // or if multiple states selected, dont need to recalculate
       if ((!recalcCheck() && !drawArea.getRedraw())
-          || (startState.getSelectStatus() != 0 && endState.getSelectStatus() != 0))
+          || (startState.getSelectStatus() != SelectOptions.NONE
+          && endState.getSelectStatus() != SelectOptions.NONE))
       {
         startStateIndex = tempStartIndex;
         endStateIndex = tempEndIndex;
@@ -548,7 +554,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
             - 12 * Math.sin(angle) + height / 3));
 
         // draw control points if needed
-        if (selectStatus != NONE)
+        if (selectStatus != SelectOptions.NONE)
         {
           g2D.setColor(Color.red);
           g2D
@@ -566,7 +572,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
         g2D.draw(curve);
 
         // draw control points
-        if (selectStatus != NONE)
+        if (selectStatus != SelectOptions.NONE)
         {
           g2D.setColor(Color.red);
           g2D
@@ -612,7 +618,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
             g2D.drawString(text, x, y + 25);
 
           // draw control points if needed
-          if (selectStatus != NONE)
+          if (selectStatus != SelectOptions.NONE)
           {
             g2D.setColor(Color.red);
             g2D.fillRect((int) startPt.getX() - 3, (int) startPt.getY() - 3, 7,
@@ -650,7 +656,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
               + drawArea.getPageName(startState.getPage()) + ")", x, y + 25);
 
           // control points if needed
-          if (selectStatus != NONE)
+          if (selectStatus != SelectOptions.NONE)
           {
             g2D.setColor(Color.red);
             g2D.fillRect((int) endPt.getX() - 3, (int) endPt.getY() - 3, 7, 7);
@@ -674,12 +680,12 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
 
   public void unselect()
   {
-    selectStatus = NONE;
+    selectStatus = SelectOptions.NONE;
   }
 
   @Override
   public void adjustShapeOrPosition(int x, int y) {
-    if (selectStatus == START)
+    if (selectStatus == SelectOptions.START)
     {
       Point currPt = new Point(x, y);
       double temp;
@@ -705,11 +711,11 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
                 * Math.sin(angle))));
       }
     }
-    if (selectStatus == STARTCTRL)
+    if (selectStatus == SelectOptions.STARTCTRL)
       startCtrlPt.setLocation(x, y);
-    if (selectStatus == ENDCTRL)
+    if (selectStatus == SelectOptions.ENDCTRL)
       endCtrlPt.setLocation(x, y);
-    if (selectStatus == END)
+    if (selectStatus == SelectOptions.END)
     {
       Point currPt = new Point(x, y);
       double temp;
@@ -727,7 +733,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
           .get(endStateIndex)
           .getY());
     }
-    if (selectStatus == PAGES)
+    if (selectStatus == SelectOptions.PAGES)
     {
       pageS.setLocation(pageS.getX() + x - xTemp, pageS.getY() + y - yTemp);
       xTemp = x;
@@ -744,18 +750,18 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
         len = (int) startPt.distance(pageS);
       }
     }
-    if (selectStatus == PAGESC)
+    if (selectStatus == SelectOptions.PAGESC)
       pageSC.setLocation(x, y);
-    if (selectStatus == PAGEEC)
+    if (selectStatus == SelectOptions.PAGEEC)
       pageEC.setLocation(x, y);
-    if (selectStatus == PAGEE)
+    if (selectStatus == SelectOptions.PAGEE)
     {
       pageE.setLocation(pageE.getX() + x - xTemp, pageE.getY() + y - yTemp);
       xTemp = x;
       yTemp = y;
     }
 
-    if (selectStatus == TXT)
+    if (selectStatus == SelectOptions.TXT)
     {
       if (attrib != null)
       {
@@ -776,19 +782,19 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
           startCtrlPt.getY(), endCtrlPt.getX(), endCtrlPt.getY(), endPt.getX(),
           endPt.getY());
 
-    if (selectStatus != ALL)
+    if (selectStatus != SelectOptions.ALL)
       modified = true;
   }
 
   @Override
-  public int getSelectStatus() {
+  public SelectOptions getSelectStatus() {
     return selectStatus;
   }
 
   @Override
   public boolean setSelectStatus(int x, int y) {
 
-    selectStatus = NONE;
+    selectStatus = SelectOptions.NONE;
     xTemp = x;
     yTemp = y;
     // check for text
@@ -804,12 +810,12 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
         ObjAttribute s = attrib.get(i);
         if (s.setSelectStatus(x, y))
         {
-          selectStatus = TXT;
+          selectStatus = SelectOptions.TXT;
           break;
         }
       }
     }
-    if (selectStatus != TXT)
+    if (selectStatus != SelectOptions.TXT)
     {
 
       // check control points
@@ -817,39 +823,39 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       {
         if (startCtrlPt.getX() - x <= 3 && startCtrlPt.getX() - x >= -3
             && startCtrlPt.getY() - y <= 3 && startCtrlPt.getY() - y >= -3)
-          selectStatus = STARTCTRL;
+          selectStatus = SelectOptions.STARTCTRL;
         if (endCtrlPt.getX() - x <= 3 && endCtrlPt.getX() - x >= -3
             && endCtrlPt.getY() - y <= 3 && endCtrlPt.getY() - y >= -3)
-          selectStatus = ENDCTRL;
+          selectStatus = SelectOptions.ENDCTRL;
         if (endPt.getX() - x <= 3 && endPt.getX() - x >= -3
             && endPt.getY() - y <= 3 && endPt.getY() - y >= -3)
-          selectStatus = END;
+          selectStatus = SelectOptions.END;
         if (pageSC.getX() - x <= 3 && pageSC.getX() - x >= -3
             && pageSC.getY() - y <= 3 && pageSC.getY() - y >= -3)
-          selectStatus = PAGESC;
+          selectStatus = SelectOptions.PAGESC;
         if (pageEC.getX() - x <= 3 && pageEC.getX() - x >= -3
             && pageEC.getY() - y <= 3 && pageEC.getY() - y >= -3)
-          selectStatus = PAGEEC;
+          selectStatus = SelectOptions.PAGEEC;
         if (pageE.getX() - x <= 3 && pageE.getX() - x >= -3
             && pageE.getY() - y <= 3 && pageE.getY() - y >= -3)
-          selectStatus = PAGEE;
+          selectStatus = SelectOptions.PAGEE;
         // check page connecter icon
         if (pageS.getX() - x <= 0 && pageS.getX() - x >= -40
             && pageS.getY() - y <= 10 && pageS.getY() - y >= -10)
-          selectStatus = PAGES;
+          selectStatus = SelectOptions.PAGES;
         if (pageE.getX() - x <= 40 && pageE.getX() - x >= 0
             && pageE.getY() - y <= 10 && pageE.getY() - y >= -10)
-          selectStatus = PAGEE;
+          selectStatus = SelectOptions.PAGEE;
       }
       if (startPt.getX() - x <= 3 && startPt.getX() - x >= -3
           && startPt.getY() - y <= 3 && startPt.getY() - y >= -3)
-        selectStatus = START;
+        selectStatus = SelectOptions.START;
       if (pageS.getX() - x <= 3 && pageS.getX() - x >= -3
           && pageS.getY() - y <= 3 && pageS.getY() - y >= -3)
-        selectStatus = PAGES;
+        selectStatus = SelectOptions.PAGES;
 
       // if not a control point, search around line
-      if (selectStatus == NONE)
+      if (selectStatus == SelectOptions.NONE)
       {
         /*
          * for(int i = -4; i < 5; i++)
@@ -870,19 +876,19 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
         if (!stub)
         {
           if (bs.createStrokedShape(curve).contains(new Point2D.Double(x, y)))
-            selectStatus = 5;
+            selectStatus = SelectOptions.BR;
         }
         else
         {
           if (bs
               .createStrokedShape(new Line2D.Double(startPt, pageS))
               .contains(new Point2D.Double(x, y)))
-            selectStatus = 5;
+            selectStatus = SelectOptions.BR;
         }
       }
 
     }
-    if (selectStatus == NONE)
+    if (selectStatus == SelectOptions.NONE)
       return false;
     else
       return true;
@@ -949,10 +955,10 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       }
     }
 
-    if ((startState.getSelectStatus() != StateObj.TXT && startState
-        .getSelectStatus() != StateObj.NONE)
-        || (endState.getSelectStatus() != StateObj.TXT && endState
-            .getSelectStatus() != StateObj.NONE))
+    if ((startState.getSelectStatus() != SelectOptions.TXT && startState
+        .getSelectStatus() != SelectOptions.NONE)
+        || (endState.getSelectStatus() != SelectOptions.TXT && endState
+            .getSelectStatus() != SelectOptions.NONE))
     {
       if (oldS != oldE && sPage == ePage)
         setEndPts();
@@ -979,7 +985,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
 
   public void setPage(int i)
   {
-    if (selectStatus == TXT)
+    if (selectStatus == SelectOptions.TXT)
     {
       if (attrib != null)
       {

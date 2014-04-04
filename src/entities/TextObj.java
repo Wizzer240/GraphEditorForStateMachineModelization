@@ -1,3 +1,5 @@
+package entities;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -9,6 +11,8 @@ import java.awt.font.TextLayout;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
+
+import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -33,7 +37,7 @@ import java.util.LinkedList;
 
 public class TextObj extends GeneralObj {
 
-  private int selectStatus = 0;
+  private SelectOptions selectStatus = SelectOptions.NONE;
   private int tX, tY, tW, tH, xTemp, yTemp;
   private int selectboxLeft, selectboxRight, selectboxBottom, selectboxTop;
   private String text = null;
@@ -62,7 +66,7 @@ public class TextObj extends GeneralObj {
   public TextObj(int x, int y, LinkedList<LinkedList<ObjAttribute>> global,
       Font font)
   {
-    selectStatus = 0;
+    selectStatus = SelectOptions.NONE;
     tX = x;
     tY = y;
     myPage = 1;
@@ -75,7 +79,7 @@ public class TextObj extends GeneralObj {
   public TextObj(int x, int y, LinkedList<LinkedList<ObjAttribute>> global,
       int p)
   {
-    selectStatus = 0;
+    selectStatus = SelectOptions.NONE;
     tX = x;
     tY = y;
     myPage = p;
@@ -87,7 +91,7 @@ public class TextObj extends GeneralObj {
   public TextObj(String s, int x, int y, int page)
   {
 
-    selectStatus = 0;
+    selectStatus = SelectOptions.NONE;
     text = s;
     tX = x;
     tY = y;
@@ -208,7 +212,7 @@ public class TextObj extends GeneralObj {
   public void adjustShapeOrPosition(int x, int y) {
     if (myPage == currPage)
     {
-      if (selectStatus == 1)
+      if (selectStatus == SelectOptions.CENTER)
       {
         tX += x - xTemp;
         tY += y - yTemp;
@@ -222,8 +226,8 @@ public class TextObj extends GeneralObj {
 
   }
 
-  public int getSelectStatus() {
-
+  @Override
+  public SelectOptions getSelectStatus() {
     return selectStatus;
   }
 
@@ -324,7 +328,7 @@ public class TextObj extends GeneralObj {
       selectboxTop = tybase - tH + 2;
 
       // if object is selected, draw red selection box around it
-      if (selectStatus != 0 || parentSelected) {
+      if (selectStatus != SelectOptions.NONE || parentSelected) {
         g.setColor(Color.red);
 
         if (!globalTable) {
@@ -356,22 +360,22 @@ public class TextObj extends GeneralObj {
     {
       xTemp = x;
       yTemp = y;
-      selectStatus = 0;
+      selectStatus = SelectOptions.NONE;
 
       // check if inside square
       if (!globalTable) {
         if (x >= selectboxLeft && x <= selectboxRight && y >= selectboxTop
             && y <= selectboxBottom) {
-          selectStatus = 1;
+          selectStatus = SelectOptions.CENTER;
         }
       } else if (tableVis) {
         if (x >= tX - 4 && x <= tX + tW + 3 && y >= tY - (tH / col1.size()) + 2
             && y <= tY + 4 + tH - (tH / col1.size())) {
-          selectStatus = 1;
+          selectStatus = SelectOptions.CENTER;
         }
       }
 
-      if (selectStatus == 0)
+      if (selectStatus == SelectOptions.NONE)
         return false;
       else
         return true;
@@ -382,7 +386,7 @@ public class TextObj extends GeneralObj {
   }
 
   public void unselect() {
-    selectStatus = 0;
+    selectStatus = SelectOptions.NONE;
   }
 
   public Point getCenter(int page)
@@ -441,19 +445,19 @@ public class TextObj extends GeneralObj {
 
   @Override
   public boolean setBoxSelectStatus(int x0, int y0, int x1, int y1) {
-    selectStatus = 0;
+    selectStatus = SelectOptions.NONE;
     if (myPage == currPage && x0 <= tX - 4 && x1 >= tX + tW + 3)
     {
 
       if (!globalTable && y0 <= tY - tH + 2 && y1 >= tY + 4)
       {
-        selectStatus = 1;
+        selectStatus = SelectOptions.CENTER;
         return true;
       }
       else if (globalTable && tableVis && y0 <= tY - (tH / col1.size()) + 2
           && y1 >= tY + 4 + tH - (tH / col1.size()))
       {
-        selectStatus = 1;
+        selectStatus = SelectOptions.CENTER;
         return true;
       }
       return false;
@@ -482,9 +486,9 @@ public class TextObj extends GeneralObj {
 
   public void setSelectStatus(boolean b) {
     if (b)
-      selectStatus = 1;
+      selectStatus = SelectOptions.CENTER;
     else
-      selectStatus = 0;
+      selectStatus = SelectOptions.NONE;
 
   }
 

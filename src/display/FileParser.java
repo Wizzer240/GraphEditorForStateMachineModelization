@@ -1,3 +1,5 @@
+package display;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -10,6 +12,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Vector;
+
+import attributes.ObjAttribute;
+import entities.LoopbackTransitionObj;
+import entities.StateObj;
+import entities.StateTransitionObj;
+import entities.TextObj;
+import entities.TransitionObj;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 

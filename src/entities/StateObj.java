@@ -1,9 +1,13 @@
+package entities;
+
 import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
+
+import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -30,14 +34,7 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   int x0, y0, x1, y1, xTemp, yTemp, temp;
   // set enumerations for selection status
-  private int selectStatus = 0;
-  public static final int NONE = 0;
-  public static final int CENTER = 1;
-  public static final int TL = 2;
-  public static final int TR = 3;
-  public static final int BL = 4;
-  public static final int BR = 5;
-  public static final int TXT = 6;
+  private SelectOptions selectStatus = SelectOptions.NONE;
   private boolean reset = false;
 
   // grid
@@ -55,7 +52,7 @@ public class StateObj extends GeneralObj implements Cloneable {
     y0 = _y0;
     x1 = _x1;
     y1 = _y1;
-    selectStatus = 0;
+    selectStatus = SelectOptions.NONE;
     color = c;
 
     objName = "state" + numb;
@@ -76,7 +73,7 @@ public class StateObj extends GeneralObj implements Cloneable {
     attrib = newList;
     objName = name;
     reset = b;
-    selectStatus = NONE;
+    selectStatus = SelectOptions.NONE;
     myPage = page;
     color = c;
   }
@@ -102,7 +99,7 @@ public class StateObj extends GeneralObj implements Cloneable {
         g.drawOval(x0 - 3, y0 - 3, x1 - x0 + 6, y1 - y0 + 6);
 
       // draw control points
-      if (selectStatus != NONE) {
+      if (selectStatus != SelectOptions.NONE) {
         g.setColor(Color.red);
         g.drawRect(x0, y0, x1 - x0, y1 - y0);
         g.fillRect(x0 - 3, y0 - 3, 7, 7);
@@ -115,14 +112,14 @@ public class StateObj extends GeneralObj implements Cloneable {
   }
 
   public void unselect() {
-    selectStatus = NONE;
+    selectStatus = SelectOptions.NONE;
   }
 
   public boolean setSelectStatus(int x, int y) {
     if (myPage == currPage) {
       xTemp = x;
       yTemp = y;
-      selectStatus = NONE;
+      selectStatus = SelectOptions.NONE;
       // check text objects
       if (attrib != null) {
         for (int j = 0; j < attrib.size(); j++) {
@@ -132,27 +129,27 @@ public class StateObj extends GeneralObj implements Cloneable {
         for (int i = 0; i < attrib.size(); i++) {
           ObjAttribute s = attrib.get(i);
           if (s.setSelectStatus(x, y)) {
-            selectStatus = TXT;
+            selectStatus = SelectOptions.TXT;
             break;
           }
         }
       }
 
-      if (selectStatus != TXT) {
+      if (selectStatus != SelectOptions.TXT) {
         // check if inside square
         if (x >= x0 && x <= x1 && y >= y0 && y <= y1)
-          selectStatus = CENTER;
+          selectStatus = SelectOptions.CENTER;
         // check corners
         if (x0 - x <= 3 && x0 - x >= -3 && y0 - y <= 3 && y0 - y >= -3)
-          selectStatus = TL;
+          selectStatus = SelectOptions.TL;
         if (x1 - x <= 3 && x1 - x >= -3 && y0 - y <= 3 && y0 - y >= -3)
-          selectStatus = TR;
+          selectStatus = SelectOptions.TR;
         if (x0 - x <= 3 && x0 - x >= -3 && y1 - y <= 3 && y1 - y >= -3)
-          selectStatus = BL;
+          selectStatus = SelectOptions.BL;
         if (x1 - x <= 3 && x1 - x >= -3 && y1 - y <= 3 && y1 - y >= -3)
-          selectStatus = BR;
+          selectStatus = SelectOptions.BR;
       }
-      if (selectStatus == NONE)
+      if (selectStatus == SelectOptions.NONE)
         return false;
       else
         return true;
@@ -163,16 +160,16 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   public void setSelectStatus(boolean b) {
     if (b)
-      selectStatus = CENTER;
+      selectStatus = SelectOptions.CENTER;
     else
-      selectStatus = 0;
+      selectStatus = SelectOptions.NONE;
 
   }
 
   public void adjustShapeOrPosition(int x, int y) {
     if (myPage == currPage) {
       // move object stuff
-      if (selectStatus == CENTER) {
+      if (selectStatus == SelectOptions.CENTER) {
         if (grid) {
           x -= (x % gridS);
           y -= (y % gridS);
@@ -193,7 +190,7 @@ public class StateObj extends GeneralObj implements Cloneable {
           y1 = y0 + h;
         }
 
-      } else if (selectStatus == TXT) {
+      } else if (selectStatus == SelectOptions.TXT) {
         if (attrib != null) {
           for (int i = 0; i < attrib.size(); i++) {
             ObjAttribute s = attrib.get(i);
@@ -210,13 +207,17 @@ public class StateObj extends GeneralObj implements Cloneable {
 
         // adjust corners
 
-        if (selectStatus == TL || selectStatus == BL)
+        if (selectStatus == SelectOptions.TL
+            || selectStatus == SelectOptions.BL)
           x0 += x - xTemp;
-        if (selectStatus == TR || selectStatus == BR)
+        if (selectStatus == SelectOptions.TR
+            || selectStatus == SelectOptions.BR)
           x1 += x - xTemp;
-        if (selectStatus == TL || selectStatus == TR)
+        if (selectStatus == SelectOptions.TL
+            || selectStatus == SelectOptions.TR)
           y0 += y - yTemp;
-        if (selectStatus == BL || selectStatus == BR)
+        if (selectStatus == SelectOptions.BL
+            || selectStatus == SelectOptions.BR)
           y1 += y - yTemp;
         xTemp = x;
         yTemp = y;
@@ -232,7 +233,7 @@ public class StateObj extends GeneralObj implements Cloneable {
     }
   }
 
-  public int getSelectStatus() {
+  public SelectOptions getSelectStatus() {
     return selectStatus;
   }
 
@@ -404,10 +405,10 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   public boolean setBoxSelectStatus(int _x0, int _y0, int _x1, int _y1) {
     if (myPage == currPage && x0 > _x0 && y0 > _y0 && x1 < _x1 && y1 < _y1) {
-      selectStatus = CENTER;
+      selectStatus = SelectOptions.CENTER;
       return true;
     } else {
-      selectStatus = NONE;
+      selectStatus = SelectOptions.NONE;
       return false;
     }
   }
