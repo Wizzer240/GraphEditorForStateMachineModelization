@@ -607,8 +607,61 @@ public class FizzimGui extends javax.swing.JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
   protected void HelpItemAboutActionPerformed(ActionEvent evt) {
-    new SplashWindow("splash.png", this, 60000);
-    // new SplashWindowTest(this);
+    new HelpItemAboutActionPerformed();
+  }
+
+  /**
+   * This is used to display the Help image
+   */
+  @SuppressWarnings("serial")
+  class HelpItemAboutActionPerformed extends JWindow
+  {
+    HelpItemAboutActionPerformed() {
+      /* Display the help */
+      JLabel label = null;
+      URL url = getClass().getResource("splash.png");
+      if (url != null)
+      {
+        ImageIcon imgIcon = new ImageIcon(url);
+        label = new JLabel(imgIcon);
+      } else
+        System.err.println("Couldn't find the file : "
+            + getClass().getResource("splash.png"));
+
+      Dimension labelSize = label.getPreferredSize();
+      label.setBounds(0, 0, (int) labelSize.getWidth(), (int) labelSize
+          .getHeight());
+
+      JLabel vers = new JLabel("v" + currVer);
+      vers.setFont(new Font("Arial", Font.BOLD, 22));
+      Dimension versSize = vers.getPreferredSize();
+      vers.setBounds(176, 65, (int) versSize.getWidth(), (int) versSize
+          .getHeight());
+
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+      JLayeredPane layer = new JLayeredPane();
+      layer.setPreferredSize(labelSize);
+      layer.setOpaque(false);
+      layer.add(label, new Integer(0));
+      layer.add(vers, new Integer(1));
+      getContentPane().add(layer);
+      pack();
+      layer.setLocation(screenSize.width / 2 - (labelSize.width / 2),
+          screenSize.height / 2 - (labelSize.height / 2));
+
+      setLocation(screenSize.width / 2 - (labelSize.width / 2),
+          screenSize.height / 2 - (labelSize.height / 2));
+      setVisible(true);
+      addMouseListener(new MouseAdapter()
+      {
+        public void mousePressed(MouseEvent e)
+        {
+          setVisible(false);
+          dispose();
+        }
+      });
+    }
   }
 
   protected void HelpItemHelpActionPerformed(ActionEvent evt) {
@@ -1330,6 +1383,12 @@ public class FizzimGui extends javax.swing.JFrame {
   static boolean clbatch_rewrite = false; // command-line -batch_rewrite switch
 
   public static void main(String args[]) {
+    /*
+     * For the spash screen, the simplest way is to put :
+     * SplashScreen-Image: splash.png
+     * in the MANIFEST.MF file in ./META-INF in the .jar
+     */
+
     // If one of the args is ends with .fzm, assume it is the file
     // to open.
     for (String s : args) {
@@ -1384,7 +1443,6 @@ public class FizzimGui extends javax.swing.JFrame {
         FizzimGui fzim = new FizzimGui();
         fzim.setVisible(true);
         fzim.setSize(new java.awt.Dimension(1000, 685));
-        fzim.new SplashWindow("splash.png", fzim, 3500);
         // If command line filename is not null, open
         // this file.
         if (clfilename != "") {
@@ -1920,83 +1978,6 @@ public class FizzimGui extends javax.swing.JFrame {
 
     public boolean isDataFlavorSupported(DataFlavor arg0) {
       return (arg0 == DataFlavor.imageFlavor);
-    }
-  }
-
-  // http://www.javaworld.com/javaworld/javatips/jw-javatip104.html?page=2
-  class SplashWindow extends JWindow
-  {
-    public SplashWindow(String filename, FizzimGui fzim, int waitTime)
-    {
-      // splash icon
-      JLabel label = new JLabel(new ImageIcon(getClass().getResource(
-          "splash.png")));
-      Dimension labelSize = label.getPreferredSize();
-      label.setBounds(0, 0, (int) labelSize.getWidth(), (int) labelSize
-          .getHeight());
-
-      JLabel vers = new JLabel("v" + currVer);
-      vers.setFont(new Font("Arial", Font.BOLD, 22));
-      Dimension versSize = vers.getPreferredSize();
-      vers.setBounds(176, 65, (int) versSize.getWidth(), (int) versSize
-          .getHeight());
-
-      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-      JLayeredPane layer = new JLayeredPane();
-      layer.setPreferredSize(labelSize);
-      layer.setOpaque(false);
-      layer.add(label, new Integer(0));
-      layer.add(vers, new Integer(1));
-      getContentPane().add(layer);
-
-      pack();
-      layer.setLocation(screenSize.width / 2 - (labelSize.width / 2),
-          screenSize.height / 2 - (labelSize.height / 2));
-
-      setLocation(screenSize.width / 2 - (labelSize.width / 2),
-          screenSize.height / 2 - (labelSize.height / 2));
-      addMouseListener(new MouseAdapter()
-      {
-        public void mousePressed(MouseEvent e)
-        {
-          setVisible(false);
-          dispose();
-        }
-      });
-      final int pause = waitTime;
-      final Runnable closerRunner = new Runnable()
-      {
-        public void run()
-        {
-          setVisible(false);
-          dispose();
-        }
-      };
-      Runnable waitRunner = new Runnable()
-      {
-        public void run()
-        {
-          try
-          {
-            Thread.sleep(pause);
-            SwingUtilities.invokeAndWait(closerRunner);
-          }
-          catch (Exception e)
-          {
-            e.printStackTrace();
-            // can catch InvocationTargetException
-            // can catch InterruptedException
-          }
-        }
-      };
-
-      setVisible(true);
-      layer.setVisible(true);
-
-      Thread splashThread = new Thread(waitRunner, "SplashThread");
-      splashThread.start();
-
     }
   }
 
