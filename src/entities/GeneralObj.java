@@ -1,4 +1,5 @@
 package entities;
+
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,21 +28,35 @@ import attributes.ObjAttribute;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @brief Abstract object for all displayable objects (state, transitions, and
+ *        text boxes)
+ */
 public abstract class GeneralObj implements Cloneable {
 
+  /**
+   * Manages the display of the object
+   */
   public abstract void paintComponent(Graphics g);
 
   public abstract boolean setSelectStatus(int x, int y);
 
-  // for select multiple
+  /**
+   * @brief This function is used to allow the selection of multiple items by
+   *        the user. The parameters are the coordinates of the rectangle
+   *        selected by the user
+   * @return True if the object is in the given rectangle
+   */
   public abstract boolean setBoxSelectStatus(int x0, int y0, int x1, int y1);
 
   public abstract void adjustShapeOrPosition(int x, int y);
 
+  /**
+   * @return The selection status of the object
+   */
   public abstract SelectOptions getSelectStatus();
 
-  public Object clone()
-      throws CloneNotSupportedException
+  public Object clone() throws CloneNotSupportedException
   {
     return super.clone();
   }
@@ -50,6 +65,7 @@ public abstract class GeneralObj implements Cloneable {
 
   public abstract boolean containsParent(GeneralObj oldObj);
 
+  /** ??? */
   public abstract int getType();
 
   public abstract boolean isModified();
@@ -63,6 +79,9 @@ public abstract class GeneralObj implements Cloneable {
 
   public abstract void updateObj();
 
+  /**
+   * Unselect the given object.
+   */
   public abstract void unselect();
 
   public boolean isParentModified()
@@ -77,6 +96,11 @@ public abstract class GeneralObj implements Cloneable {
     modifiedParent = b;
   }
 
+  /**
+   * @param page
+   *          ?? 0 for StateObj, 3 for text object
+   * @return Returns the center of the item.
+   */
   public abstract Point getCenter(int page);
 
   public abstract void notifyChange(GeneralObj oldObj, GeneralObj clonedObj);
@@ -116,18 +140,18 @@ public abstract class GeneralObj implements Cloneable {
       if (l != null && g.getName().equals(l.getName()))
       {
         // global attribute name can't be local
-        if (l.getEditable(0) == l.LOCAL)
-          l.setEditable(0, l.GLOBAL_FIXED);
+        if (l.getEditable(0) == ObjAttribute.LOCAL)
+          l.setEditable(0, ObjAttribute.GLOBAL_FIXED);
         // if blank string, make global variable
         if (l.get(1).equals(""))
-          l.setEditable(1, l.GLOBAL_VAR);
+          l.setEditable(1, ObjAttribute.GLOBAL_VAR);
         if (l.get(3).equals(""))
-          l.setEditable(3, l.GLOBAL_VAR);
+          l.setEditable(3, ObjAttribute.GLOBAL_VAR);
 
         for (int j = 0; j < 7; j++)
         {
           // if value in field isn't locally set variable, replace with global
-          if (l.getEditable(j) != l.LOCAL)
+          if (l.getEditable(j) != ObjAttribute.LOCAL)
             l.set(j, g.get(j));
         }
 

@@ -4,10 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -41,7 +38,7 @@ public class TextObj extends GeneralObj {
   private int tX, tY, tW, tH, xTemp, yTemp;
   private int selectboxLeft, selectboxRight, selectboxBottom, selectboxTop;
   private String text = null;
-  private GeneralObj connectedObj = null;
+  //private GeneralObj connectedObj = null; Was it useful ?
   private boolean parentSelected = false;
   LinkedList<LinkedList<ObjAttribute>> globalList = null;
 

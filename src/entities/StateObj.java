@@ -1,7 +1,6 @@
 package entities;
 
 import java.awt.*;
-import java.awt.geom.CubicCurve2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -45,6 +44,28 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   // AttributeList mylist = new AttributeList();
 
+  /**
+   * @details The coordinates are the ones of the rectangle containing the state
+   * @param _x0
+   *          Horizontal initial coordinate of the upper left point
+   * @param _y0
+   *          Vertical initial coordinate of the upper left point
+   * @param _x1
+   *          Horizontal initial coordinate of the lower right point
+   * @param _y1
+   *          Vertical initial coordinate of the lower right point
+   * @param numb
+   *          This number will be in the name of the state (i.e.
+   *          stage+`numb`)
+   * @param page
+   *          The tab in which the state is added
+   * @param c
+   *          The color of the borders
+   * @param b
+   *          ??
+   * @param i
+   *          ??
+   */
   public StateObj(int _x0, int _y0, int _x1, int _y1, int numb, int page,
       Color c, boolean b, int i) {
 
@@ -78,6 +99,7 @@ public class StateObj extends GeneralObj implements Cloneable {
     color = c;
   }
 
+  @SuppressWarnings("unchecked")
   public Object clone() throws CloneNotSupportedException {
     StateObj copy = (StateObj) super.clone();
     if (attrib != null) {
@@ -98,10 +120,17 @@ public class StateObj extends GeneralObj implements Cloneable {
       if (reset)
         g.drawOval(x0 - 3, y0 - 3, x1 - x0 + 6, y1 - y0 + 6);
 
-      // draw control points
+      /*
+       * When the state is selected:
+       * - the display is turned red
+       * - display the rectangle around the name
+       * - display the angle control points
+       */
       if (selectStatus != SelectOptions.NONE) {
         g.setColor(Color.red);
+        // Name
         g.drawRect(x0, y0, x1 - x0, y1 - y0);
+        // Angle Control points
         g.fillRect(x0 - 3, y0 - 3, 7, 7);
         g.fillRect(x1 - 3, y0 - 3, 7, 7);
         g.fillRect(x0 - 3, y1 - 3, 7, 7);
