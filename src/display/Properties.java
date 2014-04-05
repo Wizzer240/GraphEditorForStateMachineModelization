@@ -58,6 +58,11 @@ import entities.TransitionObj;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * A table model for the properties of an object.
+ * It can be properties of a given MACHINE, of the INPUTS, OUTPUTS or of a STATE
+ * or TRANSITION
+ */
 @SuppressWarnings("serial")
 class MyTableModel extends AbstractTableModel {
 
@@ -99,16 +104,18 @@ class MyTableModel extends AbstractTableModel {
         "Color", "UserAtts", "ResetValue" }; // for main att edit boxes
   }
 
-  // methods that need to be implemented
-
+  /* Methods that need to be implemented */
+  @Override
   public int getColumnCount() {
     return columnNames.length;
   }
 
+  @Override
   public int getRowCount() {
     return attrib.size();
   }
 
+  @Override
   public Object getValueAt(int row, int col) {
     Object obj = attrib.get(row).get(col);
     if (col == 2) // pz - transition?
@@ -138,7 +145,8 @@ class MyTableModel extends AbstractTableModel {
     return columnNames[col];
   }
 
-  // GLOBAL_FIXED can only be edited in global tab, ABS can't be edited anywhere
+  // GLOBAL_FIXED can only be edited in global tab
+  // ABS can't be edited anywhere
   public boolean isCellEditable(int row, int col) {
     if ((attrib.get(row).getEditable(col) == ObjAttribute.GLOBAL_FIXED && !global)
         || attrib.get(row).getEditable(col) == ObjAttribute.ABS)
@@ -152,7 +160,6 @@ class MyTableModel extends AbstractTableModel {
   }
 
   public void setValueAt(Object value, int row, int col) {
-
     // 0: Name
     // 1: (Default) value
     // 2: Visibility
@@ -2041,7 +2048,8 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 1)
     {
       globalLists.get(1).add(
-          new ObjAttribute("in[1:0]", "", EnumVisibility.NO, "", "", Color.black, "", "",
+          new ObjAttribute("in[1:0]", "", EnumVisibility.NO, "", "",
+              Color.black, "", "",
               editable));
 
       currTable.revalidate();
@@ -2049,7 +2057,8 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 2)
     {
       globalLists.get(2).add(
-          new ObjAttribute("out[1:0]", "", EnumVisibility.NONDEFAULT, "", "", Color.black, "", "",
+          new ObjAttribute("out[1:0]", "", EnumVisibility.NONDEFAULT, "", "",
+              Color.black, "", "",
               editable));
       currTable.setValueAt("reg", globalLists.get(2).size() - 1, 3);
 
@@ -2058,7 +2067,8 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 4)
     {
       globalLists.get(4).add(
-          new ObjAttribute("", "", EnumVisibility.YES, "output", "", Color.black, "", "",
+          new ObjAttribute("", "", EnumVisibility.YES, "output", "",
+              Color.black, "", "",
               editable));
 
       currTable.revalidate();
@@ -2071,7 +2081,8 @@ class GlobalProperties extends javax.swing.JDialog {
     if (currTab == 2)
     {
       globalLists.get(2).add(
-          new ObjAttribute("flag", "", EnumVisibility.NONDEFAULT, "", "", Color.black,
+          new ObjAttribute("flag", "", EnumVisibility.NONDEFAULT, "", "",
+              Color.black,
               "suppress_portlist", "",
               editable));
       currTable.setValueAt("flag", globalLists.get(2).size() - 1, 3);
@@ -2083,7 +2094,8 @@ class GlobalProperties extends javax.swing.JDialog {
       if (!checkNames(currTable, "priority"))
       {
         globalLists.get(4).add(
-            new ObjAttribute("priority", "1000", EnumVisibility.YES, "", "", Color.black, "",
+            new ObjAttribute("priority", "1000", EnumVisibility.YES, "", "",
+                Color.black, "",
                 "",
                 editable));
       }
