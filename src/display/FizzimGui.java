@@ -638,41 +638,12 @@ public class FizzimGui extends javax.swing.JFrame {
   }
 
   protected void HelpItemHelpActionPerformed(ActionEvent evt) {
-
-    String url = "http://www.docs.fizzim.com/fizzim_tutorial_092511.htm";
-    JDialog helpWindow = new JDialog(this, "Help - " + url, false);
-    JEditorPane htmlPane = null;
-    boolean load = true;
-
-    try {
-      htmlPane = new JEditorPane(url);
-
-    } catch (IOException ioe) {
-      // if URL is unaccessible, try to load local copy of help
-      try {
-        htmlPane = new JEditorPane(FizzimGui.class.getResource("help.html"));
-      } catch (IOException e) {
-        // if error occurs loading local copy
-        load = false;
-        JOptionPane.showMessageDialog(this,
-            "Could not load help.  Try http://www.fizzim.com/help.html",
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-      }
-    }
-    htmlPane.addHyperlinkListener(new MyHyperlinkListener(htmlPane));
-
-    if (load)
-    {
-      htmlPane.setPreferredSize(new Dimension(800, 600)); // dimensions of help
-                                                          // page
-      JScrollPane scroll = new JScrollPane(htmlPane);
-      htmlPane.setEditable(false);
-      helpWindow.add(scroll);
-      helpWindow.pack();
-      helpWindow.setVisible(true);
-    }
-
+    JOptionPane
+        .showMessageDialog(
+            this,
+            "Help is available online.  Try http://www.fizzim.com/index.php/tutorial",
+            "Online Tutorial",
+            JOptionPane.INFORMATION_MESSAGE);
   }
 
   protected void FilePrefActionPerformed(ActionEvent evt) {
@@ -1964,24 +1935,4 @@ public class FizzimGui extends javax.swing.JFrame {
    * }
    */
 
-}
-
-class MyHyperlinkListener implements HyperlinkListener
-{
-  JEditorPane htmlPage;
-
-  public MyHyperlinkListener(JEditorPane pane)
-  {
-    htmlPage = pane;
-  }
-
-  public void hyperlinkUpdate(HyperlinkEvent e) {
-    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-      try {
-        htmlPage.setPage(e.getURL());
-      } catch (IOException ioe) {
-        // Some warning to user
-      }
-    }
-  }
 }
