@@ -129,7 +129,6 @@ public class FizzimGui extends javax.swing.JFrame {
 
     drawArea1 = new DrawArea(globalList);
 
-    drawArea1.setBackground(new java.awt.Color(255, 255, 255));
     drawArea1.setPreferredSize(new java.awt.Dimension(maxW, maxH));
 
     initComponents();

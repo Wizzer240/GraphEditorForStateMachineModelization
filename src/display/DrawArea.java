@@ -147,7 +147,7 @@ public class DrawArea extends JPanel implements MouseListener,
     undoList.add(objList);
     currUndoIndex++;
 
-    setBackground(Color.blue);
+    setBackground(Color.WHITE);
     addMouseListener(this);
     addMouseMotionListener(this);
 
