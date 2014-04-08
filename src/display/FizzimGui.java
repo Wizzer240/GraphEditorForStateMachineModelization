@@ -111,7 +111,8 @@ public class FizzimGui extends javax.swing.JFrame {
     drawArea1.setPreferredSize(new java.awt.Dimension(maxW, maxH));
 
     initComponents();
-
+    setTitle("Fizzim: State Machine GUI editor");
+    setLocationRelativeTo(null);
     // custom initComponents
 
     drawArea1.setJFrame(this);
