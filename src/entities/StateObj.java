@@ -140,10 +140,7 @@ public class StateObj extends GeneralObj implements Cloneable {
     }
   }
 
-  public void unselect() {
-    selectStatus = SelectOptions.NONE;
-  }
-
+  @Override
   public boolean setSelectStatus(int x, int y) {
     if (myPage == currPage) {
       xTemp = x;
@@ -187,12 +184,17 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   }
 
+  @Override
   public void setSelectStatus(boolean b) {
     if (b)
       selectStatus = SelectOptions.CENTER;
     else
       selectStatus = SelectOptions.NONE;
+  }
 
+  @Override
+  public void unselect() {
+    selectStatus = SelectOptions.NONE;
   }
 
   public void adjustShapeOrPosition(int x, int y) {

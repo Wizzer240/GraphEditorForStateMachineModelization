@@ -95,4 +95,8 @@ public abstract class TransitionObj extends GeneralObj implements Cloneable {
 
   public abstract void updateObjPages(int page);
 
+  @Override
+  public void setSelectStatus(boolean b) {
+  };
+
 }

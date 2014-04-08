@@ -41,6 +41,13 @@ public abstract class GeneralObj implements Cloneable {
 
   public abstract boolean setSelectStatus(int x, int y);
 
+  public abstract void setSelectStatus(boolean b);
+
+  /**
+   * Unselect the given object.
+   */
+  public abstract void unselect();
+
   /**
    * @brief This function is used to allow the selection of multiple items by
    *        the user. The parameters are the coordinates of the rectangle
@@ -48,6 +55,10 @@ public abstract class GeneralObj implements Cloneable {
    * @return True if the object is in the given rectangle
    */
   public abstract boolean setBoxSelectStatus(int x0, int y0, int x1, int y1);
+
+  public boolean setBoxSelectStatus(int x, int y) {
+    return false;
+  }
 
   public abstract void adjustShapeOrPosition(int x, int y);
 
@@ -78,11 +89,6 @@ public abstract class GeneralObj implements Cloneable {
   }
 
   public abstract void updateObj();
-
-  /**
-   * Unselect the given object.
-   */
-  public abstract void unselect();
 
   public boolean isParentModified()
   {
@@ -323,15 +329,6 @@ public abstract class GeneralObj implements Cloneable {
         obj.setPage(myPage);
       }
     }
-
-  }
-
-  public boolean setBoxSelectStatus(int x, int y) {
-
-    return false;
-  }
-
-  public void setSelectStatus(boolean b) {
 
   }
 
