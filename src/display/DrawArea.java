@@ -114,8 +114,9 @@ public class DrawArea extends JPanel implements MouseListener,
   // pages
   private int currPage = 1;
 
-  // double click settings
-  private int dClickTime = 200;    // double click speed in ms
+  /* Double click delay in ms */
+  private static final int DOUBLE_CLICK_TIME = 200;
+  /* Time of the previous click */
   private long lastClick = 0;
 
   // lock to grid settings
@@ -451,7 +452,7 @@ public class DrawArea extends JPanel implements MouseListener,
     GeneralObj bestMatch = null;
     boolean doubleClick = false;
     // check for double click
-    if (e.getWhen() - lastClick < dClickTime
+    if (e.getWhen() - lastClick < DOUBLE_CLICK_TIME
         && e.getButton() == MouseEvent.BUTTON1 && e.getModifiers() != 20)
       doubleClick = true;
 
