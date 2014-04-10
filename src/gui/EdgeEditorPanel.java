@@ -21,6 +21,7 @@ package gui;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -28,12 +29,21 @@ import java.awt.BorderLayout;
 
 import javax.swing.border.EmptyBorder;
 
+import display.DrawArea;
+import display.StatePropertiesPanel;
+import entities.StateObj;
 
+/**
+ * The edge editor pannel is composed of two tabs:
+ * - the first one allows to modify the value of attributes
+ * - the second one allows to modify all the fields of all attributes and the
+ * color of the edge
+ */
 @SuppressWarnings("serial")
 public class EdgeEditorPanel extends JPanel {
   private JTabbedPane tabbedPane;
 
-  public EdgeEditorPanel() {
+  public EdgeEditorPanel(JDialog window, DrawArea draw_area, StateObj state) {
     setBorder(new EmptyBorder(7, 7, 7, 7));
     setLayout(new BorderLayout(0, 0));
     tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -46,9 +56,10 @@ public class EdgeEditorPanel extends JPanel {
     simplePanel.add(panel);
     JPanel panel2 = new EditOneValuePanel();
     simplePanel.add(panel2);
-    
+
     tabbedPane.addTab("General", null, simplePanel, "Only values editing");
-    JComponent simplePanel2 = new JPanel();
+    JComponent simplePanel2 =
+        new StatePropertiesPanel(window, draw_area, state);
     tabbedPane.addTab("Details", null, simplePanel2, "Only values editing");
   }
 

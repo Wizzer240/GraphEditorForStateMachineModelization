@@ -23,6 +23,7 @@ import gui.EdgeEditorWindow;
 import gui.GeneralEditorWindow;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 
@@ -32,8 +33,13 @@ import javax.swing.JButton;
 import javax.swing.AbstractAction;
 
 import java.awt.event.ActionEvent;
+import java.util.LinkedList;
 
 import javax.swing.Action;
+
+import attributes.ObjAttribute;
+import display.DrawArea;
+import entities.StateObj;
 
 @SuppressWarnings("serial")
 public class TestGUI extends JFrame {
@@ -42,25 +48,47 @@ public class TestGUI extends JFrame {
 
   public TestGUI(String name) {
     super(name);
+    initDrawArea();
+
     frame = this;
     JButton btnShow = new JButton("Show");
     btnShow.setAction(action);
     getContentPane().add(btnShow, BorderLayout.CENTER);
+
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.pack();
+    frame.setLocationRelativeTo(null);
+    frame.setVisible(true);
   }
 
   public static void main(String[] args) {
     JFrame frame = new TestGUI("FrameDemo");
+  }
 
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    JLabel emptyLabel = new JLabel("");
-    emptyLabel.setPreferredSize(new Dimension(175, 100));
-    frame.getContentPane().add(emptyLabel, BorderLayout.EAST);
+  LinkedList<ObjAttribute> globalMachineAttributes;
+  LinkedList<ObjAttribute> globalInputsAttributes;
+  LinkedList<ObjAttribute> globalOutputsAttributes;
+  LinkedList<ObjAttribute> globalStateAttributes;
+  LinkedList<ObjAttribute> globalTransAttributes;
 
-    // Display the window.
-    frame.pack();
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
+  LinkedList<LinkedList<ObjAttribute>> globalList;
+  private DrawArea drawArea1;
 
+  private void initDrawArea() {
+    globalList = new LinkedList<LinkedList<ObjAttribute>>();
+    globalMachineAttributes = new LinkedList<ObjAttribute>();
+    globalInputsAttributes = new LinkedList<ObjAttribute>();
+    globalOutputsAttributes = new LinkedList<ObjAttribute>();
+    globalStateAttributes = new LinkedList<ObjAttribute>();
+    globalTransAttributes = new LinkedList<ObjAttribute>();
+
+    globalList.add(globalInputsAttributes);
+    globalList.add(globalOutputsAttributes);
+    globalList.add(globalMachineAttributes);
+    globalList.add(globalStateAttributes);
+    globalList.add(globalTransAttributes);
+
+    drawArea1 = new DrawArea(globalList);
   }
 
   private class SwingAction extends AbstractAction {
@@ -70,8 +98,10 @@ public class TestGUI extends JFrame {
     }
 
     public void actionPerformed(ActionEvent e) {
-      GeneralEditorWindow window = new EdgeEditorWindow(frame, "Edge Editor");
-      window.setVisible(true);
+      StateObj state = new StateObj(1, 1, 2, 2, 42, 1, Color.BLACK, true, 1);
+      GeneralEditorWindow window = new EdgeEditorWindow(frame, "Edge Editor",
+          drawArea1, state);
+      // window.setVisible(true);
 
       // JPanel panel = new EdgeEditorPanel();
       /*

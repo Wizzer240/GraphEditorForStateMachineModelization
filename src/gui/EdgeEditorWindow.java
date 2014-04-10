@@ -19,13 +19,25 @@ package gui;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import javax.swing.JFrame;
+import java.awt.Component;
 
+import javax.swing.JPanel;
+
+import display.DrawArea;
+import entities.StateObj;
+
+/**
+ * The Edge Editor is simply a general editor in which we have set the central
+ * panel to be the edge editor panel
+ */
 @SuppressWarnings("serial")
 public class EdgeEditorWindow extends GeneralEditorWindow {
 
-  public EdgeEditorWindow(JFrame parent, String name) {
-    super(parent, name, new EdgeEditorPanel());
-    // this.setPanel(new SimplePropertyPanel());
+  public EdgeEditorWindow(Component parent, String name,
+      DrawArea draw_area, StateObj state) {
+    super(parent, name, new JPanel());
+    JPanel content = new EdgeEditorPanel(this, draw_area, state);
+    setPanel(content);
+    display();
   }
 }
