@@ -59,7 +59,7 @@ public class StateObj extends GeneralObj implements Cloneable {
    *          stage+`numb`)
    * @param page
    *          The tab in which the state is added
-   * @param c
+   * @param border_color
    *          The color of the borders
    * @param b
    *          ??
@@ -67,14 +67,14 @@ public class StateObj extends GeneralObj implements Cloneable {
    *          ??
    */
   public StateObj(int _x0, int _y0, int _x1, int _y1, int numb, int page,
-      Color c, boolean b, int i) {
+      Color border_color, boolean b, int i) {
 
     x0 = _x0;
     y0 = _y0;
     x1 = _x1;
     y1 = _y1;
     selectStatus = SelectOptions.NONE;
-    color = c;
+    color = border_color;
 
     objName = "state" + numb;
     myPage = page;
