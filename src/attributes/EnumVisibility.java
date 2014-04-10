@@ -1,7 +1,9 @@
 package attributes;
 
 public enum EnumVisibility {
-  NO, YES, NONDEFAULT;
+  NO, /* Not visible in the display */
+  YES, /* Always visible in the display */
+  NONDEFAULT; /* Visible only when the value is not the default value */
 
   public EnumVisibility fromString(String s) {
     return EnumVisibility.NO;

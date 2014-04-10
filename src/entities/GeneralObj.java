@@ -113,7 +113,7 @@ public abstract class GeneralObj implements Cloneable {
 
   String objName;
 
-  // list of obj attributes for the object
+  /* List of obj attributes for the object */
   LinkedList<ObjAttribute> attrib = new LinkedList<ObjAttribute>();
   LinkedList<ObjAttribute> global;
   LinkedList<LinkedList<ObjAttribute>> allGlobal;
@@ -123,7 +123,7 @@ public abstract class GeneralObj implements Cloneable {
     return attrib;
   }
 
-  public int jumpCount = 0;
+  // public int jumpCount = 0; Unused ?
 
   // updates the attribute list for a particular object by reading in the global
   // list

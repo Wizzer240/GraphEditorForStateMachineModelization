@@ -25,6 +25,7 @@ package entities;
  */
 public enum SelectOptions {
   // For states
+  /* Not selected. All other options are considered as selected for a state */
   NONE,
   CENTER,
   TL, // Top-Left

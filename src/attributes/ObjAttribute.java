@@ -31,11 +31,15 @@ import entities.SelectOptions;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Describe a single attribute for the machine, the inputs/outputs or for a
+ * stage/transition.
+ */
 public class ObjAttribute implements Cloneable {
 
-  private String name = null;
+  private String name = null; /* Name of the attribute */
   private String value = null;
-  private EnumVisibility visibility;
+  private EnumVisibility visibility; /* Whether it is displayed on the graph */
   private String type = null;
   private String useratts = null;
   private String resetval = null;
@@ -46,7 +50,7 @@ public class ObjAttribute implements Cloneable {
   // global var: take value from global attribute
   // local: override global attribute
   // abs: hard-coded
-  public static int GLOBAL_FIXED = 3, GLOBAL_VAR = 4, LOCAL = 5, ABS = 6;
+  public static final int GLOBAL_FIXED = 3, GLOBAL_VAR = 4, LOCAL = 5, ABS = 6;
   // all field editable by default
   private int[] editable = { GLOBAL_VAR, GLOBAL_VAR, GLOBAL_VAR, GLOBAL_VAR,
       GLOBAL_VAR, GLOBAL_VAR, GLOBAL_VAR, GLOBAL_VAR };
@@ -69,8 +73,8 @@ public class ObjAttribute implements Cloneable {
       return false;
   }
 
-  public ObjAttribute(String na, String va, EnumVisibility vi, String ty, String comm,
-      Color color, String useratt, String resetvalue)
+  public ObjAttribute(String na, String va, EnumVisibility vi, String ty,
+      String comm, Color color, String useratt, String resetvalue)
   {
     name = na;
     value = va;
@@ -82,8 +86,8 @@ public class ObjAttribute implements Cloneable {
     comment = comm;
   }
 
-  public ObjAttribute(String na, String va, EnumVisibility vi, String ty, String comm,
-      Color color, String useratt, String resetvalue, int[] edit)
+  public ObjAttribute(String na, String va, EnumVisibility vi, String ty,
+      String comm, Color color, String useratt, String resetvalue, int[] edit)
   {
     name = na;
     value = va;
