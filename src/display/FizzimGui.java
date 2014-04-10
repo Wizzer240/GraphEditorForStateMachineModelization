@@ -108,7 +108,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
     drawArea1 = new DrawArea(globalList);
 
-    drawArea1.setPreferredSize(new java.awt.Dimension(maxW, maxH));
+    drawArea1.setPreferredSize(new Dimension(maxW, maxH));
 
     initComponents();
     setTitle("Fizzim: State Machine GUI editor");
@@ -209,7 +209,7 @@ public class FizzimGui extends javax.swing.JFrame {
       }
     });
 
-    setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     setTitle("Fizzim");
     addComponentListener(new java.awt.event.ComponentAdapter() {
       public void componentResized(java.awt.event.ComponentEvent evt) {
