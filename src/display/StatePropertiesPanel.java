@@ -28,6 +28,8 @@ import javax.swing.table.TableColumn;
 import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 import entities.StateObj;
+import gui.GeneralEditorWindow;
+
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
@@ -57,7 +59,8 @@ public class StatePropertiesPanel extends JPanel {
    * @param DA
    * @param s
    */
-  public StatePropertiesPanel(JDialog parent_window, DrawArea DA, StateObj s) {
+  public StatePropertiesPanel(GeneralEditorWindow parent_window, DrawArea DA,
+      StateObj s) {
     state = s;
     drawArea = DA;
     colorChooser = drawArea.getColorChooser();
@@ -66,6 +69,18 @@ public class StatePropertiesPanel extends JPanel {
     oldName = new String(state.getName());
     this.parent_window = parent_window;
     initComponents();
+
+    parent_window.getBtnOk().addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        SPOKActionPerformed(evt);
+      }
+    });
+
+    parent_window.getBtnCancel().addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        SPCancelActionPerformed(evt);
+      }
+    });
   }
 
   // End of variables declaration//GEN-END:variables
@@ -100,8 +115,8 @@ public class StatePropertiesPanel extends JPanel {
     column.setCellEditor(new MyJColorEditor(colorChooser));
     column.setCellRenderer(new MyJColorRenderer());
 
-    SPNew.setVisible(false);
-    SPDelete.setVisible(false);
+    SPNew.setVisible(true);
+    SPDelete.setVisible(true);
 
     SPScroll.setViewportView(SPTable);
 
@@ -153,15 +168,15 @@ public class StatePropertiesPanel extends JPanel {
     SPHField.setColumns(10);
 
     SPNew.setText("New");
-    SPNew.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    SPNew.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         SPNewActionPerformed(evt);
       }
     });
 
     SPDelete.setText("Delete");
-    SPDelete.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    SPDelete.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         SPDeleteActionPerformed(evt);
       }
     });

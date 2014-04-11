@@ -43,7 +43,7 @@ import entities.StateObj;
 public class EdgeEditorPanel extends JPanel {
   private JTabbedPane tabbedPane;
 
-  public EdgeEditorPanel(JDialog window, DrawArea draw_area, StateObj state) {
+  public EdgeEditorPanel(GeneralEditorWindow window, DrawArea draw_area, StateObj state) {
     setBorder(new EmptyBorder(7, 7, 7, 7));
     setLayout(new BorderLayout(0, 0));
     tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -58,8 +58,7 @@ public class EdgeEditorPanel extends JPanel {
     simplePanel.add(panel2);
 
     tabbedPane.addTab("General", null, simplePanel, "Only values editing");
-    JComponent simplePanel2 =
-        new StatePropertiesPanel(window, draw_area, state);
+    JComponent simplePanel2 = new StatePropertiesPanel(window, draw_area, state);
     tabbedPane.addTab("Details", null, simplePanel2, "Only values editing");
   }
 
