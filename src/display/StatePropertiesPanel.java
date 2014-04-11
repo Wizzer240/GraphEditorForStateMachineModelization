@@ -28,6 +28,8 @@ import javax.swing.table.TableColumn;
 import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 import entities.StateObj;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 @SuppressWarnings("serial")
 public class StatePropertiesPanel extends JPanel {
@@ -36,16 +38,11 @@ public class StatePropertiesPanel extends JPanel {
   private JColorChooser colorChooser;
   private LinkedList<LinkedList<ObjAttribute>> globalList;
   private JDialog parent_window;
-
-  // GEN-BEGIN:variables
-  // Variables declaration - do not modify
-  private javax.swing.JButton SPCancel;
   private javax.swing.JButton SPDelete;
   private javax.swing.JLabel SPH;
   private javax.swing.JFormattedTextField SPHField;
   private javax.swing.JLabel SPLabel;
   private javax.swing.JButton SPNew;
-  private javax.swing.JButton SPOK;
   private javax.swing.JScrollPane SPScroll;
   private javax.swing.JTable SPTable;
   private javax.swing.JLabel SPW;
@@ -83,8 +80,6 @@ public class StatePropertiesPanel extends JPanel {
         .getIntegerInstance());
     SPHField = new JFormattedTextField(NumberFormat
         .getIntegerInstance());
-    SPCancel = new JButton();
-    SPOK = new JButton();
     SPNew = new JButton();
     SPDelete = new JButton();
 
@@ -157,20 +152,6 @@ public class StatePropertiesPanel extends JPanel {
     SPHField.setValue(new Integer(state.getHeight()));
     SPHField.setColumns(10);
 
-    SPCancel.setText("Cancel");
-    SPCancel.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        SPCancelActionPerformed(evt);
-      }
-    });
-
-    SPOK.setText("OK");
-    SPOK.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        SPOKActionPerformed(evt);
-      }
-    });
-
     SPNew.setText("New");
     SPNew.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -186,112 +167,72 @@ public class StatePropertiesPanel extends JPanel {
     });
 
     GroupLayout layout = new GroupLayout(this);
-    setLayout(layout);
     layout.setHorizontalGroup(layout
-        .createParallelGroup(GroupLayout.Alignment.LEADING)
+        .createParallelGroup(Alignment.LEADING)
         .addGroup(layout.createSequentialGroup()
             .addContainerGap()
-            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(
-                    SPScroll,
-                    GroupLayout.DEFAULT_SIZE,
-                    480,
-                    Short.MAX_VALUE)
-                .addComponent(SPLabel)
-                .addGroup(layout
-                    .createSequentialGroup()
-                    .addGroup(
-                        layout
-                            .createParallelGroup(
-                                GroupLayout.Alignment.LEADING)
-                            .addComponent(
-                                SPW)
-                            .addComponent(
-                                SPH))
-                    .addPreferredGap(
-                        LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(
-                        layout
-                            .createParallelGroup(
-                                GroupLayout.Alignment.LEADING)
-                            .addComponent(
-                                SPHField,
-                                GroupLayout.PREFERRED_SIZE,
-                                GroupLayout.DEFAULT_SIZE,
-                                GroupLayout.PREFERRED_SIZE)
-                            .addComponent(
-                                SPWField,
-                                GroupLayout.PREFERRED_SIZE,
-                                GroupLayout.DEFAULT_SIZE,
-                                GroupLayout.PREFERRED_SIZE))
-                    .addGap(42, 42, 42)
-                    .addComponent(SPC)
-                    .addGap(259, 259, 259)
-                    .addComponent(SPOK)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(SPCancel))
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(SPNew)
-                    .addPreferredGap(
-                        LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(SPDelete)))
-            .addContainerGap()));
-
-    layout.setVerticalGroup(layout
-        .createParallelGroup(GroupLayout.Alignment.LEADING)
-        .addGroup(layout
-            .createSequentialGroup()
-            .addContainerGap()
-            .addComponent(SPLabel)
-            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(SPScroll,
-                GroupLayout.PREFERRED_SIZE,
-                151,
-                GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(
-                LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout
-                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                .addComponent(SPNew)
-                .addComponent(SPDelete))
-            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .createParallelGroup(Alignment.LEADING)
+                .addComponent(SPScroll, GroupLayout.DEFAULT_SIZE,
+                    670, Short.MAX_VALUE)
+                .addComponent(SPLabel)
                 .addGroup(layout.createSequentialGroup()
-                    .addPreferredGap(
-                        LayoutStyle.ComponentPlacement.RELATED,
-                        55,
-                        Short.MAX_VALUE)
-                    .addGroup(
-                        layout
-                            .createParallelGroup(
-                                GroupLayout.Alignment.BASELINE)
-                            .addComponent(SPCancel)
-                            .addComponent(SPOK))
-                    .addContainerGap())
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(22, 22, 22)
                     .addGroup(layout.createParallelGroup(
-                        GroupLayout.Alignment.BASELINE)
-                        .addComponent(
-                            SPW)
-                        .addComponent(
-                            SPWField,
+                        Alignment.LEADING)
+                        .addComponent(SPW)
+                        .addComponent(SPH))
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(
+                        Alignment.LEADING)
+                        .addComponent(SPHField,
                             GroupLayout.PREFERRED_SIZE,
                             GroupLayout.DEFAULT_SIZE,
                             GroupLayout.PREFERRED_SIZE)
-
-                        .addComponent(SPC))
-                    .addPreferredGap(
-                        LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(
-                        GroupLayout.Alignment.BASELINE)
-                        .addComponent(
-                            SPH)
-                        .addComponent(
-                            SPHField,
+                        .addComponent(SPWField,
                             GroupLayout.PREFERRED_SIZE,
                             GroupLayout.DEFAULT_SIZE,
                             GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap()))));
+                    .addGap(42)
+                    .addComponent(SPC,
+                        GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.DEFAULT_SIZE,
+                        GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(SPNew)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(SPDelete)))
+            .addContainerGap())
+        );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(SPLabel)
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addComponent(SPScroll, GroupLayout.PREFERRED_SIZE, 151,
+                    GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                    .addComponent(SPNew)
+                    .addComponent(SPDelete))
+                .addGap(22)
+                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                    .addComponent(SPW)
+                    .addComponent(SPWField, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.DEFAULT_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SPC, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.DEFAULT_SIZE,
+                        GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                    .addComponent(SPH)
+                    .addComponent(SPHField, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.DEFAULT_SIZE,
+                        GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+    setLayout(layout);
     // pack();
   }
 
