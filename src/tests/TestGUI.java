@@ -45,10 +45,13 @@ import entities.StateObj;
 public class TestGUI extends JFrame {
   private final Action action = new SwingAction();
   JFrame frame;
+  StateObj state;
 
   public TestGUI(String name) {
     super(name);
     initDrawArea();
+
+    state = new StateObj(1, 1, 2, 2, 42, 1, Color.BLACK, true, 1);
 
     frame = this;
     JButton btnShow = new JButton("Show");
@@ -98,7 +101,6 @@ public class TestGUI extends JFrame {
     }
 
     public void actionPerformed(ActionEvent e) {
-      StateObj state = new StateObj(1, 1, 2, 2, 42, 1, Color.BLACK, true, 1);
       GeneralEditorWindow window = new EdgeEditorWindow(frame, "Edge Editor",
           drawArea1, state);
       // window.setVisible(true);
