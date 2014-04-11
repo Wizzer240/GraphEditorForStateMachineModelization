@@ -298,6 +298,7 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   }
 
+  @Override
   public int getType() {
     return 0;
   }

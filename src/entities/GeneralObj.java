@@ -76,7 +76,11 @@ public abstract class GeneralObj implements Cloneable {
 
   public abstract boolean containsParent(GeneralObj oldObj);
 
-  /** ??? */
+  /** Returns the type of object :
+   * 0 for StateObj
+   * 1 for StateTransitionObj
+   * 2 for LoopbackTransitionObj
+   * 3 for TextObj*/
   public abstract int getType();
 
   public abstract boolean isModified();

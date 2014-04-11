@@ -894,6 +894,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       return true;
   }
 
+  @Override
   public int getType()
   {
     return 1;

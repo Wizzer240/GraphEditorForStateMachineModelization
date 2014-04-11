@@ -228,6 +228,7 @@ public class TextObj extends GeneralObj {
     return selectStatus;
   }
 
+  @Override
   public int getType() {
     return 3;
   }

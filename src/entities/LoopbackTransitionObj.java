@@ -437,6 +437,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
       return false;
   }
 
+  @Override
   public int getType()
   {
     return 2;
