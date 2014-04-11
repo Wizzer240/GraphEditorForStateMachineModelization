@@ -118,8 +118,8 @@ public class StatePropertiesPanel extends JPanel {
     column.setCellEditor(new MyJColorEditor(colorChooser));
     column.setCellRenderer(new MyJColorRenderer());
 
-    SPNew.setVisible(true);
-    SPDelete.setVisible(true);
+    SPNew.setVisible(false);
+    SPDelete.setVisible(false);
 
     SPScroll.setViewportView(SPTable);
 
