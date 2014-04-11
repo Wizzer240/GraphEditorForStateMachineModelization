@@ -26,9 +26,11 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import java.awt.BorderLayout;
+import java.util.LinkedList;
 
 import javax.swing.border.EmptyBorder;
 
+import attributes.ObjAttribute;
 import display.DrawArea;
 import display.StatePropertiesPanel;
 import entities.StateObj;
@@ -43,7 +45,8 @@ import entities.StateObj;
 public class EdgeEditorPanel extends JPanel {
   private JTabbedPane tabbedPane;
 
-  public EdgeEditorPanel(GeneralEditorWindow window, DrawArea draw_area, StateObj state) {
+  public EdgeEditorPanel(GeneralEditorWindow window, DrawArea draw_area,
+      StateObj state) {
     setBorder(new EmptyBorder(7, 7, 7, 7));
     setLayout(new BorderLayout(0, 0));
     tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -52,14 +55,16 @@ public class EdgeEditorPanel extends JPanel {
     JComponent simplePanel = new JPanel();
     simplePanel.setLayout(new BoxLayout(simplePanel, BoxLayout.Y_AXIS));
 
-    JPanel panel = new EditOneValuePanel();
-    simplePanel.add(panel);
-    JPanel panel2 = new EditOneValuePanel();
-    simplePanel.add(panel2);
+    LinkedList<ObjAttribute> attributes = state.getAttributeList();
+    for (ObjAttribute one_attribute : attributes) {
+      String value = (String) one_attribute.get(1);
+
+      JPanel panel = new EditOneValuePanel(value+": ");
+      simplePanel.add(panel);
+    }
 
     tabbedPane.addTab("General", null, simplePanel, "Only values editing");
     JComponent simplePanel2 = new StatePropertiesPanel(window, draw_area, state);
     tabbedPane.addTab("Details", null, simplePanel2, "Only values editing");
   }
-
 }

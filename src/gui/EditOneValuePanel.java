@@ -35,7 +35,8 @@ import java.awt.Insets;
  */
 @SuppressWarnings("serial")
 public class EditOneValuePanel extends JPanel {
-  public EditOneValuePanel() {
+
+  public EditOneValuePanel(String text) {
     GridBagLayout gridBagLayout = new GridBagLayout();
     gridBagLayout.columnWidths = new int[] { 47, 334, 0 };
     gridBagLayout.rowHeights = new int[] { 49, 0 };
@@ -44,7 +45,7 @@ public class EditOneValuePanel extends JPanel {
     setLayout(gridBagLayout);
 
     /* Label */
-    JLabel lblEvents = new JLabel("Events: ");
+    JLabel lblEvents = new JLabel(text);
     GridBagConstraints gbc_lblEvents = new GridBagConstraints();
     gbc_lblEvents.anchor = GridBagConstraints.NORTHWEST;
     gbc_lblEvents.insets = new Insets(0, 0, 5, 0);
