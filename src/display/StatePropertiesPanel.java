@@ -70,6 +70,10 @@ public class StatePropertiesPanel extends JPanel {
     this.parent_window = parent_window;
     initComponents();
 
+    /*
+     * We add the update and cancel actions to the OK and Cancel button of the
+     * parent window
+     */
     parent_window.getBtnOk().addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         SPOKActionPerformed(evt);

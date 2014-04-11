@@ -17,6 +17,7 @@ import entities.StateObj;
 import entities.StateTransitionObj;
 import entities.TextObj;
 import entities.TransitionObj;
+import gui.EdgeEditorWindow;
 
 // Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -552,16 +553,10 @@ public class DrawArea extends JPanel implements MouseListener,
             else
               setUndoPoint(i, s.getType());
             break;
-          }
-          else
-          {
-            if (s.getType() == 0)
-            {
-              new StateProperties(this, frame, true, (StateObj) s)
-                  .setVisible(true);
-            }
-            else if (s.getType() == 1)
-            {
+          } else {
+            if (s.getType() == 0) {
+              new EdgeEditorWindow(frame, "Edge Editor", this, (StateObj) s);
+            } else if (s.getType() == 1) {
               Vector<StateObj> stateObjs = new Vector<StateObj>();
               for (int j = 1; j < objList.size(); j++)
               {
@@ -999,8 +994,7 @@ public class DrawArea extends JPanel implements MouseListener,
     }
     else if (input == "Edit State Properties")
     {
-      new StateProperties(this, frame, true, (StateObj) tempObj)
-          .setVisible(true);
+      new EdgeEditorWindow(frame, "Edge Editor", this, (StateObj) tempObj);
     }
     else if (input == "Edit Loopback Transition Properties")
     {
@@ -1041,14 +1035,13 @@ public class DrawArea extends JPanel implements MouseListener,
     }
     else if (input == "New State")
     {
-      GeneralObj state = new StateObj(rXTemp - StateW / 2, rYTemp - StateH / 2,
+      StateObj state = new StateObj(rXTemp - StateW / 2, rYTemp - StateH / 2,
           rXTemp + StateW / 2, rYTemp + StateH / 2, createSCounter, currPage,
           defSC, grid, gridS);
       createSCounter++;
       objList.add(state);
       state.updateAttrib(globalList, 3);
-      new StateProperties(this, frame, true, (StateObj) state)
-          .setVisible(true);
+      new EdgeEditorWindow(frame, "Edge Editor", this, state);
     }
     else if (input == "New State Transition")
     {
