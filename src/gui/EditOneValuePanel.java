@@ -36,7 +36,15 @@ import java.awt.Insets;
 @SuppressWarnings("serial")
 public class EditOneValuePanel extends JPanel {
 
-  public EditOneValuePanel(String text) {
+  /**
+   * A simple panel composed of a label and a textArea to modify one value.
+   * 
+   * @param text_label
+   *          The text of the label
+   * @param text_area
+   *          The text displayed in the text area
+   */
+  public EditOneValuePanel(String text_label, String text_area) {
     GridBagLayout gridBagLayout = new GridBagLayout();
     gridBagLayout.columnWidths = new int[] { 47, 334, 0 };
     gridBagLayout.rowHeights = new int[] { 49, 0 };
@@ -45,7 +53,7 @@ public class EditOneValuePanel extends JPanel {
     setLayout(gridBagLayout);
 
     /* Label */
-    JLabel lblEvents = new JLabel(text);
+    JLabel lblEvents = new JLabel(text_label);
     GridBagConstraints gbc_lblEvents = new GridBagConstraints();
     gbc_lblEvents.anchor = GridBagConstraints.NORTHWEST;
     gbc_lblEvents.insets = new Insets(0, 0, 5, 0);
@@ -55,7 +63,7 @@ public class EditOneValuePanel extends JPanel {
     // setPreferredSize(new Dimension(450, 72));
 
     /* Text Area */
-    JTextArea events_textArea = new JTextArea();
+    JTextArea events_textArea = new JTextArea(text_area);
     events_textArea.setLineWrap(true);
     events_textArea
         .setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
