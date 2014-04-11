@@ -20,6 +20,7 @@ package gui;
  */
 
 import java.awt.Component;
+import java.util.ResourceBundle;
 
 import javax.swing.JPanel;
 
@@ -32,6 +33,8 @@ import entities.StateObj;
  */
 @SuppressWarnings("serial")
 public class StateEditorWindow extends GeneralEditorWindow {
+  private static final ResourceBundle locale =
+      ResourceBundle.getBundle("locale.Editors");
 
   public StateEditorWindow(Component parent, String name,
       DrawArea draw_area, StateObj state) {
@@ -39,5 +42,9 @@ public class StateEditorWindow extends GeneralEditorWindow {
     JPanel content = new StateEditorPanel(this, draw_area, state);
     setPanel(content);
     display();
+  }
+
+  public StateEditorWindow(Component parent, DrawArea draw_area, StateObj state) {
+    this(parent, locale.getString("state_editor_title"), draw_area, state);
   }
 }

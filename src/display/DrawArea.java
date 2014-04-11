@@ -17,7 +17,7 @@ import entities.StateObj;
 import entities.StateTransitionObj;
 import entities.TextObj;
 import entities.TransitionObj;
-import gui.EdgeEditorWindow;
+import gui.StateEditorWindow;
 
 // Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -555,7 +555,7 @@ public class DrawArea extends JPanel implements MouseListener,
             break;
           } else {
             if (s.getType() == 0) {
-              new EdgeEditorWindow(frame, "Edge Editor", this, (StateObj) s);
+              new StateEditorWindow(frame, this, (StateObj) s);
             } else if (s.getType() == 1) {
               Vector<StateObj> stateObjs = new Vector<StateObj>();
               for (int j = 1; j < objList.size(); j++)
@@ -994,7 +994,7 @@ public class DrawArea extends JPanel implements MouseListener,
     }
     else if (input == "Edit State Properties")
     {
-      new EdgeEditorWindow(frame, "Edge Editor", this, (StateObj) tempObj);
+      new StateEditorWindow(frame, this, (StateObj) tempObj);
     }
     else if (input == "Edit Loopback Transition Properties")
     {
@@ -1041,7 +1041,7 @@ public class DrawArea extends JPanel implements MouseListener,
       createSCounter++;
       objList.add(state);
       state.updateAttrib(globalList, 3);
-      new EdgeEditorWindow(frame, "Edge Editor", this, state);
+      new StateEditorWindow(frame, this, state);
     }
     else if (input == "New State Transition")
     {

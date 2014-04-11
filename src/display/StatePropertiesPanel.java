@@ -54,7 +54,8 @@ public class StatePropertiesPanel extends JPanel {
   /**
    * 
    * @param parent_window
-   *          The parent window
+   *          The parent window used to position any opened element.
+   *          It is also used to retrieve the ok and Cancel button.
    * @param DA
    * @param s
    */

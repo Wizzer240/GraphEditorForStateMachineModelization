@@ -21,12 +21,12 @@ package gui;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import java.awt.BorderLayout;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 import javax.swing.border.EmptyBorder;
 
@@ -34,6 +34,8 @@ import attributes.ObjAttribute;
 import display.DrawArea;
 import display.StatePropertiesPanel;
 import entities.StateObj;
+
+import javax.swing.JTextField;
 
 /**
  * The edge editor pannel is composed of two tabs:
@@ -43,28 +45,51 @@ import entities.StateObj;
  */
 @SuppressWarnings("serial")
 public class StateEditorPanel extends JPanel {
+  private static final ResourceBundle locale =
+      ResourceBundle.getBundle("locale.Editors");
   private JTabbedPane tabbedPane;
+  private JTextField textField;
 
+  /**
+   * Create the panel that is used in the editor of the states
+   * 
+   * @param window
+   *          The parent window used to position opened windows and to retrieve
+   *          the ok and cancel bouton
+   * @param draw_area
+   *          The drawing area to update after modifications
+   * @param state
+   *          The state being edited
+   */
   public StateEditorPanel(GeneralEditorWindow window, DrawArea draw_area,
       StateObj state) {
     setBorder(new EmptyBorder(7, 7, 7, 7));
-    setLayout(new BorderLayout(0, 0));
+    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     add(tabbedPane);
 
-    JComponent simplePanel = new JPanel();
-    simplePanel.setLayout(new BoxLayout(simplePanel, BoxLayout.Y_AXIS));
+    JComponent first_tab = new JPanel();
+    // first_tab.setLayout(new BoxLayout(first_tab, BoxLayout.Y_AXIS));
 
     LinkedList<ObjAttribute> attributes = state.getAttributeList();
-    for (ObjAttribute one_attribute : attributes) {
-      String value = (String) one_attribute.get(1);
+    ObjAttribute name_attribute = attributes.get(0);
 
-      JPanel panel = new EditOneValuePanel(value+": ");
-      simplePanel.add(panel);
+    String name = (String) name_attribute.get(0);
+
+    if (name.equals("name")) {
+      /* For the name, we do put a simple textField */
+
+      first_tab.add(new JLabel("Name: "));
+      textField = new JTextField((String) name_attribute.get(1), 10);
+      first_tab.add(textField);
+
     }
 
-    tabbedPane.addTab("General", null, simplePanel, "Only values editing");
-    JComponent simplePanel2 = new StatePropertiesPanel(window, draw_area, state);
-    tabbedPane.addTab("Details", null, simplePanel2, "Only values editing");
+    tabbedPane.addTab(locale.getString("general_tab"), null, first_tab,
+        locale.getString("general_tab_description"));
+
+    JComponent second_tab = new StatePropertiesPanel(window, draw_area, state);
+    tabbedPane.addTab(locale.getString("details_tab"), null, second_tab,
+        locale.getString("details_tab_description"));
   }
 }
