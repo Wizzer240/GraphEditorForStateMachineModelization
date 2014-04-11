@@ -49,17 +49,17 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
 
   private boolean stub = false;
 
-  public static final int NONE = 0;
-  public static final int START = 1;
-  public static final int STARTCTRL = 2;
-  public static final int ENDCTRL = 3;
-  public static final int END = 4;
-  public static final int ALL = 5;
-  public static final int TXT = 6;
-  public static final int PAGES = 7;
-  public static final int PAGESC = 8;
-  public static final int PAGEEC = 9;
-  public static final int PAGEE = 10;
+  //public static final int NONE = 0;
+  //public static final int START = 1;
+  //public static final int STARTCTRL = 2;
+  //public static final int ENDCTRL = 3;
+  //public static final int END = 4;
+  //public static final int ALL = 5;
+  //public static final int TXT = 6;
+  //public static final int PAGES = 7;
+  //public static final int PAGESC = 8;
+  //public static final int PAGEEC = 9;
+  //public static final int PAGEE = 10;
 
   // pages
   public Point pageS, pageSC, pageE, pageEC;
