@@ -42,10 +42,10 @@ import entities.StateObj;
  * color of the edge
  */
 @SuppressWarnings("serial")
-public class EdgeEditorPanel extends JPanel {
+public class StateEditorPanel extends JPanel {
   private JTabbedPane tabbedPane;
 
-  public EdgeEditorPanel(GeneralEditorWindow window, DrawArea draw_area,
+  public StateEditorPanel(GeneralEditorWindow window, DrawArea draw_area,
       StateObj state) {
     setBorder(new EmptyBorder(7, 7, 7, 7));
     setLayout(new BorderLayout(0, 0));

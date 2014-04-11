@@ -31,12 +31,12 @@ import entities.StateObj;
  * panel to be the edge editor panel
  */
 @SuppressWarnings("serial")
-public class EdgeEditorWindow extends GeneralEditorWindow {
+public class StateEditorWindow extends GeneralEditorWindow {
 
-  public EdgeEditorWindow(Component parent, String name,
+  public StateEditorWindow(Component parent, String name,
       DrawArea draw_area, StateObj state) {
     super(parent, name, new JPanel());
-    JPanel content = new EdgeEditorPanel(this, draw_area, state);
+    JPanel content = new StateEditorPanel(this, draw_area, state);
     setPanel(content);
     display();
   }

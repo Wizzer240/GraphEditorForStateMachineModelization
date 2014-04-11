@@ -19,7 +19,7 @@ package tests;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import gui.EdgeEditorWindow;
+import gui.StateEditorWindow;
 import gui.GeneralEditorWindow;
 
 import java.awt.BorderLayout;
@@ -101,7 +101,7 @@ public class TestGUI extends JFrame {
     }
 
     public void actionPerformed(ActionEvent e) {
-      GeneralEditorWindow window = new EdgeEditorWindow(frame, "Edge Editor",
+      GeneralEditorWindow window = new StateEditorWindow(frame, "Edge Editor",
           drawArea1, state);
       // window.setVisible(true);
 
