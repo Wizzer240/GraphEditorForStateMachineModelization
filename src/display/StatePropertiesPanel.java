@@ -39,16 +39,17 @@ public class StatePropertiesPanel extends JPanel {
   private JColorChooser colorChooser;
   private LinkedList<LinkedList<ObjAttribute>> globalList;
   private JDialog parent_window;
-  private javax.swing.JButton SPDelete;
-  private javax.swing.JLabel SPH;
-  private javax.swing.JFormattedTextField SPHField;
-  private javax.swing.JLabel SPLabel;
-  private javax.swing.JButton SPNew;
-  private javax.swing.JScrollPane SPScroll;
-  private javax.swing.JTable SPTable;
-  private javax.swing.JLabel SPW;
-  private javax.swing.JLabel SPC;
-  private javax.swing.JFormattedTextField SPWField;
+
+  private JButton SPDelete;
+  private JLabel SPH;
+  private JFormattedTextField SPHField;
+  private JLabel SPLabel;
+  private JButton SPNew;
+  private JScrollPane SPScroll;
+  private JTable SPTable;
+  private JLabel SPW;
+  private JLabel SPC;
+  private JFormattedTextField SPWField;
   private String oldName;
 
   /**
