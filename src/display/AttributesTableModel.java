@@ -23,7 +23,8 @@ class AttributesTableModel extends AbstractTableModel {
   // "Visibility", "Type", "Comment", "Color" };
   String[] columnNames = { "Attribute Name", "Value",
       "Visibility", "Type", "Comment",
-      "Color", "UserAtts", "ResetValue" }; // for state/trans edit boxes
+      "Color", "UserAtts", "ResetValue"
+  }; // for state/trans edit boxes
   boolean global = false;
 
   GeneralObj obj;
@@ -33,8 +34,7 @@ class AttributesTableModel extends AbstractTableModel {
   int positionInGlobalList;
 
   AttributesTableModel(GeneralObj s, JDialog dia,
-      LinkedList<LinkedList<ObjAttribute>> global, int k)
-  {
+      LinkedList<LinkedList<ObjAttribute>> global, int k) {
     obj = s;
     attrib = obj.getAttributeList();
     globalList = global;
@@ -43,8 +43,7 @@ class AttributesTableModel extends AbstractTableModel {
   }
 
   AttributesTableModel(LinkedList<ObjAttribute> list,
-      LinkedList<LinkedList<ObjAttribute>> globalL)
-  {
+      LinkedList<LinkedList<ObjAttribute>> globalL) {
     global = true;
     globalList = globalL;
     attrib = list;
@@ -53,7 +52,8 @@ class AttributesTableModel extends AbstractTableModel {
     // "Visibility", "Type","Comment", "Color"};
     columnNames = new String[] { "Attribute Name", "Default Value",
         "Visibility", "Type", "Comment",
-        "Color", "UserAtts", "ResetValue" }; // for main att edit boxes
+        "Color", "UserAtts", "ResetValue"
+    }; // for main att edit boxes
   }
 
   /* Methods that need to be implemented */
@@ -70,8 +70,7 @@ class AttributesTableModel extends AbstractTableModel {
   @Override
   public Object getValueAt(int row, int col) {
     Object obj = attrib.get(row).get(col);
-    if (col == 2) // pz - transition?
-    {
+    if (col == 2) { // pz - transition?
       if (obj.equals(new Integer(0)))
         obj = "No";
       if (obj.equals(new Integer(1)))
@@ -80,8 +79,7 @@ class AttributesTableModel extends AbstractTableModel {
         obj = "Only non-default";
     }
     // Translate internal representation "reg" to "statebit"
-    if (col == 3)
-    {
+    if (col == 3) {
       if (obj.equals(new String("reg")))
         obj = "statebit";
     }
@@ -122,8 +120,7 @@ class AttributesTableModel extends AbstractTableModel {
     // 7: Resetval
 
     // turn string into corresponding number
-    if (col == 2)
-    {
+    if (col == 2) {
       if (value.equals("No"))
         value = new Integer(0);
       if (value.equals("Yes"))
@@ -160,8 +157,7 @@ class AttributesTableModel extends AbstractTableModel {
             .equals("flag") || attrib.get(row).getType().equals("regdp"))))
         || (global && col == 3
             && !(value.equals("flag") || value.equals("regdp")) && !attrib.get(
-            row).getresetval().equals("")))
-    {
+            row).getresetval().equals(""))) {
       JOptionPane.showMessageDialog(dialog,
           "Only regdp and flag can have a reset value",
           "error",
@@ -177,8 +173,7 @@ class AttributesTableModel extends AbstractTableModel {
         || (global && col == 3 && value.equals("flag") && !attrib
             .get(row)
             .getValue()
-            .equals("")))
-    {
+            .equals(""))) {
       JOptionPane.showMessageDialog(dialog,
           "Flags cannot have default values",
           "error",
@@ -187,10 +182,8 @@ class AttributesTableModel extends AbstractTableModel {
     }
 
     // forces user to enter attribute name in outputs tab
-    if (!global && col == 3 && value.equals("output"))
-    {
-      if (!checkOutputs(attrib.get(row)))
-      {
+    if (!global && col == 3 && value.equals("output")) {
+      if (!checkOutputs(attrib.get(row))) {
         value = "";
         JOptionPane.showMessageDialog(dialog,
             "Attribute with that name must exist in global outputs tab",
@@ -207,12 +200,12 @@ class AttributesTableModel extends AbstractTableModel {
         && attrib.equals(globalList.get(2))
         && (value.equals("regdp") || value.equals("comb")
             || value.equals("reg") || value.equals("flag"))
-        && attrib.get(row).get(col).equals(""))
-    {
+        && attrib.get(row).get(col).equals("")) {
       int[] editable = { ObjAttribute.GLOBAL_FIXED, ObjAttribute.GLOBAL_VAR,
           ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
           ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
-          ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR };
+          ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR
+      };
       ObjAttribute newObj = new ObjAttribute(attrib.get(row).getName(), attrib
           .get(row)
           .getValue(),
@@ -223,8 +216,7 @@ class AttributesTableModel extends AbstractTableModel {
 
     // if rename something of type output
     if (global && col != 3 && globalList.get(2).equals(attrib)
-        && !attrib.get(row).get(col).equals(value))
-    {
+        && !attrib.get(row).get(col).equals(value)) {
       renameAttribute(3, attrib.get(row).getName(), col, value, row);
     }
 
@@ -241,8 +233,7 @@ class AttributesTableModel extends AbstractTableModel {
         || (col == 1 && attrib.equals(globalList.get(4)) && attrib
             .get(row)
             .getType()
-            .equals("output")))
-    {
+            .equals("output"))) {
       JOptionPane.showMessageDialog(dialog,
           "Must edit in output tab",
           "error",
@@ -270,13 +261,10 @@ class AttributesTableModel extends AbstractTableModel {
       attrib.get(row).set(col, value);
 
     // set to local if different from global
-    if (!global)
-    {
-      if (!checkValue(row, col, value))
-      {
+    if (!global) {
+      if (!checkValue(row, col, value)) {
         attrib.get(row).setEditable(col, ObjAttribute.LOCAL);
-      }
-      else
+      } else
         attrib.get(row).setEditable(col, ObjAttribute.GLOBAL_VAR);
     }
 
@@ -285,8 +273,7 @@ class AttributesTableModel extends AbstractTableModel {
       obj.setName((String) value);
 
     // restore to default if empty string was entered
-    if (col != 2 && value.equals("") && !global)
-    {
+    if (col != 2 && value.equals("") && !global) {
       obj.updateAttrib(globalList, positionInGlobalList);
     }
 
@@ -294,13 +281,11 @@ class AttributesTableModel extends AbstractTableModel {
 
   }
 
-  private boolean checkValue(int row, int col, Object value)
-  {
+  private boolean checkValue(int row, int col, Object value) {
     LinkedList<ObjAttribute> list = globalList.get(positionInGlobalList);
     String name = attrib.get(row).getName();
     Object val = attrib.get(row).get(col);
-    for (int i = 0; i < list.size(); i++)
-    {
+    for (int i = 0; i < list.size(); i++) {
       ObjAttribute obj = list.get(i);
       if (name.equals(obj.getName()) && val.equals(obj.get(col)))
         return true;
@@ -316,30 +301,23 @@ class AttributesTableModel extends AbstractTableModel {
     int num = 0;
     boolean needed = true;
 
-    for (int h = 0; h < globalList.get(t).size(); h++)
-    {
+    for (int h = 0; h < globalList.get(t).size(); h++) {
       ObjAttribute obj = globalList.get(t).get(h);
       // check if field is of type output in state tab
-      if (obj.getType().equals("output") && t == 3 && num <= row)
-      {
-        if (num == row && obj.getName().equals(name))
-        {
+      if (obj.getType().equals("output") && t == 3 && num <= row) {
+        if (num == row && obj.getName().equals(name)) {
           obj.set(col, value);
           needed = false;
           break;
-        }
-        else
+        } else
           num++;
       }
     }
 
-    if (needed)
-    {
-      for (int i = 0; i < globalList.get(t).size(); i++)
-      {
+    if (needed) {
+      for (int i = 0; i < globalList.get(t).size(); i++) {
         ObjAttribute obj = globalList.get(t).get(i);
-        if (obj.getName().equals(name))
-        {
+        if (obj.getName().equals(name)) {
           obj.set(col, value);
           break;
         }
@@ -351,8 +329,7 @@ class AttributesTableModel extends AbstractTableModel {
   private boolean checkOutputs(ObjAttribute objAttribute) {
     LinkedList<ObjAttribute> outputList = globalList.get(2);
     String name = objAttribute.getName();
-    for (int i = 0; i < outputList.size(); i++)
-    {
+    for (int i = 0; i < outputList.size(); i++) {
       ObjAttribute obj = outputList.get(i);
       if (obj.getName().equals(name))
         return true;
@@ -362,8 +339,7 @@ class AttributesTableModel extends AbstractTableModel {
   }
 
   private boolean checkName(LinkedList<ObjAttribute> linkedList, String name) {
-    for (int i = 0; i < linkedList.size(); i++)
-    {
+    for (int i = 0; i < linkedList.size(); i++) {
       ObjAttribute obj = linkedList.get(i);
       if (obj.getName().equals(name))
         return true;
