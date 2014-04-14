@@ -35,10 +35,10 @@ public enum SelectOptions {
   TXT,
 
   // Only for StateTransition
-  START,
-  STARTCTRL,
-  ENDCTRL,
-  END,
+  START, /* Selection of the starting point of a transition */
+  STARTCTRL, /* Selection of the control point of the starting point */
+  ENDCTRL, /* Selection of the control point of the ending point */
+  END, /* Selection of the ending point of a transition */
   ALL,
   PAGES,
   PAGESC,

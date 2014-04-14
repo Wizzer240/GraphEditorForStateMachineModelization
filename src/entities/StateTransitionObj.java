@@ -45,21 +45,15 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   private boolean ready = false;
   int xTemp, yTemp;
   String startS, endS;
+  /*
+   * Transitions can go through pages from one stage in one page to an other
+   * state in an other page !
+   * sPage and ePage are respectively the page of the starting state and ending
+   * state.
+   */
   int sPage, ePage;
 
   private boolean stub = false;
-
-  //public static final int NONE = 0;
-  //public static final int START = 1;
-  //public static final int STARTCTRL = 2;
-  //public static final int ENDCTRL = 3;
-  //public static final int END = 4;
-  //public static final int ALL = 5;
-  //public static final int TXT = 6;
-  //public static final int PAGES = 7;
-  //public static final int PAGESC = 8;
-  //public static final int PAGEEC = 9;
-  //public static final int PAGEE = 10;
 
   // pages
   public Point pageS, pageSC, pageE, pageEC;
@@ -79,8 +73,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   int len;
   double angle;
 
-  public StateTransitionObj(int numb, int page, DrawArea da, Color c)
-  {
+  public StateTransitionObj(int numb, int page, DrawArea da, Color c) {
     objName = "trans" + numb;
     myPage = page;
     drawArea = da;
@@ -92,8 +85,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   }
 
   public StateTransitionObj(int numb, int page, DrawArea da, StateObj start,
-      StateObj end, Color c)
-  {
+      StateObj end, Color c) {
     objName = "trans" + numb;
     myPage = page;
     drawArea = da;
@@ -107,7 +99,6 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     endCtrlPt = new Point(0, 0);
     curve = new CubicCurve2D.Double();
     color = c;
-
   }
 
   public StateTransitionObj(Point sp, Point ep, Point scp, Point ecp,
@@ -137,34 +128,25 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     drawArea = da;
     stub = s;
     color = c;
-
   }
 
-  public void setStub(boolean b)
-  {
+  public void setStub(boolean b) {
     stub = b;
     setEndPts();
-
   }
 
-  public boolean getStub()
-  {
+  public boolean getStub() {
     return stub;
   }
 
-  public void makeConnections(Vector<Object> objList)
-  {
-    for (int i = 1; i < objList.size(); i++)
-    {
+  public void makeConnections(Vector<Object> objList) {
+    for (int i = 1; i < objList.size(); i++) {
       GeneralObj obj = (GeneralObj) objList.get(i);
-      if (obj.getType() == 0)
-      {
-        if (obj.getName().equals(startS))
-        {
+      if (obj.getType() == 0) {
+        if (obj.getName().equals(startS)) {
           startState = (StateObj) obj;
         }
-        if (obj.getName().equals(endS))
-        {
+        if (obj.getName().equals(endS)) {
           endState = (StateObj) obj;
         }
       }
@@ -174,18 +156,15 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     sPage = startState.getPage();
     ePage = endState.getPage();
 
-    if (stub)
-    {
+    if (stub) {
       angle = getAngle(startPt, startState.getRealCenter(myPage));
       len = (int) startPt.distance(pageS);
     }
 
   }
 
-  public void initTrans(StateObj start, StateObj end)
-  {
-    if (startState != start || endState != end)
-    {
+  public void initTrans(StateObj start, StateObj end) {
+    if (startState != start || endState != end) {
       startState = start;
       endState = end;
       setEndPts();
@@ -196,9 +175,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   }
 
   @SuppressWarnings("unchecked")
-  public Object clone()
-      throws CloneNotSupportedException
-  {
+  public Object clone() throws CloneNotSupportedException {
     StateTransitionObj copy = (StateTransitionObj) super.clone();
 
     copy.startPt = (Point) startPt.clone();
@@ -213,28 +190,23 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     copy.startBorderPts = (Vector<Point>) startBorderPts.clone();
     copy.endBorderPts = (Vector<Point>) endBorderPts.clone();
 
-    if (attrib != null)
-    {
+    if (attrib != null) {
       copy.attrib = (LinkedList<ObjAttribute>) copy.attrib.clone();
-      for (int i = 0; i < attrib.size(); i++)
-      {
+      for (int i = 0; i < attrib.size(); i++) {
         copy.attrib.set(i, (ObjAttribute) attrib.get(i).clone());
       }
     }
 
     return copy;
-
   }
 
-  public void setEndPts()
-  {
+  public void setEndPts() {
     startBorderPts = startState.getBorderPts();
     endBorderPts = endState.getBorderPts();
     sPage = startState.getPage();
     ePage = endState.getPage();
     // TODO page connector stacking
-    if (sPage != ePage && !stub)
-    {
+    if (sPage != ePage && !stub) {
 
       int sOffset = drawArea.getOffset(sPage, startState, this, "start");
       int eOffset = drawArea.getOffset(ePage, endState, this, "end");
@@ -261,9 +233,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       pageE = new Point(50, (int) endPt.getY() + eOffset);
       pageEC = new Point(70, (int) endPt.getY() + eOffset);
       curve = new CubicCurve2D.Double();
-    }
-    else if (stub)
-    {
+    } else if (stub) {
       // TODO
       // System.out.println("in stub loop, setendpts");
       startPt = startBorderPts.get(0);
@@ -271,52 +241,37 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       pageS = new Point((int) startPt.getX() + 60, (int) startPt.getY());
       len = 60;
       angle = 0;
-    }
-    else
-    {
+    } else {
       Point startCoords = startState.getRealCenter(myPage);
       Point endCoords = endState.getRealCenter(myPage);
       double temp;
       double max = 1000000;
-      for (int i = 0; i < 36; i++)
-      {
+      for (int i = 0; i < 36; i++) {
         temp = startCoords.distanceSq(endBorderPts.get(i));
-        if (temp < max)
-        {
+        if (temp < max) {
           endStateIndex = i;
           max = temp;
         }
       }
       max = 1000000;
-      for (int i = 0; i < 36; i++)
-      {
+      for (int i = 0; i < 36; i++) {
         temp = endCoords.distanceSq(startBorderPts.get(i));
-        if (temp < max)
-        {
+        if (temp < max) {
           startStateIndex = i;
           max = temp;
         }
       }
       // try to prevent overlapping
-      if (startCoords.getX() < endCoords.getX())
-      {
-        if (startCoords.getY() < endCoords.getY())
-        {
+      if (startCoords.getX() < endCoords.getX()) {
+        if (startCoords.getY() < endCoords.getY()) {
+
+        } else {
 
         }
-        else
-        {
+      } else {
+        if (startCoords.getY() < endCoords.getY()) {
 
-        }
-      }
-      else
-      {
-        if (startCoords.getY() < endCoords.getY())
-        {
-
-        }
-        else
-        {
+        } else {
 
         }
       }
@@ -348,23 +303,19 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
 
       // find angle between states
       double theta = 0;
-      if (dx == 0)
-      {
+      if (dx == 0) {
         if (dy <= 0)
           theta = Math.PI / 2;
         else
           theta = 3 * Math.PI / 2;
-      }
-      else if (dx > 0 && dy > 0)
+      } else if (dx > 0 && dy > 0)
         theta = 2 * Math.PI - Math.atan((double) dy / dx);
-      else if (dx > 0 && dy <= 0)
-      {
+      else if (dx > 0 && dy <= 0) {
         if (dy == 0)
           theta = 0;
         else
           theta = -Math.atan((double) dy / (dx));
-      }
-      else if (dx < 0)
+      } else if (dx < 0)
         theta = Math.PI - Math.atan((double) dy / dx);
 
       // determine angle away from start point for start control point
@@ -405,15 +356,13 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   }
 
   // will only auto-redraw under certain conditions
-  private void moveEndPts()
-  {
+  private void moveEndPts() {
     startBorderPts = startState.getBorderPts();
     endBorderPts = endState.getBorderPts();
     sPage = startState.getPage();
     ePage = endState.getPage();
 
-    if (sPage != ePage && !stub)
-    {
+    if (sPage != ePage && !stub) {
 
       int sOffset = drawArea.getOffset(sPage, startState, this, "start");
       int eOffset = drawArea.getOffset(ePage, endState, this, "end");
@@ -439,24 +388,19 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
           + sOffset);
       pageE = new Point(50, (int) endPt.getY() + eOffset);
       pageEC = new Point(70, (int) endPt.getY() + eOffset);
-    }
-    else if (stub)
-    {
+    } else if (stub) {
       // TODO
       // System.out.println("in stub loop, moveendpts");
       startPt = startBorderPts.get(startStateIndex);
       pageS.setLocation(new Point(
           (int) (startPt.getX() + len * Math.cos(angle)),
           (int) (startPt.getY() - len * Math.sin(angle))));
-    }
-    else
-    {
+    } else {
 
       // or if multiple states selected, dont need to recalculate
       if ((!recalcCheck() && !drawArea.getRedraw())
           || (startState.getSelectStatus() != SelectOptions.NONE
-          && endState.getSelectStatus() != SelectOptions.NONE))
-      {
+          && endState.getSelectStatus() != SelectOptions.NONE)) {
         startStateIndex = tempStartIndex;
         endStateIndex = tempEndIndex;
         startPt = startBorderPts.get(startStateIndex);
@@ -468,8 +412,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
             + sdy);
         endCtrlPt = new Point((int) endPt.getX() + edx, (int) endPt.getY()
             + edy);
-      }
-      else
+      } else
         setEndPts();
 
     }
@@ -480,59 +423,53 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   public void paintComponent(Graphics g) {
 
     // check if something needs to be painted at all
-    if (ready)
-    {
+    if (ready) {
       sPage = startState.getPage();
       myPage = sPage;
       ePage = endState.getPage();
     }
     // check if anything needs to be drawn
-    if (ready && (sPage == currPage || ePage == currPage))
-    {
+    if (ready && (sPage == currPage || ePage == currPage)) {
       Graphics2D g2D = (Graphics2D) g;
 
       g2D.setColor(color);
 
       // draw arrow head for non-stub transitions
-      if (currPage == ePage && !stub)
-      {
+      if (currPage == ePage && !stub) {
         // find angle between end point and end control point
         int dx = (int) endCtrlPt.getX() - (int) endPt.getX();
         int dy = (int) endCtrlPt.getY() - (int) endPt.getY();
         double alpha = 0;
-        if (dx == 0)
-        {
+        if (dx == 0) {
           if (dy <= 0)
             alpha = Math.PI / 2;
           else
             alpha = 3 * Math.PI / 2;
-        }
-        else if (dx > 0 && dy > 0)
+        } else if (dx > 0 && dy > 0)
           alpha = 2 * Math.PI - Math.atan((double) dy / dx);
-        else if (dx > 0 && dy <= 0)
-        {
+        else if (dx > 0 && dy <= 0) {
           if (dy == 0)
             alpha = 0;
           else
             alpha = -Math.atan((double) dy / (dx));
-        }
-        else if (dx < 0)
+        } else if (dx < 0)
           alpha = Math.PI - Math.atan((double) dy / dx);
 
         double adj = Math.PI / 6;
         int[] xP = { (int) endPt.getX(),
             (int) endPt.getX() + (int) (13 * Math.cos(alpha + adj)),
-            (int) endPt.getX() + (int) (13 * Math.cos(alpha - adj)) };
+            (int) endPt.getX() + (int) (13 * Math.cos(alpha - adj))
+        };
         int[] yP = { (int) endPt.getY(),
             (int) endPt.getY() - (int) (13 * Math.sin(alpha + adj)),
-            (int) endPt.getY() - (int) (13 * Math.sin(alpha - adj)) };
+            (int) endPt.getY() - (int) (13 * Math.sin(alpha - adj))
+        };
         g2D.drawPolygon(xP, yP, 3);
         g2D.fillPolygon(xP, yP, 3);
       }
 
       // draw stub
-      if (currPage == sPage && stub)
-      {
+      if (currPage == sPage && stub) {
         g2D.drawLine((int) startPt.getX(), (int) startPt.getY(), (int) pageS
             .getX(), (int) pageS.getY());
         int x = (int) pageS.getX();
@@ -554,8 +491,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
             - 12 * Math.sin(angle) + height / 3));
 
         // draw control points if needed
-        if (selectStatus != SelectOptions.NONE)
-        {
+        if (selectStatus != SelectOptions.NONE) {
           g2D.setColor(Color.red);
           g2D
               .fillRect((int) startPt.getX() - 3, (int) startPt.getY() - 3, 7,
@@ -567,13 +503,11 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       }
 
       // draw normal transition
-      if (sPage == ePage && !stub)
-      {
+      if (sPage == ePage && !stub) {
         g2D.draw(curve);
 
         // draw control points
-        if (selectStatus != SelectOptions.NONE)
-        {
+        if (selectStatus != SelectOptions.NONE) {
           g2D.setColor(Color.red);
           g2D
               .fillRect((int) startPt.getX() - 3, (int) startPt.getY() - 3, 7,
@@ -591,11 +525,9 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
         }
       }
       // draw page connector
-      if (sPage != ePage && !stub)
-      {
+      if (sPage != ePage && !stub) {
         // if one start page
-        if (sPage == currPage)
-        {
+        if (sPage == currPage) {
           curve.setCurve(startPt.getX(), startPt.getY(), startCtrlPt.getX(),
               startCtrlPt.getY(), pageSC.getX(), pageSC.getY(), pageS.getX(),
               pageS.getY());
@@ -618,8 +550,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
             g2D.drawString(text, x, y + 25);
 
           // draw control points if needed
-          if (selectStatus != SelectOptions.NONE)
-          {
+          if (selectStatus != SelectOptions.NONE) {
             g2D.setColor(Color.red);
             g2D.fillRect((int) startPt.getX() - 3, (int) startPt.getY() - 3, 7,
                 7);
@@ -638,8 +569,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
           g2D.draw(curve);
         }
         // in on end page
-        else if (ePage == currPage)
-        {
+        else if (ePage == currPage) {
           curve.setCurve(pageE.getX(), pageE.getY(), pageEC.getX(), pageEC
               .getY(), endCtrlPt.getX(), endCtrlPt.getY(), endPt.getX(), endPt
               .getY());
@@ -656,8 +586,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
               + drawArea.getPageName(startState.getPage()) + ")", x, y + 25);
 
           // control points if needed
-          if (selectStatus != SelectOptions.NONE)
-          {
+          if (selectStatus != SelectOptions.NONE) {
             g2D.setColor(Color.red);
             g2D.fillRect((int) endPt.getX() - 3, (int) endPt.getY() - 3, 7, 7);
             g2D.fillRect((int) pageE.getX() - 3, (int) pageE.getY() - 3, 7, 7);
@@ -678,23 +607,19 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     }
   }
 
-  public void unselect()
-  {
+  public void unselect() {
     selectStatus = SelectOptions.NONE;
   }
 
   @Override
   public void adjustShapeOrPosition(int x, int y) {
-    if (selectStatus == SelectOptions.START)
-    {
+    if (selectStatus == SelectOptions.START) {
       Point currPt = new Point(x, y);
       double temp;
       double max = 1000000;
-      for (int i = 0; i < 36; i++)
-      {
+      for (int i = 0; i < 36; i++) {
         temp = currPt.distanceSq(startBorderPts.get(i));
-        if (temp < max)
-        {
+        if (temp < max) {
           startStateIndex = i;
           max = temp;
         }
@@ -702,8 +627,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       startPt.setLocation(startBorderPts.get(startStateIndex).getX(),
           startBorderPts.get(startStateIndex).getY());
 
-      if (stub)
-      {
+      if (stub) {
         angle = getAngle(startPt, startState.getRealCenter(myPage));
         pageS
             .setLocation(new Point((int) (startPt.getX() + len
@@ -715,16 +639,13 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       startCtrlPt.setLocation(x, y);
     if (selectStatus == SelectOptions.ENDCTRL)
       endCtrlPt.setLocation(x, y);
-    if (selectStatus == SelectOptions.END)
-    {
+    if (selectStatus == SelectOptions.END) {
       Point currPt = new Point(x, y);
       double temp;
       double max = 1000000;
-      for (int i = 0; i < 36; i++)
-      {
+      for (int i = 0; i < 36; i++) {
         temp = currPt.distanceSq(endBorderPts.get(i));
-        if (temp < max)
-        {
+        if (temp < max) {
           endStateIndex = i;
           max = temp;
         }
@@ -733,13 +654,11 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
           .get(endStateIndex)
           .getY());
     }
-    if (selectStatus == SelectOptions.PAGES)
-    {
+    if (selectStatus == SelectOptions.PAGES) {
       pageS.setLocation(pageS.getX() + x - xTemp, pageS.getY() + y - yTemp);
       xTemp = x;
       yTemp = y;
-      if (stub)
-      {
+      if (stub) {
         angle = getAngle(pageS, startState.getRealCenter(myPage));
         int index = 36 - (int) Math.round((angle / (Math.PI * 2)) * 36);
         if (index > 35)
@@ -754,22 +673,17 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       pageSC.setLocation(x, y);
     if (selectStatus == SelectOptions.PAGEEC)
       pageEC.setLocation(x, y);
-    if (selectStatus == SelectOptions.PAGEE)
-    {
+    if (selectStatus == SelectOptions.PAGEE) {
       pageE.setLocation(pageE.getX() + x - xTemp, pageE.getY() + y - yTemp);
       xTemp = x;
       yTemp = y;
     }
 
-    if (selectStatus == SelectOptions.TXT)
-    {
-      if (attrib != null)
-      {
-        for (int i = 0; i < attrib.size(); i++)
-        {
+    if (selectStatus == SelectOptions.TXT) {
+      if (attrib != null) {
+        for (int i = 0; i < attrib.size(); i++) {
           ObjAttribute s = attrib.get(i);
-          if (s.getSelectStatus() != 0)
-          {
+          if (s.getSelectStatus() != 0) {
             s.adjustShapeOrPosition(x, y);
             break;
           }
@@ -798,29 +712,23 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     xTemp = x;
     yTemp = y;
     // check for text
-    if (attrib != null)
-    {
-      for (int j = 0; j < attrib.size(); j++)
-      {
+    if (attrib != null) {
+      for (int j = 0; j < attrib.size(); j++) {
         ObjAttribute s = attrib.get(j);
         s.unselect();
       }
-      for (int i = 0; i < attrib.size(); i++)
-      {
+      for (int i = 0; i < attrib.size(); i++) {
         ObjAttribute s = attrib.get(i);
-        if (s.setSelectStatus(x, y))
-        {
+        if (s.setSelectStatus(x, y)) {
           selectStatus = SelectOptions.TXT;
           break;
         }
       }
     }
-    if (selectStatus != SelectOptions.TXT)
-    {
+    if (selectStatus != SelectOptions.TXT) {
 
       // check control points
-      if (!stub)
-      {
+      if (!stub) {
         if (startCtrlPt.getX() - x <= 3 && startCtrlPt.getX() - x >= -3
             && startCtrlPt.getY() - y <= 3 && startCtrlPt.getY() - y >= -3)
           selectStatus = SelectOptions.STARTCTRL;
@@ -855,8 +763,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
         selectStatus = SelectOptions.PAGES;
 
       // if not a control point, search around line
-      if (selectStatus == SelectOptions.NONE)
-      {
+      if (selectStatus == SelectOptions.NONE) {
         /*
          * for(int i = -4; i < 5; i++)
          * {
@@ -872,14 +779,11 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
          */
 
         BasicStroke bs = new BasicStroke(10); // sets width of transition
-                                              // "grab handle" lines
-        if (!stub)
-        {
+        // "grab handle" lines
+        if (!stub) {
           if (bs.createStrokedShape(curve).contains(new Point2D.Double(x, y)))
             selectStatus = SelectOptions.BR;
-        }
-        else
-        {
+        } else {
           if (bs
               .createStrokedShape(new Line2D.Double(startPt, pageS))
               .contains(new Point2D.Double(x, y)))
@@ -895,13 +799,11 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   }
 
   @Override
-  public int getType()
-  {
+  public int getType() {
     return 1;
   }
 
-  public boolean isModified()
-  {
+  public boolean isModified() {
     if (modified)
       return true;
     else
@@ -910,18 +812,15 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   }
 
   // sets modified back to false
-  public void setModifiedFalse()
-  {
+  public void setModifiedFalse() {
     modified = false;
   }
 
-  public void setModifiedTrue()
-  {
+  public void setModifiedTrue() {
     modified = true;
   }
 
-  public void updateObj()
-  {
+  public void updateObj() {
     int oldS = sPage;
     int oldE = ePage;
 
@@ -929,28 +828,22 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     myPage = sPage;
     ePage = endState.getPage();
 
-    if (oldS != sPage && oldS != oldE)
-    {
-      for (int i = 0; i < attrib.size(); i++)
-      {
+    if (oldS != sPage && oldS != oldE) {
+      for (int i = 0; i < attrib.size(); i++) {
         ObjAttribute obj = attrib.get(i);
         if (obj.getPage() == oldS)
           obj.setPage(sPage);
       }
     }
-    if (oldE != ePage && oldS != oldE)
-    {
-      for (int i = 0; i < attrib.size(); i++)
-      {
+    if (oldE != ePage && oldS != oldE) {
+      for (int i = 0; i < attrib.size(); i++) {
         ObjAttribute obj = attrib.get(i);
         if (obj.getPage() == oldE)
           obj.setPage(ePage);
       }
     }
-    if (sPage != ePage && oldS == oldE)
-    {
-      for (int i = 0; i < attrib.size(); i++)
-      {
+    if (sPage != ePage && oldS == oldE) {
+      for (int i = 0; i < attrib.size(); i++) {
         ObjAttribute obj = attrib.get(i);
         obj.setPage(sPage);
       }
@@ -959,8 +852,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     if ((startState.getSelectStatus() != SelectOptions.TXT && startState
         .getSelectStatus() != SelectOptions.NONE)
         || (endState.getSelectStatus() != SelectOptions.TXT && endState
-            .getSelectStatus() != SelectOptions.NONE))
-    {
+            .getSelectStatus() != SelectOptions.NONE)) {
       if (oldS != oldE && sPage == ePage)
         setEndPts();
       else
@@ -973,80 +865,60 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   }
 
   public void notifyChange(GeneralObj old, GeneralObj clone) {
-    if (old.equals(startState))
-    {
+    if (old.equals(startState)) {
       startState = (StateObj) clone;
     }
-    if (old.equals(endState))
-    {
+    if (old.equals(endState)) {
       endState = (StateObj) clone;
     }
 
   }
 
-  public void setPage(int i)
-  {
-    if (selectStatus == SelectOptions.TXT)
-    {
-      if (attrib != null)
-      {
-        for (int j = 0; j < attrib.size(); j++)
-        {
+  public void setPage(int i) {
+    if (selectStatus == SelectOptions.TXT) {
+      if (attrib != null) {
+        for (int j = 0; j < attrib.size(); j++) {
           ObjAttribute s = attrib.get(j);
-          if (s.getSelectStatus() != 0)
-          {
+          if (s.getSelectStatus() != 0) {
             s.setPage(i);
             break;
           }
         }
       }
-    }
-    else
-    {
+    } else {
       super.setPage(i);
     }
   }
 
-  public boolean containsParent(GeneralObj oldObj)
-  {
+  public boolean containsParent(GeneralObj oldObj) {
     if (oldObj.equals(startState) || oldObj.equals(endState))
       return true;
     else
       return false;
   }
 
-  public Point getCenter(int page)
-  {
+  public Point getCenter(int page) {
     if (!ready)
       return new Point(0, 0);
     sPage = startState.getPage();
     myPage = sPage;
     ePage = endState.getPage();
 
-    if (sPage == ePage)
-    {
-      if (!stub)
-      {
+    if (sPage == ePage) {
+      if (!stub) {
         int x = (int) ((endPt.getX() - startPt.getX()) / 2 + startPt.getX());
         int y = (int) ((endPt.getY() - startPt.getY()) / 2 + startPt.getY());
         return new Point(x, y);
-      }
-      else
-      {
+      } else {
         return new Point((int) (startPt.getX() + len * .5 * Math.cos(angle)),
             (int) (startPt.getY() - len * .5 * Math.sin(angle)));
       }
-    }
-    else
-    {
-      if (page == sPage)
-      {
+    } else {
+      if (page == sPage) {
         int x = (int) ((pageS.getX() - startPt.getX()) / 2 + startPt.getX());
         int y = (int) ((pageS.getY() - startPt.getY()) / 2 + startPt.getY());
         return new Point(x, y);
-      }
-      else
-      {
+      } else {
         int x = (int) ((pageE.getX() - endPt.getX()) / 2 + endPt.getX());
         int y = (int) ((pageE.getY() - endPt.getY()) / 2 + endPt.getY());
         return new Point(x, y);
@@ -1059,13 +931,13 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     return getCenter(myPage);
   }
 
-  public StateObj getStartState()
-  {
+  @Override
+  public StateObj getStartState() {
     return startState;
   }
 
-  public StateObj getEndState()
-  {
+  @Override
+  public StateObj getEndState() {
     return endState;
   }
 
@@ -1076,8 +948,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     writer.write("<transition>\n");
 
     writer.write(i(1) + "<attributes>\n");
-    for (int i = 0; i < attrib.size(); i++)
-    {
+    for (int i = 0; i < attrib.size(); i++) {
       ObjAttribute obj = attrib.get(i);
       obj.save(writer, 1);
     }
@@ -1143,8 +1014,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   public void decrementSPage() {
     sPage = sPage - 1;
     myPage = sPage;
-    for (int i = 0; i < attrib.size(); i++)
-    {
+    for (int i = 0; i < attrib.size(); i++) {
       ObjAttribute obj = attrib.get(i);
       if (obj.getPage() == sPage + 1)
         obj.setPage(sPage);
@@ -1153,19 +1023,16 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
 
   public void decrementEPage() {
     ePage = ePage - 1;
-    for (int i = 0; i < attrib.size(); i++)
-    {
+    for (int i = 0; i < attrib.size(); i++) {
       ObjAttribute obj = attrib.get(i);
       if (obj.getPage() == ePage + 1)
         obj.setPage(ePage);
     }
   }
 
-  public void setParentModified(boolean b)
-  {
+  public void setParentModified(boolean b) {
     super.setParentModified(b);
-    if (b)
-    {
+    if (b) {
       tempStartPt = (Point) startPt.clone();
       tempEndPt = (Point) endPt.clone();
       tempStartIndex = startStateIndex;
@@ -1178,8 +1045,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
 
   }
 
-  private boolean recalcCheck()
-  {
+  private boolean recalcCheck() {
     double dx1 = tempStartPt.getX() - tempEndPt.getX();
     double dy1 = tempStartPt.getY() - tempEndPt.getY();
     double dx2 = startPt.getX() - endPt.getX();
@@ -1189,11 +1055,9 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       return false;
     else
       return true;
-
   }
 
-  public boolean pageConnectorExists(int page, StateObj state, String type)
-  {
+  public boolean pageConnectorExists(int page, StateObj state, String type) {
     // force redraw for all connecors
 
     if ((sPage != ePage) &&
@@ -1204,28 +1068,29 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
       return false;
   }
 
+  /**
+   * We never enable to select a transition using multiple selection with boxes.
+   * They are attached to the states that will be selected and moved, and will
+   * move with them.
+   */
+  @Override
   public boolean setBoxSelectStatus(int x0, int y0, int x1, int y1) {
     return false;
   }
 
   @Override
   public void updateObjPages(int page) {
-    if (startState.getPage() == endState.getPage())
-    {
-      if (attrib != null)
-      {
-        for (int i = 0; i < attrib.size(); i++)
-        {
+    if (startState.getPage() == endState.getPage()) {
+      if (attrib != null) {
+        for (int i = 0; i < attrib.size(); i++) {
           ObjAttribute obj = attrib.get(i);
           obj.setPage(page);
         }
       }
       myPage = sPage = ePage = page;
       // updateObj();
-    }
-    else
+    } else
       updateObj();
-
   }
 
 }

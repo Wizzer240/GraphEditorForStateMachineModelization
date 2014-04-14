@@ -31,17 +31,29 @@ public abstract class TransitionObj extends GeneralObj implements Cloneable {
 
   public abstract void updateObj();
 
-  public Object clone()
-      throws CloneNotSupportedException
-  {
+  public Object clone() throws CloneNotSupportedException {
     return super.clone();
   }
 
+  /**
+   * @return The initial state
+   */
   public abstract StateObj getStartState();
 
-  public StateObj getEndState()
-  {
-    return null;
+  /**
+   * @return The final state. null if Loopback Transition
+   */
+  public abstract StateObj getEndState();
+
+  /* The color of the transition */
+  protected Color color = Color.BLACK;
+
+  public void setColor(Color c) {
+    color = c;
+  }
+
+  public Color getColor() {
+    return color;
   }
 
   public void initTrans(StateObj start, StateObj end) {
@@ -52,13 +64,11 @@ public abstract class TransitionObj extends GeneralObj implements Cloneable {
 
   public abstract void makeConnections(Vector<Object> objList);
 
-  public double getAngle(Point outer, Point inner)
-  {
+  public double getAngle(Point outer, Point inner) {
     int dx = (int) outer.getX() - (int) inner.getX();
     int dy = -((int) outer.getY() - (int) inner.getY());
     double alpha = 0;
-    if (dx == 0)
-    {
+    if (dx == 0) {
       if (dy <= 0)
         alpha = 3 * Math.PI / 2;
       else
@@ -68,8 +78,7 @@ public abstract class TransitionObj extends GeneralObj implements Cloneable {
     else if (dx > 0 && dy > 0)
       alpha = Math.atan((double) dy / dx);
     // 4th q
-    else if (dx > 0 && dy <= 0)
-    {
+    else if (dx > 0 && dy <= 0) {
       if (dy == 0)
         alpha = 0;
       else
@@ -79,18 +88,6 @@ public abstract class TransitionObj extends GeneralObj implements Cloneable {
     else if (dx < 0)
       alpha = (Math.PI) + Math.atan((double) dy / dx);
     return alpha;
-  }
-
-  public Color color = Color.BLACK;
-
-  public void setColor(Color c)
-  {
-    color = c;
-  }
-
-  public Color getColor()
-  {
-    return color;
   }
 
   public abstract void updateObjPages(int page);

@@ -13,6 +13,7 @@ import attributes.ObjAttribute;
 
 /*
  Copyright 2007 Zimmer Design Services
+ Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
 
  This file is part of Fizzim.
 
@@ -43,20 +44,11 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   private boolean ready = false;
   String startS;
 
-  public static final int NONE = 0;
-  public static final int START = 1;
-  public static final int STARTCTRL = 2;
-  public static final int ENDCTRL = 3;
-  public static final int END = 4;
-  public static final int ALL = 5;
-  public static final int TXT = 6;
-
   private int xTemp, yTemp, tempSI, tempEI, lengthS, lengthE;
 
   private double ctrlAngleS, ctrlAngleE;
 
-  public LoopbackTransitionObj(int _x, int _y, int numb, int page, Color c)
-  {
+  public LoopbackTransitionObj(int _x, int _y, int numb, int page, Color c) {
     objName = "trans" + numb;
     x = _x;
     y = _y;
@@ -76,19 +68,17 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     endStateIndex = eIndex;
     attrib = newList;
     objName = name;
-    loop = new CubicCurve2D.Double(startPt.getX(), startPt.getY(), startCtrlPt
-        .getX(), startCtrlPt.getY(), endCtrlPt.getX(), endCtrlPt.getY(), endPt
-        .getX(), endPt.getY());
+    loop = new CubicCurve2D.Double(startPt.getX(), startPt.getY(),
+        startCtrlPt.getX(), startCtrlPt.getY(), endCtrlPt.getX(),
+        endCtrlPt.getY(), endPt.getX(), endPt.getY());
     ready = true;
     startS = start;
     myPage = page;
     color = c;
   }
 
-  public void initTrans(StateObj _state)
-  {
-    if (_state != state)
-    {
+  public void initTrans(StateObj _state) {
+    if (_state != state) {
       state = _state;
       setEndPts(x, y);
       loop = new CubicCurve2D.Double(startPt.getX(), startPt.getY(),
@@ -100,8 +90,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
   @SuppressWarnings("unchecked")
   public Object clone()
-      throws CloneNotSupportedException
-  {
+      throws CloneNotSupportedException {
     LoopbackTransitionObj copy = (LoopbackTransitionObj) super.clone();
     copy.loop = (CubicCurve2D.Double) loop.clone();
     copy.startPt = (Point) startPt.clone();
@@ -109,29 +98,24 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     copy.startCtrlPt = (Point) startCtrlPt.clone();
     copy.endCtrlPt = (Point) endCtrlPt.clone();
     copy.stateBorderPts = (Vector<Point>) stateBorderPts.clone();
-    if (attrib != null)
-    {
+    if (attrib != null) {
       copy.attrib = (LinkedList<ObjAttribute>) copy.attrib.clone();
-      for (int i = 0; i < attrib.size(); i++)
-      {
+      for (int i = 0; i < attrib.size(); i++) {
         copy.attrib.set(i, (ObjAttribute) attrib.get(i).clone());
       }
     }
     return copy;
   }
 
-  private void setEndPts(int x, int y)
-  {
+  private void setEndPts(int x, int y) {
     // find start point on oval closest to click point
     stateBorderPts = state.getBorderPts();
     Point createPt = new Point(x, y);
     double temp;
     double max = 1000000;
-    for (int i = 0; i < 36; i++)
-    {
+    for (int i = 0; i < 36; i++) {
       temp = createPt.distanceSq(stateBorderPts.get(i));
-      if (temp < max)
-      {
+      if (temp < max) {
         startStateIndex = i;
         max = temp;
       }
@@ -165,9 +149,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   }
 
   public void paintComponent(Graphics g) {
-
-    if (ready && currPage == myPage)
-    {
+    if (ready && currPage == myPage) {
 
       Graphics2D g2D = (Graphics2D) g;
       g2D.setColor(color);
@@ -187,10 +169,12 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
       // (int)(arrowLength*Math.sin(alpha - adj)));
       int[] xP = { (int) endPt.getX(),
           (int) endPt.getX() + (int) (13 * Math.cos(alpha + adj)),
-          (int) endPt.getX() + (int) (13 * Math.cos(alpha - adj)) };
+          (int) endPt.getX() + (int) (13 * Math.cos(alpha - adj))
+      };
       int[] yP = { (int) endPt.getY(),
           (int) endPt.getY() - (int) (13 * Math.sin(alpha + adj)),
-          (int) endPt.getY() - (int) (13 * Math.sin(alpha - adj)) };
+          (int) endPt.getY() - (int) (13 * Math.sin(alpha - adj))
+      };
       g2D.drawPolygon(xP, yP, 3);
       g2D.fillPolygon(xP, yP, 3);
 
@@ -224,8 +208,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
        */
 
       // draw control points
-      if (selectStatus != SelectOptions.NONE)
-      {
+      if (selectStatus != SelectOptions.NONE) {
         g2D.setColor(Color.red);
         g2D.fillRect((int) startPt.getX() - 3, (int) startPt.getY() - 3, 7, 7);
         g2D.fillRect((int) endPt.getX() - 3, (int) endPt.getY() - 3, 7, 7);
@@ -247,18 +230,14 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   @Override
   public void adjustShapeOrPosition(int x, int y) {
 
-    if (currPage == myPage)
-    {
-      if (selectStatus == SelectOptions.START)
-      {
+    if (currPage == myPage) {
+      if (selectStatus == SelectOptions.START) {
         Point currPt = new Point(x, y);
         double temp;
         double max = 1000000;
-        for (int i = 0; i < 36; i++)
-        {
+        for (int i = 0; i < 36; i++) {
           temp = currPt.distanceSq(stateBorderPts.get(i));
-          if (temp < max)
-          {
+          if (temp < max) {
             startStateIndex = i;
             max = temp;
           }
@@ -270,16 +249,13 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
         startCtrlPt.setLocation(x, y);
       if (selectStatus == SelectOptions.ENDCTRL)
         endCtrlPt.setLocation(x, y);
-      if (selectStatus == SelectOptions.END)
-      {
+      if (selectStatus == SelectOptions.END) {
         Point currPt = new Point(x, y);
         double temp;
         double max = 1000000;
-        for (int i = 0; i < 36; i++)
-        {
+        for (int i = 0; i < 36; i++) {
           temp = currPt.distanceSq(stateBorderPts.get(i));
-          if (temp < max)
-          {
+          if (temp < max) {
             endStateIndex = i;
             max = temp;
           }
@@ -287,15 +263,11 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
         endPt.setLocation(stateBorderPts.get(endStateIndex).getX(),
             stateBorderPts.get(endStateIndex).getY());
       }
-      if (selectStatus == SelectOptions.TXT)
-      {
-        if (attrib != null)
-        {
-          for (int i = 0; i < attrib.size(); i++)
-          {
+      if (selectStatus == SelectOptions.TXT) {
+        if (attrib != null) {
+          for (int i = 0; i < attrib.size(); i++) {
             ObjAttribute s = attrib.get(i);
-            if (s.getSelectStatus() != 0)
-            {
+            if (s.getSelectStatus() != 0) {
               s.adjustShapeOrPosition(x, y);
               break;
             }
@@ -304,8 +276,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
       }
 
       // allow loopback to rotate around state
-      if (selectStatus == SelectOptions.BR)
-      {
+      if (selectStatus == SelectOptions.BR) {
         // get number of index transition should move
         Point c = state.getRealCenter(myPage);
         double initAngle = getAngle(new Point(xTemp, yTemp), c);
@@ -314,8 +285,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
         int step = (int) -Math.round((currAngle - initAngle)
             / ((2 * Math.PI) / 36));
 
-        if (step != 0)
-        {
+        if (step != 0) {
           startStateIndex = tempSI + step;
           endStateIndex = tempEI + step;
           if (startStateIndex > 35)
@@ -360,10 +330,8 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   @Override
   public boolean setSelectStatus(int x, int y) {
 
-    if (currPage == myPage)
-    {
-      if (selectStatus != SelectOptions.BR || !loop.contains(x, y))
-      {
+    if (currPage == myPage) {
+      if (selectStatus != SelectOptions.BR || !loop.contains(x, y)) {
         selectStatus = SelectOptions.NONE;
         xTemp = x;
         yTemp = y;
@@ -381,25 +349,20 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
       }
 
       // check for txt
-      if (attrib != null)
-      {
-        for (int j = 0; j < attrib.size(); j++)
-        {
+      if (attrib != null) {
+        for (int j = 0; j < attrib.size(); j++) {
           ObjAttribute s = attrib.get(j);
           s.unselect();
         }
-        for (int i = 0; i < attrib.size(); i++)
-        {
+        for (int i = 0; i < attrib.size(); i++) {
           ObjAttribute s = attrib.get(i);
-          if (s.setSelectStatus(x, y))
-          {
+          if (s.setSelectStatus(x, y)) {
             selectStatus = SelectOptions.TXT;
             break;
           }
         }
       }
-      if (selectStatus != SelectOptions.TXT)
-      {
+      if (selectStatus != SelectOptions.TXT) {
 
         // check control points
         if (startPt.getX() - x <= 4 && startPt.getX() - x >= -4
@@ -420,8 +383,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
           // {
           // for(int j = -4; j < 5; j++)
           // {
-          if (loop.contains(x, y)) // +i+j
-          {
+          if (loop.contains(x, y)) { // +i+j
             selectStatus = SelectOptions.BR;
             // break;
           }
@@ -432,47 +394,37 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
         return false;
       else
         return true;
-    }
-    else
+    } else
       return false;
   }
 
   @Override
-  public int getType()
-  {
+  public int getType() {
     return 2;
   }
 
-  public boolean isModified()
-  {
+  public boolean isModified() {
     if (modified)
       return true;
     else
       return false;
-
   }
 
   // sets modified back to false
-  public void setModifiedFalse()
-  {
-
+  public void setModifiedFalse() {
     modified = false;
   }
 
-  public void setModifiedTrue()
-  {
+  public void setModifiedTrue() {
     modified = true;
   }
 
-  public void updateObj()
-  {
+  public void updateObj() {
     int newPage = state.getPage();
 
     // moeve all related objects to new page
-    if (newPage != myPage)
-    {
-      for (int i = 0; i < attrib.size(); i++)
-      {
+    if (newPage != myPage) {
+      for (int i = 0; i < attrib.size(); i++) {
         ObjAttribute obj = attrib.get(i);
         if (obj.getPage() == myPage)
           obj.setPage(newPage);
@@ -480,8 +432,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
       myPage = state.getPage();
     }
 
-    if (state.getSelectStatus() != SelectOptions.TXT)
-    {
+    if (state.getSelectStatus() != SelectOptions.TXT) {
 
       double angleS = getAngle(startCtrlPt, startPt);
       double angleE = getAngle(endCtrlPt, endPt);
@@ -503,16 +454,14 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   }
 
   public void notifyChange(GeneralObj old, GeneralObj clone) {
-    if (old.equals(state))
-    {
+    if (old.equals(state)) {
       state = (StateObj) clone;
 
     }
 
   }
 
-  public boolean isParentModified()
-  {
+  public boolean isParentModified() {
     if (modifiedParent)
       return true;
     else
@@ -520,39 +469,32 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
   }
 
-  public void unselect()
-  {
+  public void unselect() {
     selectStatus = SelectOptions.NONE;
   }
 
-  public boolean containsParent(GeneralObj oldObj)
-  {
+  public boolean containsParent(GeneralObj oldObj) {
     if (oldObj.equals(state))
       return true;
     else
       return false;
   }
 
-  public Point getCenter(int page)
-  {
+  public Point getCenter(int page) {
     if (!ready)
       return new Point(0, 0);
     int large;
     int small;
     int index;
-    if (startStateIndex > endStateIndex)
-    {
+    if (startStateIndex > endStateIndex) {
       large = startStateIndex;
       small = endStateIndex;
-    }
-    else
-    {
+    } else {
       small = startStateIndex;
       large = endStateIndex;
     }
 
-    if (large - small > 18)
-    {
+    if (large - small > 18) {
       index = small - (36 - large + small) / 2;
       if (index < 0)
         index += 36;
@@ -576,9 +518,14 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     return startCtrlPt;
   }
 
-  public StateObj getStartState()
-  {
+  @Override
+  public StateObj getStartState() {
     return state;
+  }
+
+  @Override
+  public StateObj getEndState() {
+    return null;
   }
 
   public void save(BufferedWriter writer) throws IOException {
@@ -587,8 +534,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     writer.write("<transition>\n");
 
     writer.write(i(1) + "<attributes>\n");
-    for (int i = 0; i < attrib.size(); i++)
-    {
+    for (int i = 0; i < attrib.size(); i++) {
       ObjAttribute obj = attrib.get(i);
       obj.save(writer, 1);
     }
@@ -626,13 +572,10 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     writer.write("## START LOOPBACK TRANSITION OBJECT\n");
   }
 
-  public void makeConnections(Vector<Object> objList)
-  {
-    for (int i = 1; i < objList.size(); i++)
-    {
+  public void makeConnections(Vector<Object> objList) {
+    for (int i = 1; i < objList.size(); i++) {
       GeneralObj obj = (GeneralObj) objList.get(i);
-      if (obj.getType() == 0)
-      {
+      if (obj.getType() == 0) {
         if (obj.getName().equals(startS))
           state = (StateObj) obj;
       }
@@ -641,19 +584,21 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
   }
 
+  /**
+   * We never enable to select a transition using multiple selection with boxes.
+   * They are attached to the states that will be selected and moved, and will
+   * move with them.
+   */
   @Override
   public boolean setBoxSelectStatus(int x0, int y0, int x1, int y1) {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public void updateObjPages(int page) {
     myPage = page;
-    if (attrib != null)
-    {
-      for (int i = 0; i < attrib.size(); i++)
-      {
+    if (attrib != null) {
+      for (int i = 0; i < attrib.size(); i++) {
         ObjAttribute obj = attrib.get(i);
         obj.setPage(page);
       }
