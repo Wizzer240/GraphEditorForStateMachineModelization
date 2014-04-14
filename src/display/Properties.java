@@ -258,7 +258,7 @@ class GlobalProperties extends javax.swing.JDialog {
     GPLabel2
         .setText("value can be overridden by right clicking on an object and selecting to 'Edit Properties.'");
 
-    GPTableMachine.setModel(new MyTableModel(
+    GPTableMachine.setModel(new AttributesTableModel(
         (LinkedList<ObjAttribute>) globalLists.get(0), globalLists));
     GPTableMachine
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -271,7 +271,7 @@ class GlobalProperties extends javax.swing.JDialog {
     GPScrollMachine.setViewportView(GPTableMachine);
     GPTabbedPane.addTab("State Machine", GPScrollMachine);
 
-    GPTableInputs.setModel(new MyTableModel(
+    GPTableInputs.setModel(new AttributesTableModel(
         (LinkedList<ObjAttribute>) globalLists.get(1), globalLists));
     GPTableInputs
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -284,7 +284,7 @@ class GlobalProperties extends javax.swing.JDialog {
     GPScrollInputs.setViewportView(GPTableInputs);
     GPTabbedPane.addTab("Inputs", GPScrollInputs);
 
-    GPTableOutputs.setModel(new MyTableModel(
+    GPTableOutputs.setModel(new AttributesTableModel(
         (LinkedList<ObjAttribute>) globalLists.get(2), globalLists));
     GPTableOutputs
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -302,7 +302,7 @@ class GlobalProperties extends javax.swing.JDialog {
     GPScrollOutputs.setViewportView(GPTableOutputs);
     GPTabbedPane.addTab("Outputs", GPScrollOutputs);
 
-    GPTableState.setModel(new MyTableModel(
+    GPTableState.setModel(new AttributesTableModel(
         (LinkedList<ObjAttribute>) globalLists.get(3), globalLists));
     GPTableState
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -315,7 +315,7 @@ class GlobalProperties extends javax.swing.JDialog {
     GPScrollState.setViewportView(GPTableState);
     GPTabbedPane.addTab("States", GPScrollState);
 
-    GPTableTrans.setModel(new MyTableModel(
+    GPTableTrans.setModel(new AttributesTableModel(
         (LinkedList<ObjAttribute>) globalLists.get(4), globalLists));
     GPTableTrans
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -873,9 +873,5 @@ class GlobalProperties extends javax.swing.JDialog {
   private javax.swing.JTable GPTableInputs;
   private javax.swing.JTable GPTableOutputs;
   // End of variables declaration//GEN-END:variables
-
-}
-
-public class Properties extends javax.swing.JDialog {
 
 }

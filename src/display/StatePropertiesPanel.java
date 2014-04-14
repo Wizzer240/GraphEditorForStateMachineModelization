@@ -126,7 +126,7 @@ public class StatePropertiesPanel extends JPanel {
     SPLabel.setText("Edit the properties of the selected state:");
 
     // Type column
-    SPTable.setModel(new MyTableModel(state, parent_window, globalList, 3));
+    SPTable.setModel(new AttributesTableModel(state, parent_window, globalList, 3));
     SPTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     // use dropdown boxes

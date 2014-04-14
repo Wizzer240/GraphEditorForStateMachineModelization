@@ -16,7 +16,7 @@ import entities.GeneralObj;
  * or TRANSITION
  */
 @SuppressWarnings("serial")
-class MyTableModel extends AbstractTableModel {
+class AttributesTableModel extends AbstractTableModel {
 
   boolean DEBUG = false;
   // String[] columnNames = {"Attribute Name", "Value",
@@ -32,7 +32,7 @@ class MyTableModel extends AbstractTableModel {
   JDialog dialog;
   int positionInGlobalList;
 
-  MyTableModel(GeneralObj s, JDialog dia,
+  AttributesTableModel(GeneralObj s, JDialog dia,
       LinkedList<LinkedList<ObjAttribute>> global, int k)
   {
     obj = s;
@@ -42,7 +42,7 @@ class MyTableModel extends AbstractTableModel {
     positionInGlobalList = k;
   }
 
-  MyTableModel(LinkedList<ObjAttribute> list,
+  AttributesTableModel(LinkedList<ObjAttribute> list,
       LinkedList<LinkedList<ObjAttribute>> globalL)
   {
     global = true;
