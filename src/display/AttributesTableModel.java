@@ -7,6 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
+import attributes.EnumGlobalList;
 import attributes.ObjAttribute;
 import entities.GeneralObj;
 
@@ -27,6 +28,7 @@ class AttributesTableModel extends AbstractTableModel {
   }; // for state/trans edit boxes
   boolean global = false;
 
+  /* The object the properties of which it it describing */
   GeneralObj obj;
   LinkedList<ObjAttribute> attrib;
   LinkedList<LinkedList<ObjAttribute>> globalList;

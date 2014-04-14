@@ -44,6 +44,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
 
+import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 import entities.StateObj;
@@ -126,7 +127,7 @@ public class StatePropertiesPanel extends JPanel {
     SPLabel.setText("Edit the properties of the selected state:");
 
     // Type column
-    SPTable.setModel(new AttributesTableModel(state, parent_window, globalList, 3));
+    SPTable.setModel(new AttributesTableModel(state, parent_window, globalList, EnumGlobalList.STATES));
     SPTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     // use dropdown boxes

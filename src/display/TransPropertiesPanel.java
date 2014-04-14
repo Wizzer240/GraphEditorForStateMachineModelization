@@ -49,6 +49,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
 
+import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 import entities.StateObj;
@@ -148,7 +149,7 @@ public class TransPropertiesPanel extends JPanel {
       TPLabel
           .setText("Edit the properties of the selected loopback transition:");
     }
-    TPTable.setModel(new AttributesTableModel(trans, parent_window, globalList, 4));
+    TPTable.setModel(new AttributesTableModel(trans, parent_window, globalList, EnumGlobalList.TRANSITIONS));
     TPTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     // use dropdown boxes
