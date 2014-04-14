@@ -43,7 +43,7 @@ import entities.TransitionObj;
  * color of the edge
  */
 @SuppressWarnings("serial")
-public class EdgeEditorPanel extends JPanel {
+public class TransitionEditorPanel extends JPanel {
   private static final ResourceBundle locale =
       ResourceBundle.getBundle("locale.Editors");
   private JTabbedPane tabbedPane;
@@ -56,11 +56,11 @@ public class EdgeEditorPanel extends JPanel {
    *          the ok and cancel bouton
    * @param draw_area
    *          The drawing area to update after modifications
-   * @param edge
+   * @param transition
    *          The edge being edited
    */
-  public EdgeEditorPanel(GeneralEditorWindow window, DrawArea draw_area,
-      TransitionObj edge, Vector<StateObj> states, boolean is_loopback, StateObj state) {
+  public TransitionEditorPanel(GeneralEditorWindow window, DrawArea draw_area,
+      TransitionObj transition, Vector<StateObj> states, boolean is_loopback, StateObj state) {
     setBorder(new EmptyBorder(7, 7, 7, 7));
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -69,7 +69,7 @@ public class EdgeEditorPanel extends JPanel {
     JComponent first_tab = new JPanel();
     first_tab.setLayout(new BoxLayout(first_tab, BoxLayout.Y_AXIS));
 
-    LinkedList<ObjAttribute> attributes = edge.getAttributeList();
+    LinkedList<ObjAttribute> attributes = transition.getAttributeList();
     for (ObjAttribute one_attribute : attributes) {
       String name = (String) one_attribute.get(0);
       String value = (String) one_attribute.get(1);
@@ -82,7 +82,7 @@ public class EdgeEditorPanel extends JPanel {
     tabbedPane.addTab(locale.getString("general_tab"), null, first_tab,
         locale.getString("general_tab_description"));
 
-    JComponent second_tab = new TransPropertiesPanel(window, draw_area, edge, states, is_loopback, state);
+    JComponent second_tab = new TransPropertiesPanel(window, draw_area, transition, states, is_loopback, state);
     tabbedPane.addTab(locale.getString("details_tab"), null, second_tab,
         locale.getString("details_tab_description"));
   }

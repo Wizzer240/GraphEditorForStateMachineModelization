@@ -34,21 +34,21 @@ import entities.TransitionObj;
  * panel to be the edge editor panel
  */
 @SuppressWarnings("serial")
-public class EdgeEditorWindow extends GeneralEditorWindow {
+public class TransitionEditorWindow extends GeneralEditorWindow {
   private static final ResourceBundle locale =
       ResourceBundle.getBundle("locale.Editors");
 
-  public EdgeEditorWindow(Component parent, String name,
+  public TransitionEditorWindow(Component parent, String name,
       DrawArea draw_area, TransitionObj transition, Vector<StateObj> states,
       boolean is_loopback, StateObj state) {
     super(parent, name, new JPanel());
-    JPanel content = new EdgeEditorPanel(this, draw_area, transition, states,
+    JPanel content = new TransitionEditorPanel(this, draw_area, transition, states,
         is_loopback, state);
     setPanel(content);
     display();
   }
 
-  public EdgeEditorWindow(Component parent, DrawArea draw_area,
+  public TransitionEditorWindow(Component parent, DrawArea draw_area,
       TransitionObj transition, Vector<StateObj> states,
       boolean is_loopback, StateObj state) {
     this(parent, locale.getString("edge_editor_title"), draw_area, transition,

@@ -17,7 +17,7 @@ import entities.StateObj;
 import entities.StateTransitionObj;
 import entities.TextObj;
 import entities.TransitionObj;
-import gui.EdgeEditorWindow;
+import gui.TransitionEditorWindow;
 import gui.StateEditorWindow;
 
 // Written by: Michael Zimmer - mike@zimmerdesignservices.com
@@ -509,7 +509,7 @@ public class DrawArea extends JPanel implements MouseListener,
                 if (obj.getType() == 0)
                   stateObjs.add((StateObj) obj);
               }
-              new EdgeEditorWindow(frame, this, (StateTransitionObj) s,
+              new TransitionEditorWindow(frame, this, (StateTransitionObj) s,
                   stateObjs, false, null);
               // new TransProperties(this, frame, true, (StateTransitionObj) s,
               // stateObjs, false, null)
@@ -521,7 +521,7 @@ public class DrawArea extends JPanel implements MouseListener,
                 if (obj.getType() == 0)
                   stateObjs.add((StateObj) obj);
               }
-              new EdgeEditorWindow(frame, this, (LoopbackTransitionObj) s,
+              new TransitionEditorWindow(frame, this, (LoopbackTransitionObj) s,
                   stateObjs, true, null);
               // new TransProperties(this, frame, true, (LoopbackTransitionObj)
               // s,
@@ -892,7 +892,7 @@ public class DrawArea extends JPanel implements MouseListener,
         if (obj.getType() == 0)
           stateObjs.add((StateObj) obj);
       }
-      new EdgeEditorWindow(frame, this, (LoopbackTransitionObj) tempObj,
+      new TransitionEditorWindow(frame, this, (LoopbackTransitionObj) tempObj,
           stateObjs, true, null);
       // new TransProperties(this, frame, true, (LoopbackTransitionObj) tempObj,
       // stateObjs, true, null)
@@ -904,7 +904,7 @@ public class DrawArea extends JPanel implements MouseListener,
         if (obj.getType() == 0)
           stateObjs.add((StateObj) obj);
       }
-      new EdgeEditorWindow(frame, this, (StateTransitionObj) tempObj,
+      new TransitionEditorWindow(frame, this, (StateTransitionObj) tempObj,
           stateObjs, false, null);
       // new TransProperties(this, frame, true, (StateTransitionObj) tempObj,
       // stateObjs, false, null)
@@ -942,7 +942,7 @@ public class DrawArea extends JPanel implements MouseListener,
         createTCounter++;
         objList.add(trans);
         trans.updateAttrib(globalList, 4);
-        new EdgeEditorWindow(frame, this, (TransitionObj) trans,
+        new TransitionEditorWindow(frame, this, (TransitionObj) trans,
             stateObjs, false, null);
         // new TransProperties(this, frame, true, (TransitionObj) trans,
         // stateObjs, false, null)
@@ -969,7 +969,7 @@ public class DrawArea extends JPanel implements MouseListener,
         createTCounter++;
         objList.add(trans);
         trans.updateAttrib(globalList, 4);
-        new EdgeEditorWindow(frame, this, (TransitionObj) trans,
+        new TransitionEditorWindow(frame, this, (TransitionObj) trans,
             stateObjs, true, (StateObj) tempObj);
         // new TransProperties(this, frame, true, (TransitionObj) trans,
         // stateObjs, true, (StateObj) tempObj)
@@ -999,7 +999,7 @@ public class DrawArea extends JPanel implements MouseListener,
         objList.add(trans);
         trans.updateAttrib(globalList, 4);
 
-        new EdgeEditorWindow(frame, this, (TransitionObj) trans,
+        new TransitionEditorWindow(frame, this, (TransitionObj) trans,
             stateObjs, true, null);
         // new TransProperties(this, frame, true, (TransitionObj) trans,
         // stateObjs, true, null)
