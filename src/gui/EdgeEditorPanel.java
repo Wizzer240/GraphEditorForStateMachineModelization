@@ -26,13 +26,15 @@ import javax.swing.JTabbedPane;
 
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import javax.swing.border.EmptyBorder;
 
 import attributes.ObjAttribute;
 import display.DrawArea;
-import display.StatePropertiesPanel;
+import display.TransPropertiesPanel;
 import entities.StateObj;
+import entities.TransitionObj;
 
 /**
  * The edge editor pannel is composed of two tabs:
@@ -54,11 +56,11 @@ public class EdgeEditorPanel extends JPanel {
    *          the ok and cancel bouton
    * @param draw_area
    *          The drawing area to update after modifications
-   * @param state
-   *          The state being edited
+   * @param edge
+   *          The edge being edited
    */
   public EdgeEditorPanel(GeneralEditorWindow window, DrawArea draw_area,
-      StateObj state) {
+      TransitionObj edge, Vector<StateObj> states, boolean is_loopback, StateObj state) {
     setBorder(new EmptyBorder(7, 7, 7, 7));
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -67,7 +69,7 @@ public class EdgeEditorPanel extends JPanel {
     JComponent first_tab = new JPanel();
     first_tab.setLayout(new BoxLayout(first_tab, BoxLayout.Y_AXIS));
 
-    LinkedList<ObjAttribute> attributes = state.getAttributeList();
+    LinkedList<ObjAttribute> attributes = edge.getAttributeList();
     for (ObjAttribute one_attribute : attributes) {
       String name = (String) one_attribute.get(0);
       String value = (String) one_attribute.get(1);
@@ -80,7 +82,7 @@ public class EdgeEditorPanel extends JPanel {
     tabbedPane.addTab(locale.getString("general_tab"), null, first_tab,
         locale.getString("general_tab_description"));
 
-    JComponent second_tab = new StatePropertiesPanel(window, draw_area, state);
+    JComponent second_tab = new TransPropertiesPanel(window, draw_area, edge, states, is_loopback, state);
     tabbedPane.addTab(locale.getString("details_tab"), null, second_tab,
         locale.getString("details_tab_description"));
   }
