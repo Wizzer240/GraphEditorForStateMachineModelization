@@ -127,11 +127,12 @@ public class StatePropertiesPanel extends JPanel {
     SPLabel.setText("Edit the properties of the selected state:");
 
     // Type column
-    SPTable.setModel(new AttributesTableModel(state, parent_window, globalList, EnumGlobalList.STATES));
+    SPTable.setModel(new AttributesTableModel(state, parent_window, globalList,
+        EnumGlobalList.STATES));
     SPTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     // use dropdown boxes
-    String[] options = new String[] { "No", "Yes", "Only non-default" };
+    EnumVisibility[] options = EnumVisibility.values();
     TableColumn column = SPTable.getColumnModel().getColumn(2);
     column.setCellEditor(new MyJComboBoxEditor(options));
 

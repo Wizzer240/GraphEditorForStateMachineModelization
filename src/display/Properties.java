@@ -116,7 +116,7 @@ class MyJColorEditor extends AbstractCellEditor implements ActionListener,
 }
 
 class MyJComboBoxEditor extends DefaultCellEditor {
-  public MyJComboBoxEditor(String[] items) {
+  public MyJComboBoxEditor(Object[] items) {
     super(new JComboBox(items));
   }
 }
@@ -130,7 +130,7 @@ class GlobalProperties extends javax.swing.JDialog {
   LinkedList<LinkedList<ObjAttribute>> globalLists;
   DrawArea drawArea;
 
-  String[] options = new String[] { "No", "Yes", "Only non-default" };
+  EnumVisibility[] options = EnumVisibility.values();
   // pz
   // String[] outputOptions = new String[] {"reg","comb","regdp"};
   // String[] outputOptions = new String[] {"reg","comb","regdp","flag"};

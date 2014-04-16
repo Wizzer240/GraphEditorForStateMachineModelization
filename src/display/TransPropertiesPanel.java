@@ -153,7 +153,7 @@ public class TransPropertiesPanel extends JPanel {
     TPTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     // use dropdown boxes
-    String[] options = new String[] { "No", "Yes", "Only non-default" };
+    EnumVisibility[] options = EnumVisibility.values();
     TableColumn column = TPTable.getColumnModel().getColumn(2);
     column.setCellEditor(new MyJComboBoxEditor(options));
 

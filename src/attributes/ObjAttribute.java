@@ -107,7 +107,7 @@ public class ObjAttribute implements Cloneable {
       String resetval2, String resetvalStatus, int x2, int y2, int p) {
     name = name2;
     value = value2;
-    visibility = EnumVisibility.fromInt(Integer.parseInt(vis));
+    visibility = EnumVisibility.valueOf(vis);
     type = type2;
     useratts = useratts2;
     resetval = resetval2;
@@ -142,7 +142,7 @@ public class ObjAttribute implements Cloneable {
     else if (i == 1)
       return value;
     else if (i == 2)
-      return visibility.toInt();
+      return visibility;
     else if (i == 3)
       return type;
     else if (i == 4)
@@ -165,8 +165,7 @@ public class ObjAttribute implements Cloneable {
       value = (String) val;
     else if (col == 2)
     {
-      Integer i = (Integer) val;
-      visibility = EnumVisibility.fromInt(i.intValue());
+      visibility = (EnumVisibility) val;
     }
     else if (col == 3)
       type = (String) val;
@@ -312,7 +311,7 @@ public class ObjAttribute implements Cloneable {
         + i(ind + 3) + "<status>\n" + i(ind + 3) + getEditableName(1) + "\n"
         + i(ind + 3) + "</status>\n"
         + i(ind + 2) + "</value>\n"
-        + i(ind + 2) + "<vis>\n" + i(ind + 2) + visibility + "\n"
+        + i(ind + 2) + "<vis>\n" + i(ind + 2) + visibility.name() + "\n"
         + i(ind + 3) + "<status>\n" + i(ind + 3) + getEditableName(2) + "\n"
         + i(ind + 3) + "</status>\n"
         + i(ind + 2) + "</vis>\n"

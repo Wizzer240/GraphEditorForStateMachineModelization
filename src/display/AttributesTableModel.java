@@ -6,8 +6,10 @@ import java.util.LinkedList;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import attributes.EnumGlobalList;
+import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 import entities.GeneralObj;
 
@@ -58,7 +60,7 @@ class AttributesTableModel extends AbstractTableModel {
     }; // for main att edit boxes
   }
 
-  /* Methods that need to be implemented */
+  /* 3 Methods that need to be implemented (cf java AbstractTableModel) */
   @Override
   public int getColumnCount() {
     return columnNames.length;
@@ -73,13 +75,9 @@ class AttributesTableModel extends AbstractTableModel {
   public Object getValueAt(int row, int col) {
     Object obj = attrib.get(row).get(col);
     if (col == 2) { // pz - transition?
-      if (obj.equals(new Integer(0)))
-        obj = "No";
-      if (obj.equals(new Integer(1)))
-        obj = "Yes";
-      if (obj.equals(new Integer(2)))
-        obj = "Only non-default";
+      obj = (EnumVisibility) obj;
     }
+
     // Translate internal representation "reg" to "statebit"
     if (col == 3) {
       if (obj.equals(new String("reg")))
@@ -123,12 +121,7 @@ class AttributesTableModel extends AbstractTableModel {
 
     // turn string into corresponding number
     if (col == 2) {
-      if (value.equals("No"))
-        value = new Integer(0);
-      if (value.equals("Yes"))
-        value = new Integer(1);
-      if (value.equals("Only non-default"))
-        value = new Integer(2);
+      value = (EnumVisibility) value;
     }
 
     // Translate "statebit" to internal representation "reg"
