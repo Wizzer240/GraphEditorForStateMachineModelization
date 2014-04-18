@@ -229,8 +229,8 @@ public class TextObj extends GeneralObj {
   }
 
   @Override
-  public int getType() {
-    return 3;
+  public GeneralObjType getType() {
+    return GeneralObjType.TEXT;
   }
 
   public boolean isModified() {

@@ -52,11 +52,13 @@ import javax.swing.table.TableColumn;
 import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
 import attributes.ObjAttribute;
+import entities.GeneralObjType;
 import entities.StateObj;
 import entities.StateTransitionObj;
 import entities.TransitionObj;
 import gui.GeneralEditorWindow;
 
+@SuppressWarnings("serial")
 public class TransPropertiesPanel extends JPanel {
 
   TransitionObj trans;
@@ -96,7 +98,7 @@ public class TransPropertiesPanel extends JPanel {
     pref = state;
     globalList = drawArea.getGlobalList();
     colorChooser = drawArea.getColorChooser();
-    if (trans.getType() == 1) {
+    if (trans.getType() == GeneralObjType.TRANSITION) {
       StateTransitionObj t1 = (StateTransitionObj) t;
       stub = t1.getStub();
     }
@@ -436,7 +438,7 @@ public class TransPropertiesPanel extends JPanel {
           trans.initTrans(start, end);
         boolean b = jCheckBox1.isSelected();
         if (b != stub) {
-          if (trans.getType() == 1) {
+          if (trans.getType() == GeneralObjType.TRANSITION) {
             StateTransitionObj t1 = (StateTransitionObj) trans;
             t1.setStub(b);
           }

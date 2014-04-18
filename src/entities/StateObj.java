@@ -299,8 +299,8 @@ public class StateObj extends GeneralObj implements Cloneable {
   }
 
   @Override
-  public int getType() {
-    return 0;
+  public GeneralObjType getType() {
+    return GeneralObjType.STATE;
   }
 
   // creats array of points around the circle

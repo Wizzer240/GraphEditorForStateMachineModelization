@@ -142,7 +142,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   public void makeConnections(Vector<Object> objList) {
     for (int i = 1; i < objList.size(); i++) {
       GeneralObj obj = (GeneralObj) objList.get(i);
-      if (obj.getType() == 0) {
+      if (obj.getType() == GeneralObjType.STATE) {
         if (obj.getName().equals(startS)) {
           startState = (StateObj) obj;
         }
@@ -799,8 +799,8 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   }
 
   @Override
-  public int getType() {
-    return 1;
+  public GeneralObjType getType() {
+    return GeneralObjType.TRANSITION;
   }
 
   public boolean isModified() {

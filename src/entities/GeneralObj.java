@@ -81,7 +81,7 @@ public abstract class GeneralObj implements Cloneable {
    * 1 for StateTransitionObj
    * 2 for LoopbackTransitionObj
    * 3 for TextObj*/
-  public abstract int getType();
+  public abstract GeneralObjType getType();
 
   public abstract boolean isModified();
 
@@ -317,7 +317,7 @@ public abstract class GeneralObj implements Cloneable {
       for (int j = 0; j < attrib.size(); j++)
       {
         ObjAttribute obj = attrib.get(j);
-        if (getType() != 1)
+        if (getType() != GeneralObjType.TRANSITION)
           obj.setPage(i);
       }
     }
