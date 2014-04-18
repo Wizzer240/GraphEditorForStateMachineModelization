@@ -521,7 +521,8 @@ public class DrawArea extends JPanel implements MouseListener,
                 if (obj.getType() == 0)
                   stateObjs.add((StateObj) obj);
               }
-              new TransitionEditorWindow(frame, this, (LoopbackTransitionObj) s,
+              new TransitionEditorWindow(frame, this,
+                  (LoopbackTransitionObj) s,
                   stateObjs, true, null);
               // new TransProperties(this, frame, true, (LoopbackTransitionObj)
               // s,
@@ -1167,7 +1168,15 @@ public class DrawArea extends JPanel implements MouseListener,
 
   }
 
-  // check for duplicate names
+  /**
+   * Check for duplicate names
+   * 
+   * @return true if there is no duplicates
+   * @details
+   *          TODO: can be optimized :
+   *          if (!stateSet.add(obj.getName())
+   *          return false;
+   */
   public boolean checkStateNames() {
     TreeSet<String> stateSet = new TreeSet<String>();
     int stateCounter = 0;

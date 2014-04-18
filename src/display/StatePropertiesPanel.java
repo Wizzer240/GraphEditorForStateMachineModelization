@@ -117,10 +117,12 @@ public class StatePropertiesPanel extends JPanel {
     SPW = new JLabel();
     SPH = new JLabel();
     SPC = new JLabel();
-    SPWField = new JFormattedTextField(NumberFormat
-        .getIntegerInstance());
-    SPHField = new JFormattedTextField(NumberFormat
-        .getIntegerInstance());
+    /* Width of the state */
+    SPWField = 
+        new JFormattedTextField(NumberFormat.getIntegerInstance());
+    /* Height of the state */
+    SPHField = 
+        new JFormattedTextField(NumberFormat.getIntegerInstance());
     SPNew = new JButton();
     SPDelete = new JButton();
 
@@ -167,8 +169,7 @@ public class StatePropertiesPanel extends JPanel {
         }
       };
 
-      public void mouseClicked(MouseEvent e)
-      {
+      public void mouseClicked(MouseEvent e) {
         JDialog dialog;
         dialog = JColorChooser.createDialog(parent_window, "Choose Color",
             true,
@@ -288,16 +289,12 @@ public class StatePropertiesPanel extends JPanel {
   private void SPDeleteActionPerformed(ActionEvent evt) {
     // delete selected rows
     int[] rows = SPTable.getSelectedRows();
-    for (int i = rows.length - 1; i > -1; i--)
-    {
+    for (int i = rows.length - 1; i > -1; i--) {
       int type = state.getAttributeList().get(rows[i]).getEditable(0);
-      if (type != ObjAttribute.GLOBAL_FIXED && type != ObjAttribute.ABS)
-      {
+      if (type != ObjAttribute.GLOBAL_FIXED && type != ObjAttribute.ABS) {
         state.getAttributeList().remove(rows[i]);
         SPTable.revalidate();
-      }
-      else
-      {
+      } else {
         JOptionPane.showMessageDialog(this,
             "Cannot delete a global attribute.\n"
                 + "Must be removed from global attribute properties.",
@@ -310,8 +307,7 @@ public class StatePropertiesPanel extends JPanel {
 
   private void SPOKActionPerformed(ActionEvent evt) {
     SPTable.editCellAt(0, 0);
-    if (drawArea.checkStateNames())
-    {
+    if (drawArea.checkStateNames()) {
       // temp
       try {
         SPWField.commitEdit();
@@ -320,11 +316,9 @@ public class StatePropertiesPanel extends JPanel {
         // TODsO Auto-generated catch block
         e.printStackTrace();
       }
-      for (int j = 0; j < globalList.get(0).size(); j++)
-      {
+      for (int j = 0; j < globalList.get(0).size(); j++) {
         if (globalList.get(0).get(j).getName().equals("reset_state")
-            && globalList.get(0).get(j).getValue().equals(oldName))
-        {
+            && globalList.get(0).get(j).getValue().equals(oldName)) {
           globalList.get(0).get(j).setValue(state.getName());
         }
       }
@@ -338,9 +332,7 @@ public class StatePropertiesPanel extends JPanel {
       drawArea.updateGlobalTable();
       drawArea.commitUndo();
       parent_window.dispose();
-    }
-    else
-    {
+    } else {
       JOptionPane.showMessageDialog(this,
           "Two different states cannot have the same name.",
           "error",

@@ -331,6 +331,7 @@ public class StateObj extends GeneralObj implements Cloneable {
   public void setStateModifiedFalse() {
   }
 
+  /* What is the use of this ?! */
   public void setStateModifiedTrue() {
   }
 
