@@ -43,6 +43,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 
 import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
@@ -74,10 +75,19 @@ public class StatePropertiesPanel extends JPanel {
   private String oldName;
 
   /**
+   * This function allows to get the inner JTable in order to create advanced
+   * event management. Normal user should not need this.
+   * 
+   * @return The properties table associated to the current panel
+   */
+  public JTable getTable() {
+    return SPTable;
+  }
+
+  /**
    * 
    * @param parent_window
    *          The parent window used to position any opened element.
-   *          It is also used to retrieve the ok and Cancel button.
    * @param DA
    * @param s
    */
@@ -92,21 +102,6 @@ public class StatePropertiesPanel extends JPanel {
     this.parent_window = parent_window;
     initComponents();
 
-    /*
-     * We add the update and cancel actions to the OK and Cancel button of the
-     * parent window
-     */
-    parent_window.getBtnOk().addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        SPOKActionPerformed(evt);
-      }
-    });
-
-    parent_window.getBtnCancel().addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        SPCancelActionPerformed(evt);
-      }
-    });
   }
 
   // End of variables declaration//GEN-END:variables
@@ -118,10 +113,10 @@ public class StatePropertiesPanel extends JPanel {
     SPH = new JLabel();
     SPC = new JLabel();
     /* Width of the state */
-    SPWField = 
+    SPWField =
         new JFormattedTextField(NumberFormat.getIntegerInstance());
     /* Height of the state */
-    SPHField = 
+    SPHField =
         new JFormattedTextField(NumberFormat.getIntegerInstance());
     SPNew = new JButton();
     SPDelete = new JButton();
@@ -305,32 +300,36 @@ public class StatePropertiesPanel extends JPanel {
     // notify attribute list?
   }
 
-  private void SPOKActionPerformed(ActionEvent evt) {
+  private void saveModifications() {
+    // temp
+    try {
+      SPWField.commitEdit();
+      SPHField.commitEdit();
+    } catch (ParseException e) {
+      // TODsO Auto-generated catch block
+      e.printStackTrace();
+    }
+    for (int j = 0; j < globalList.get(0).size(); j++) {
+      if (globalList.get(0).get(j).getName().equals("reset_state")
+          && globalList.get(0).get(j).getValue().equals(oldName)) {
+        globalList.get(0).get(j).setValue(state.getName());
+      }
+    }
+    int width = ((Number) SPWField.getValue()).intValue();
+    int height = ((Number) SPHField.getValue()).intValue();
+    state.setSize(width, height);
+    // make transitions redraw
+    state.setStateModifiedTrue();
+    drawArea.updateTransitions();
+    drawArea.updateStates();
+    drawArea.updateGlobalTable();
+    drawArea.commitUndo();
+  }
+
+  public void SPOKActionPerformed(ActionEvent evt) {
     SPTable.editCellAt(0, 0);
     if (drawArea.checkStateNames()) {
-      // temp
-      try {
-        SPWField.commitEdit();
-        SPHField.commitEdit();
-      } catch (ParseException e) {
-        // TODsO Auto-generated catch block
-        e.printStackTrace();
-      }
-      for (int j = 0; j < globalList.get(0).size(); j++) {
-        if (globalList.get(0).get(j).getName().equals("reset_state")
-            && globalList.get(0).get(j).getValue().equals(oldName)) {
-          globalList.get(0).get(j).setValue(state.getName());
-        }
-      }
-      int width = ((Number) SPWField.getValue()).intValue();
-      int height = ((Number) SPHField.getValue()).intValue();
-      state.setSize(width, height);
-      // make transitions redraw
-      state.setStateModifiedTrue();
-      drawArea.updateTransitions();
-      drawArea.updateStates();
-      drawArea.updateGlobalTable();
-      drawArea.commitUndo();
+      saveModifications();
       parent_window.dispose();
     } else {
       JOptionPane.showMessageDialog(this,
@@ -340,7 +339,7 @@ public class StatePropertiesPanel extends JPanel {
     }
   }
 
-  private void SPCancelActionPerformed(ActionEvent evt) {
+  public void SPCancelActionPerformed(ActionEvent evt) {
     drawArea.cancel();
     parent_window.dispose();
   }

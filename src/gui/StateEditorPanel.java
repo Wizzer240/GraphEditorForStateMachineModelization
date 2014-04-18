@@ -25,10 +25,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import attributes.ObjAttribute;
 import display.DrawArea;
@@ -49,6 +53,7 @@ public class StateEditorPanel extends JPanel {
       ResourceBundle.getBundle("locale.Editors");
   private JTabbedPane tabbedPane;
   private JTextField textField;
+  private StatePropertiesPanel second_tab;
 
   /**
    * Create the panel that is used in the editor of the states
@@ -68,8 +73,9 @@ public class StateEditorPanel extends JPanel {
     tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     add(tabbedPane);
 
-    JComponent first_tab = new JPanel();
-    // first_tab.setLayout(new BoxLayout(first_tab, BoxLayout.Y_AXIS));
+    final JComponent first_tab = new JPanel();
+    second_tab = new StatePropertiesPanel(window,
+        draw_area, state);
 
     LinkedList<ObjAttribute> attributes = state.getAttributeList();
     ObjAttribute name_attribute = attributes.get(0);
@@ -78,18 +84,60 @@ public class StateEditorPanel extends JPanel {
 
     if (name.equals("name")) {
       /* For the name, we do put a simple textField */
-
       first_tab.add(new JLabel("Name: "));
       textField = new JTextField((String) name_attribute.get(1), 10);
       first_tab.add(textField);
+      tabbedPane.addChangeListener(new ChangeListener() {
 
+        @Override
+        public void stateChanged(ChangeEvent e) {
+          updateData(tabbedPane.getSelectedIndex());
+        }
+      });
     }
 
     tabbedPane.addTab(locale.getString("general_tab"), null, first_tab,
         locale.getString("general_tab_description"));
 
-    JComponent second_tab = new StatePropertiesPanel(window, draw_area, state);
     tabbedPane.addTab(locale.getString("details_tab"), null, second_tab,
         locale.getString("details_tab_description"));
+
+    /*
+     * We add the update and cancel actions to the OK and Cancel button of the
+     * parent window
+     */
+    window.getBtnOk().addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        updateData(1);
+        second_tab.SPOKActionPerformed(evt);
+      }
+    });
+
+    window.getBtnCancel().addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        second_tab.SPCancelActionPerformed(evt);
+      }
+    });
+  }
+
+  /*
+   * This updates the given tab with the data of other tabs.
+   * 
+   * @details This is used when changing tabs
+   */
+  public void updateData(int tab_selected) {
+    if (tab_selected == 0) { // We select the general tab
+      /* We force the commit the current cell of tab 2 */
+      second_tab.getTable().getCellEditor(0, 1).stopCellEditing();
+      /* We get the value of the name field */
+      String name =
+          (String) second_tab.getTable().getModel().getValueAt(0, 1);
+      textField.setText(name);
+    } else if (tab_selected == 1) { // We select the details tab
+      /* We update the value of the name in the JTable */
+      String general_name = textField.getText();
+      second_tab.getTable().getModel().setValueAt(general_name, 0, 1);
+
+    }
   }
 }

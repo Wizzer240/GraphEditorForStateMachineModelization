@@ -19,7 +19,7 @@ import entities.GeneralObj;
  * or TRANSITION
  */
 @SuppressWarnings("serial")
-class AttributesTableModel extends AbstractTableModel {
+public class AttributesTableModel extends AbstractTableModel {
 
   boolean DEBUG = false;
   // String[] columnNames = {"Attribute Name", "Value",
