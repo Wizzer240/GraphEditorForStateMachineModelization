@@ -33,6 +33,7 @@ import java.util.ResourceBundle;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.TableCellEditor;
 
 import attributes.ObjAttribute;
 import display.DrawArea;
@@ -128,7 +129,9 @@ public class StateEditorPanel extends JPanel {
   public void updateData(int tab_selected) {
     if (tab_selected == 0) { // We select the general tab
       /* We force the commit the current cell of tab 2 */
-      second_tab.getTable().getCellEditor(0, 1).stopCellEditing();
+      TableCellEditor cell_editor = second_tab.getTable().getCellEditor();
+      if (cell_editor != null)
+        cell_editor.stopCellEditing();
       /* We get the value of the name field */
       String name =
           (String) second_tab.getTable().getModel().getValueAt(0, 1);
@@ -137,7 +140,6 @@ public class StateEditorPanel extends JPanel {
       /* We update the value of the name in the JTable */
       String general_name = textField.getText();
       second_tab.getTable().getModel().setValueAt(general_name, 0, 1);
-
     }
   }
 }

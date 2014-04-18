@@ -85,6 +85,16 @@ public class TransPropertiesPanel extends JPanel {
   private JLabel jLabel3;
   private JCheckBox jCheckBox1;
 
+  /**
+   * This function allows to get the inner JTable in order to create advanced
+   * event management. Normal user should not need this.
+   * 
+   * @return The properties table associated to the current panel
+   */
+  public JTable getTable() {
+    return TPTable;
+  }
+
   // End of variables declaration//GEN-END:variables
   /** Creates new form TransP */
   public TransPropertiesPanel(GeneralEditorWindow parent_window, DrawArea DA,
@@ -104,22 +114,6 @@ public class TransPropertiesPanel extends JPanel {
     }
     this.parent_window = parent_window;
     initComponents();
-
-    /*
-     * We add the update and cancel actions to the OK and Cancel button of the
-     * parent window
-     */
-    parent_window.getBtnOk().addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        TPOKActionPerformed(evt);
-      }
-    });
-
-    parent_window.getBtnCancel().addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        TPCancelActionPerformed(evt);
-      }
-    });
   }
 
   /**
@@ -151,7 +145,8 @@ public class TransPropertiesPanel extends JPanel {
       TPLabel
           .setText("Edit the properties of the selected loopback transition:");
     }
-    TPTable.setModel(new AttributesTableModel(trans, parent_window, globalList, EnumGlobalList.TRANSITIONS));
+    TPTable.setModel(new AttributesTableModel(trans, parent_window, globalList,
+        EnumGlobalList.TRANSITIONS));
     TPTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     // use dropdown boxes
@@ -425,12 +420,12 @@ public class TransPropertiesPanel extends JPanel {
     }
   }
 
-  private void TPCancelActionPerformed(ActionEvent evt) {
+  public void TPCancelActionPerformed(ActionEvent evt) {
     drawArea.cancel();
     parent_window.dispose();
   }
 
-  private void TPOKActionPerformed(ActionEvent evt) {
+  public void TPOKActionPerformed(ActionEvent evt) {
     TPTable.editCellAt(0, 0);
     if (drawArea.checkTransNames()) {
       if (!loopback) {
