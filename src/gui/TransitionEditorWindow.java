@@ -51,7 +51,7 @@ public class TransitionEditorWindow extends GeneralEditorWindow {
   public TransitionEditorWindow(Component parent, DrawArea draw_area,
       TransitionObj transition, Vector<StateObj> states,
       boolean is_loopback, StateObj state) {
-    this(parent, locale.getString("edge_editor_title"), draw_area, transition,
+    this(parent, locale.getString("trans_editor_title"), draw_area, transition,
         states, is_loopback, state);
   }
 }

@@ -57,9 +57,6 @@ public class GeneralEditorWindow extends JDialog {
 
   private JButton btnCancel;
   private JButton btnOk;
-  private final Action okAction =
-      new okAction(this, locale.getString("edit_ok"),
-          locale.getString("edit_ok_description"));
   private final Action cancelAction =
       new cancelAction(this, locale.getString("edit_cancel"),
           locale.getString("edit_cancel_description"));
@@ -96,7 +93,8 @@ public class GeneralEditorWindow extends JDialog {
     getContentPane().add(panel_1);
 
     btnCancel = new JButton(cancelAction);
-    btnOk = new JButton(okAction);
+    btnOk = new JButton(locale.getString("edit_ok"));
+    btnOk.setToolTipText(locale.getString("edit_ok_description"));
 
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     setTitle(name);

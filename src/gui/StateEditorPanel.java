@@ -85,7 +85,7 @@ public class StateEditorPanel extends JPanel {
 
     if (name.equals("name")) {
       /* For the name, we do put a simple textField */
-      first_tab.add(new JLabel("Name: "));
+      first_tab.add(new JLabel(locale.getString("state_editor_name")));
       textField = new JTextField((String) name_attribute.get(1), 10);
       first_tab.add(textField);
       tabbedPane.addChangeListener(new ChangeListener() {

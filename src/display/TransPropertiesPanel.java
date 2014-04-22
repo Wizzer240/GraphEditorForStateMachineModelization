@@ -28,6 +28,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -60,6 +61,8 @@ import gui.GeneralEditorWindow;
 
 @SuppressWarnings("serial")
 public class TransPropertiesPanel extends JPanel {
+  private static final ResourceBundle locale =
+      ResourceBundle.getBundle("locale.Editors");
 
   TransitionObj trans;
   DrawArea drawArea;
@@ -139,11 +142,10 @@ public class TransPropertiesPanel extends JPanel {
 
     if (!loopback) {
       // setTitle("Edit State Transition Properties");
-      TPLabel.setText("Edit the properties of the selected state transition:");
+      TPLabel.setText(locale.getString("trans_editor_text"));
     } else {
       // setTitle("Edit Loopback Transition Properties");
-      TPLabel
-          .setText("Edit the properties of the selected loopback transition:");
+      TPLabel.setText(locale.getString("trans_editor_text_loopback"));
     }
     TPTable.setModel(new AttributesTableModel(trans, parent_window, globalList,
         EnumGlobalList.TRANSITIONS));
@@ -178,10 +180,10 @@ public class TransPropertiesPanel extends JPanel {
     });
 
     if (!loopback) {
-      jLabel1.setText("Start State:");
-      jLabel2.setText("End State:");
+      jLabel1.setText(locale.getString("trans_editor_start_cell_text"));
+      jLabel2.setText(locale.getString("trans_editor_end_cell_text"));
     } else {
-      jLabel1.setText("State:");
+      jLabel1.setText(locale.getString("trans_editor_cell_text"));
       jLabel2.setVisible(false);
       jCheckBox1.setVisible(false);
     }
@@ -206,8 +208,9 @@ public class TransPropertiesPanel extends JPanel {
       public void mouseClicked(MouseEvent e)
       {
         JDialog dialog;
-        dialog = JColorChooser.createDialog(window, "Choose Color", true,
-            colorChooser, colorSel, null);
+        dialog = JColorChooser.createDialog(window,
+            locale.getString("edit_choose_color"),
+            true, colorChooser, colorSel, null);
         dialog.setVisible(true);
       }
 
@@ -412,9 +415,8 @@ public class TransPropertiesPanel extends JPanel {
         TPTable.revalidate();
       } else {
         JOptionPane.showMessageDialog(this,
-            "Cannot delete a global attribute.\n"
-                + "Must be removed from global attribute properties.",
-            "error",
+            locale.getString("edit_cannot_delete_attr_error"),
+            locale.getString("error"),
             JOptionPane.ERROR_MESSAGE);
       }
     }
@@ -445,8 +447,8 @@ public class TransPropertiesPanel extends JPanel {
           parent_window.dispose();
         } else {
           JOptionPane.showMessageDialog(this,
-              "'Start State' and 'End State' must be different.",
-              "error",
+              locale.getString("trans_different_states_error"),
+              locale.getString("error"),
               JOptionPane.ERROR_MESSAGE);
         }
       } else {
@@ -456,8 +458,8 @@ public class TransPropertiesPanel extends JPanel {
       }
     } else {
       JOptionPane.showMessageDialog(this,
-          "Two different transitions cannot have the same name.",
-          "error",
+          locale.getString("trans_different_state_error"),
+          locale.getString("error"),
           JOptionPane.ERROR_MESSAGE);
     }
   }

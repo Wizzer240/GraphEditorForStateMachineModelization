@@ -29,6 +29,7 @@ import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -56,6 +57,9 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 @SuppressWarnings("serial")
 public class StatePropertiesPanel extends JPanel {
+  private static final ResourceBundle locale =
+      ResourceBundle.getBundle("locale.Editors");
+
   private StateObj state;
   private DrawArea drawArea;
   private JColorChooser colorChooser;
@@ -121,7 +125,7 @@ public class StatePropertiesPanel extends JPanel {
     SPNew = new JButton();
     SPDelete = new JButton();
 
-    SPLabel.setText("Edit the properties of the selected state:");
+    SPLabel.setText(locale.getString("state_editor_text"));
 
     // Type column
     SPTable.setModel(new AttributesTableModel(state, parent_window, globalList,
@@ -144,8 +148,8 @@ public class StatePropertiesPanel extends JPanel {
 
     SPScroll.setViewportView(SPTable);
 
-    SPW.setText("Width:");
-    SPH.setText("Height:");
+    SPW.setText(locale.getString("state_width_text"));
+    SPH.setText(locale.getString("state_height_text"));
 
     SPC.setPreferredSize(new Dimension(50, 20));
     SPC.setMinimumSize(new Dimension(50, 20));
@@ -166,9 +170,9 @@ public class StatePropertiesPanel extends JPanel {
 
       public void mouseClicked(MouseEvent e) {
         JDialog dialog;
-        dialog = JColorChooser.createDialog(parent_window, "Choose Color",
-            true,
-            colorChooser, colorSel, null);
+        dialog = JColorChooser.createDialog(parent_window,
+            locale.getString("edit_choose_color"),
+            true, colorChooser, colorSel, null);
         dialog.setVisible(true);
       }
 
@@ -291,9 +295,8 @@ public class StatePropertiesPanel extends JPanel {
         SPTable.revalidate();
       } else {
         JOptionPane.showMessageDialog(this,
-            "Cannot delete a global attribute.\n"
-                + "Must be removed from global attribute properties.",
-            "error",
+            locale.getString("edit_cannot_delete_attr_error"),
+            locale.getString("error"),
             JOptionPane.ERROR_MESSAGE);
       }
     }
@@ -333,8 +336,8 @@ public class StatePropertiesPanel extends JPanel {
       parent_window.dispose();
     } else {
       JOptionPane.showMessageDialog(this,
-          "Two different states cannot have the same name.",
-          "error",
+          locale.getString("state_different_state_error"),
+          locale.getString("error"),
           JOptionPane.ERROR_MESSAGE);
     }
   }
