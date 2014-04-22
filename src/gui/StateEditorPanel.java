@@ -42,6 +42,8 @@ import entities.StateObj;
 
 import javax.swing.JTextField;
 
+import locale.UTF8Control;
+
 /**
  * The edge editor pannel is composed of two tabs:
  * - the first one allows to modify the value of attributes
@@ -51,7 +53,7 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class StateEditorPanel extends JPanel {
   private static final ResourceBundle locale =
-      ResourceBundle.getBundle("locale.Editors");
+      ResourceBundle.getBundle("locale.Editors", new UTF8Control());
   private JTabbedPane tabbedPane;
   private JTextField textField;
   private StatePropertiesPanel second_tab;

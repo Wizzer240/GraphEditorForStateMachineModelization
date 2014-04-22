@@ -25,6 +25,7 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import locale.UTF8Control;
 import display.DrawArea;
 import entities.StateObj;
 import entities.TransitionObj;
@@ -36,7 +37,7 @@ import entities.TransitionObj;
 @SuppressWarnings("serial")
 public class TransitionEditorWindow extends GeneralEditorWindow {
   private static final ResourceBundle locale =
-      ResourceBundle.getBundle("locale.Editors");
+      ResourceBundle.getBundle("locale.Editors", new UTF8Control());
 
   public TransitionEditorWindow(Component parent, String name,
       DrawArea draw_area, TransitionObj transition, Vector<StateObj> states,

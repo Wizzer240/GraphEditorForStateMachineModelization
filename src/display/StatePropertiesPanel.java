@@ -44,7 +44,6 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 
 import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
@@ -55,10 +54,12 @@ import gui.GeneralEditorWindow;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import locale.UTF8Control;
+
 @SuppressWarnings("serial")
 public class StatePropertiesPanel extends JPanel {
   private static final ResourceBundle locale =
-      ResourceBundle.getBundle("locale.Editors");
+      ResourceBundle.getBundle("locale.Editors", new UTF8Control());
 
   private StateObj state;
   private DrawArea drawArea;

@@ -50,6 +50,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
 
+import locale.UTF8Control;
 import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
 import attributes.ObjAttribute;
@@ -62,7 +63,7 @@ import gui.GeneralEditorWindow;
 @SuppressWarnings("serial")
 public class TransPropertiesPanel extends JPanel {
   private static final ResourceBundle locale =
-      ResourceBundle.getBundle("locale.Editors");
+      ResourceBundle.getBundle("locale.Editors", new UTF8Control());
 
   TransitionObj trans;
   DrawArea drawArea;

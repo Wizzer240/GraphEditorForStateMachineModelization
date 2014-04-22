@@ -35,6 +35,8 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import locale.UTF8Control;
+
 /*
  * TODO : Focus traversal (using tab we can go to the next field)
  * A general window with a content panel and an Ok and Cancel button
@@ -53,7 +55,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 @SuppressWarnings("serial")
 public class GeneralEditorWindow extends JDialog {
   private static final ResourceBundle locale =
-      ResourceBundle.getBundle("locale.Editors");
+      ResourceBundle.getBundle("locale.Editors", new UTF8Control());
 
   private JButton btnCancel;
   private JButton btnOk;

@@ -41,6 +41,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellEditor;
 
+import locale.UTF8Control;
 import attributes.ObjAttribute;
 import display.DrawArea;
 import display.TransPropertiesPanel;
@@ -56,7 +57,7 @@ import entities.TransitionObj;
 @SuppressWarnings("serial")
 public class TransitionEditorPanel extends JPanel {
   private static final ResourceBundle locale =
-      ResourceBundle.getBundle("locale.Editors");
+      ResourceBundle.getBundle("locale.Editors", new UTF8Control());
   private JTabbedPane tabbedPane;
   private TransPropertiesPanel second_tab;
   private JTextArea[] fields;

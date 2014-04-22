@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.JPanel;
 
+import locale.UTF8Control;
 import display.DrawArea;
 import entities.StateObj;
 
@@ -34,7 +35,7 @@ import entities.StateObj;
 @SuppressWarnings("serial")
 public class StateEditorWindow extends GeneralEditorWindow {
   private static final ResourceBundle locale =
-      ResourceBundle.getBundle("locale.Editors");
+      ResourceBundle.getBundle("locale.Editors", new UTF8Control());
 
   public StateEditorWindow(Component parent, String name,
       DrawArea draw_area, StateObj state) {
