@@ -36,11 +36,30 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.JWindow;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import attributes.EnumGlobalList;
@@ -71,7 +90,7 @@ import attributes.ObjAttribute;
 /* This file was originally created with matisse GUI Builder for MyEclipse.
  * Due to bugs and limitations, in is now being manually edited
  */
-public class FizzimGui extends javax.swing.JFrame {
+public class FizzimGui extends JFrame {
 
   static String currVer = "14.02.28";
 
@@ -167,41 +186,41 @@ public class FizzimGui extends javax.swing.JFrame {
     FileOpenAction = new MyJFileChooser("fzm");
     FileSaveAction = new MyJFileChooser("fzm");
     ExportChooser = new MyJFileChooser("png");
-    jPanel3 = new javax.swing.JPanel();
+    jPanel3 = new JPanel();
     jTabbedPane1 = new MyJTabbedPane();
-    jScrollPane1 = new javax.swing.JScrollPane();
-    jPanel1 = new javax.swing.JPanel();
-    MenuBar = new javax.swing.JMenuBar();
-    FileMenu = new javax.swing.JMenu();
-    FileItemNew = new javax.swing.JMenuItem();
-    FileItemOpen = new javax.swing.JMenuItem();
-    FileItemSave = new javax.swing.JMenuItem();
-    FileItemSaveAs = new javax.swing.JMenuItem();
-    FileExport = new javax.swing.JMenu("Export to...");
-    FileExportClipboard = new javax.swing.JMenuItem();
-    FileExportPNG = new javax.swing.JMenuItem();
-    FileExportJPEG = new javax.swing.JMenuItem();
-    jSeparator1 = new javax.swing.JSeparator();
-    FilePref = new javax.swing.JMenuItem();
-    FileItemPageSetup = new javax.swing.JMenuItem();
-    FileItemPrint = new javax.swing.JMenuItem();
-    jSeparator2 = new javax.swing.JSeparator();
-    FileItemExit = new javax.swing.JMenuItem();
-    EditMenu = new javax.swing.JMenu();
-    EditItemUndo = new javax.swing.JMenuItem();
-    EditItemRedo = new javax.swing.JMenuItem();
-    EditItemDelete = new javax.swing.JMenuItem();
-    GlobalMenu = new javax.swing.JMenu();
-    GlobalItemMachine = new javax.swing.JMenuItem();
-    GlobalItemStates = new javax.swing.JMenuItem();
-    GlobalItemTransitions = new javax.swing.JMenuItem();
-    jSeparator3 = new javax.swing.JSeparator();
-    GlobalItemInputs = new javax.swing.JMenuItem();
-    GlobalItemOutputs = new javax.swing.JMenuItem();
-    HelpMenu = new javax.swing.JMenu();
-    HelpItemHelp = new javax.swing.JMenuItem();
-    jSeparator4 = new javax.swing.JSeparator();
-    HelpItemAbout = new javax.swing.JMenuItem();
+    jScrollPane1 = new JScrollPane();
+    jPanel1 = new JPanel();
+    MenuBar = new JMenuBar();
+    FileMenu = new JMenu();
+    FileItemNew = new JMenuItem();
+    FileItemOpen = new JMenuItem();
+    FileItemSave = new JMenuItem();
+    FileItemSaveAs = new JMenuItem();
+    FileExport = new JMenu("Export to...");
+    FileExportClipboard = new JMenuItem();
+    FileExportPNG = new JMenuItem();
+    FileExportJPEG = new JMenuItem();
+    jSeparator1 = new JSeparator();
+    FilePref = new JMenuItem();
+    FileItemPageSetup = new JMenuItem();
+    FileItemPrint = new JMenuItem();
+    jSeparator2 = new JSeparator();
+    FileItemExit = new JMenuItem();
+    EditMenu = new JMenu();
+    EditItemUndo = new JMenuItem();
+    EditItemRedo = new JMenuItem();
+    EditItemDelete = new JMenuItem();
+    GlobalMenu = new JMenu();
+    GlobalItemMachine = new JMenuItem();
+    GlobalItemStates = new JMenuItem();
+    GlobalItemTransitions = new JMenuItem();
+    jSeparator3 = new JSeparator();
+    GlobalItemInputs = new JMenuItem();
+    GlobalItemOutputs = new JMenuItem();
+    HelpMenu = new JMenu();
+    HelpItemHelp = new JMenuItem();
+    jSeparator4 = new JSeparator();
+    HelpItemAbout = new JMenuItem();
 
     FileOpenAction.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -225,7 +244,7 @@ public class FizzimGui extends javax.swing.JFrame {
     jPanel3.setLayout(new java.awt.GridBagLayout());
 
     jPanel3.setMinimumSize(new java.awt.Dimension(100, 100));
-    jTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
+    jTabbedPane1.setTabPlacement(JTabbedPane.BOTTOM);
     // jTabbedPane1.setMinimumSize(getScrollPaneSize());
     // jTabbedPane1.setPreferredSize(new java.awt.Dimension(1000, 685));
     // jScrollPane1.setMaximumSize(new Dimension(maxW, maxH));
@@ -311,7 +330,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
     FileMenu.setText("File");
     FileMenu.setMnemonic(java.awt.event.KeyEvent.VK_F);
-    FileItemNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    FileItemNew.setAccelerator(KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_N,
         java.awt.event.InputEvent.CTRL_MASK));
     FileItemNew.setMnemonic(java.awt.event.KeyEvent.VK_N);
@@ -324,7 +343,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
     FileMenu.add(FileItemNew);
 
-    FileItemOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    FileItemOpen.setAccelerator(KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_O,
         java.awt.event.InputEvent.CTRL_MASK));
     FileItemOpen.setMnemonic(java.awt.event.KeyEvent.VK_O);
@@ -337,7 +356,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
     FileMenu.add(FileItemOpen);
 
-    FileItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    FileItemSave.setAccelerator(KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_S,
         java.awt.event.InputEvent.CTRL_MASK));
     FileItemSave.setMnemonic(java.awt.event.KeyEvent.VK_S);
@@ -364,7 +383,7 @@ public class FizzimGui extends javax.swing.JFrame {
     // export
 
     FileExportClipboard.setText("Clipboard");
-    FileExportClipboard.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    FileExportClipboard.setAccelerator(KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_F2, 0));
     FileExportClipboard.setMnemonic(java.awt.event.KeyEvent.VK_C);
     FileExportClipboard.addActionListener(new java.awt.event.ActionListener() {
@@ -418,7 +437,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
     FileMenu.add(FileItemPageSetup);
 
-    FileItemPrint.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    FileItemPrint.setAccelerator(KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_P,
         java.awt.event.InputEvent.CTRL_MASK));
     FileItemPrint.setMnemonic(java.awt.event.KeyEvent.VK_P);
@@ -448,7 +467,7 @@ public class FizzimGui extends javax.swing.JFrame {
     EditMenu.setText("Edit");
     EditMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
     EditItemUndo.setMnemonic(java.awt.event.KeyEvent.VK_U);
-    EditItemUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    EditItemUndo.setAccelerator(KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_Z,
         java.awt.event.InputEvent.CTRL_MASK));
     EditItemUndo.setText("Undo");
@@ -460,7 +479,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
     EditMenu.add(EditItemUndo);
     EditItemRedo.setMnemonic(java.awt.event.KeyEvent.VK_R);
-    EditItemRedo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    EditItemRedo.setAccelerator(KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_Y,
         java.awt.event.InputEvent.CTRL_MASK));
     EditItemRedo.setText("Redo");
@@ -472,7 +491,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
     EditMenu.add(EditItemRedo);
     EditItemDelete.setMnemonic(java.awt.event.KeyEvent.VK_D);
-    EditItemDelete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    EditItemDelete.setAccelerator(KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_DELETE, 0));
     EditItemDelete.setText("Delete");
     // EditItemDelete.setVisible(false);
@@ -549,7 +568,7 @@ public class FizzimGui extends javax.swing.JFrame {
     HelpMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
     HelpMenu.setText("Help");
     HelpItemHelp.setMnemonic(java.awt.event.KeyEvent.VK_H);
-    HelpItemHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    HelpItemHelp.setAccelerator(KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_F1, 0));
     HelpItemHelp.setText("Help");
     HelpItemHelp.addActionListener(new java.awt.event.ActionListener() {
@@ -1413,51 +1432,6 @@ public class FizzimGui extends javax.swing.JFrame {
     return clfilename;
   }
 
-  // GEN-BEGIN:variables
-  // Variables declaration - do not modify
-  private javax.swing.JMenuItem EditItemDelete;
-  private javax.swing.JMenuItem EditItemRedo;
-  private javax.swing.JMenuItem EditItemUndo;
-  private javax.swing.JMenu EditMenu;
-  private javax.swing.JMenuItem FileItemExit;
-  private javax.swing.JMenuItem FileItemNew;
-  private javax.swing.JMenuItem FileItemOpen;
-  private javax.swing.JMenuItem FilePref;
-  private javax.swing.JMenuItem FileItemPageSetup;
-  private javax.swing.JMenuItem FileItemPrint;
-  private javax.swing.JMenuItem FileItemSave;
-  private javax.swing.JMenuItem FileItemSaveAs;
-  private javax.swing.JMenu FileExport;
-  private javax.swing.JMenuItem FileExportClipboard;
-  private javax.swing.JMenuItem FileExportPNG;
-  private javax.swing.JMenuItem FileExportJPEG;
-  private javax.swing.JMenu FileMenu;
-  private MyJFileChooser FileOpenAction;
-  private MyJFileChooser FileSaveAction;
-  private MyJFileChooser ExportChooser;
-  private javax.swing.JMenuItem GlobalItemInputs;
-  private javax.swing.JMenuItem GlobalItemMachine;
-  private javax.swing.JMenuItem GlobalItemOutputs;
-  private javax.swing.JMenuItem GlobalItemStates;
-  private javax.swing.JMenuItem GlobalItemTransitions;
-  private javax.swing.JMenu GlobalMenu;
-  private javax.swing.JMenuItem HelpItemAbout;
-  private javax.swing.JMenuItem HelpItemHelp;
-  private javax.swing.JMenu HelpMenu;
-  private javax.swing.JMenuBar MenuBar;
-  private javax.swing.JPanel jPanel1;
-  private javax.swing.JPanel jPanel3;
-  private javax.swing.JScrollPane jScrollPane1;
-  private javax.swing.JSeparator jSeparator1;
-  private javax.swing.JSeparator jSeparator2;
-  private javax.swing.JSeparator jSeparator3;
-  private javax.swing.JSeparator jSeparator4;
-  private MyJTabbedPane jTabbedPane1;
-  // End of variables declaration//GEN-END:variables
-
-  File currFile = null;
-  private DrawArea drawArea1;
-
   public void updateGlobal(LinkedList<LinkedList<ObjAttribute>> globalList2) {
     globalList = globalList2;
 
@@ -1666,7 +1640,52 @@ public class FizzimGui extends javax.swing.JFrame {
 
   }
 
-  class PageSetup extends javax.swing.JDialog {
+  // GEN-BEGIN:variables
+  // Variables declaration - do not modify
+  private JMenuItem EditItemDelete;
+  private JMenuItem EditItemRedo;
+  private JMenuItem EditItemUndo;
+  private JMenu EditMenu;
+  private JMenuItem FileItemExit;
+  private JMenuItem FileItemNew;
+  private JMenuItem FileItemOpen;
+  private JMenuItem FilePref;
+  private JMenuItem FileItemPageSetup;
+  private JMenuItem FileItemPrint;
+  private JMenuItem FileItemSave;
+  private JMenuItem FileItemSaveAs;
+  private JMenu FileExport;
+  private JMenuItem FileExportClipboard;
+  private JMenuItem FileExportPNG;
+  private JMenuItem FileExportJPEG;
+  private JMenu FileMenu;
+  private MyJFileChooser FileOpenAction;
+  private MyJFileChooser FileSaveAction;
+  private MyJFileChooser ExportChooser;
+  private JMenuItem GlobalItemInputs;
+  private JMenuItem GlobalItemMachine;
+  private JMenuItem GlobalItemOutputs;
+  private JMenuItem GlobalItemStates;
+  private JMenuItem GlobalItemTransitions;
+  private JMenu GlobalMenu;
+  private JMenuItem HelpItemAbout;
+  private JMenuItem HelpItemHelp;
+  private JMenu HelpMenu;
+  private JMenuBar MenuBar;
+  private JPanel jPanel1;
+  private JPanel jPanel3;
+  private JScrollPane jScrollPane1;
+  private JSeparator jSeparator1;
+  private JSeparator jSeparator2;
+  private JSeparator jSeparator3;
+  private JSeparator jSeparator4;
+  private MyJTabbedPane jTabbedPane1;
+  // End of variables declaration//GEN-END:variables
+
+  File currFile = null;
+  private DrawArea drawArea1;
+
+  class PageSetup extends JDialog {
 
     FizzimGui fizzim;
 
@@ -1686,17 +1705,17 @@ public class FizzimGui extends javax.swing.JFrame {
     // GEN-BEGIN:initComponents
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
     private void initComponents() {
-      jLabel1 = new javax.swing.JLabel();
-      jLabel2 = new javax.swing.JLabel();
-      jTextField1 = new javax.swing.JTextField();
-      jTextField2 = new javax.swing.JTextField();
-      jLabel3 = new javax.swing.JLabel();
-      jLabel4 = new javax.swing.JLabel();
-      jButton1 = new javax.swing.JButton();
-      jButton2 = new javax.swing.JButton();
-      jLabel5 = new javax.swing.JLabel();
+      jLabel1 = new JLabel();
+      jLabel2 = new JLabel();
+      jTextField1 = new JTextField();
+      jTextField2 = new JTextField();
+      jLabel3 = new JLabel();
+      jLabel4 = new JLabel();
+      jButton1 = new JButton();
+      jButton2 = new JButton();
+      jLabel5 = new JLabel();
 
-      setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       jLabel1.setText("Width:");
 
       this.setTitle("Page Setup");
@@ -1868,15 +1887,15 @@ public class FizzimGui extends javax.swing.JFrame {
 
     // GEN-BEGIN:variables
     // Variables declaration - do not modify
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private JButton jButton1;
+    private JButton jButton2;
+    private JLabel jLabel1;
+    private JLabel jLabel2;
+    private JLabel jLabel3;
+    private JLabel jLabel4;
+    private JLabel jLabel5;
+    private JTextField jTextField1;
+    private JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
   }
 
