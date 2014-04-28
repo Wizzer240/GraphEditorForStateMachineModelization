@@ -34,6 +34,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -43,6 +44,10 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+import entities.GeneralObj;
+import entities.LoopbackTransitionObj;
+import entities.StateObj;
+import entities.TransitionObj;
 import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
 import attributes.ObjAttribute;
@@ -74,6 +79,9 @@ import attributes.ObjAttribute;
 public class FizzimGui extends javax.swing.JFrame {
 
   static String currVer = "14.02.28";
+  static String action_field = "Action";
+  static String condition_field = "Garde";
+  static String event_field = "Evènements";
 
   // pointer to global lists
   LinkedList<ObjAttribute> globalMachineAttributes;
@@ -146,8 +154,19 @@ public class FizzimGui extends javax.swing.JFrame {
         new ObjAttribute("name", "def_name", EnumVisibility.NO,
             "def_type", "", Color.black, "", "", editable));
 
+    /* User defined properties */
+    globalList.get(EnumGlobalList.STATES).add(
+        new ObjAttribute("Ind. vrais", "", EnumVisibility.YES,
+            "def_type", "", Color.black, "", "", editable));
+
     globalList.get(EnumGlobalList.TRANSITIONS).add(
-        new ObjAttribute("equation", "1", EnumVisibility.YES,
+        new ObjAttribute(event_field, "", EnumVisibility.YES,
+            "def_type", "", Color.black, "", "", editable));
+    globalList.get(EnumGlobalList.TRANSITIONS).add(
+        new ObjAttribute(condition_field, "", EnumVisibility.YES,
+            "def_type", "", Color.black, "", "", editable));
+    globalList.get(EnumGlobalList.TRANSITIONS).add(
+        new ObjAttribute(action_field, "", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
 
   }
@@ -166,6 +185,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
     FileOpenAction = new MyJFileChooser("fzm");
     FileSaveAction = new MyJFileChooser("fzm");
+    FileSave6LinesAction = new MyJFileChooser("txt");
     ExportChooser = new MyJFileChooser("png");
     jPanel3 = new javax.swing.JPanel();
     jTabbedPane1 = new MyJTabbedPane();
@@ -177,6 +197,7 @@ public class FizzimGui extends javax.swing.JFrame {
     FileItemOpen = new javax.swing.JMenuItem();
     FileItemSave = new javax.swing.JMenuItem();
     FileItemSaveAs = new javax.swing.JMenuItem();
+    FileItemSaveAs6Lines = new javax.swing.JMenuItem();
     FileExport = new javax.swing.JMenu("Export to...");
     FileExportClipboard = new javax.swing.JMenuItem();
     FileExportPNG = new javax.swing.JMenuItem();
@@ -360,6 +381,18 @@ public class FizzimGui extends javax.swing.JFrame {
     });
 
     FileMenu.add(FileItemSaveAs);
+
+    /* Save as 6 lines file */
+    FileItemSaveAs6Lines.setText("Save As 6 lines");
+    FileItemSaveAs6Lines.setMnemonic(java.awt.event.KeyEvent.VK_L);
+    FileItemSaveAs6Lines.setDisplayedMnemonicIndex(11);
+    FileItemSaveAs6Lines.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        FileItemSaveAs6LinesActionPerformed(evt);
+      }
+    });
+
+    FileMenu.add(FileItemSaveAs6Lines);
 
     // export
 
@@ -911,6 +944,66 @@ public class FizzimGui extends javax.swing.JFrame {
     return true;
   }
 
+  /**
+   * Do the basic checking before saving in the 6 lines format text
+   * 
+   * @param file
+   * @param type
+   * @param overrideCheck
+   * @return
+   */
+  public boolean tryToSave6lines(File file, String type, boolean overrideCheck)
+  {
+    currFile = file;
+    // checks file for correct pathname
+    String temp = file.getName().toLowerCase();
+
+    if (!temp.endsWith("." + type))
+      file = new File(file.getAbsolutePath() + "." + type);
+
+    // checks permission to write
+    if (file.isDirectory())
+    {
+      JOptionPane.showMessageDialog(this,
+          "Must be a file, not directory", "Error",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+    else if (file.exists() && !file.canWrite())
+    {
+      JOptionPane.showMessageDialog(this,
+          "Cannot write to file, permission denied.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+    else if (overrideCheck)
+    {
+      if (file.exists()) {
+        int choice = JOptionPane.showConfirmDialog(this,
+            "Overwrite file?", "Save As",
+            JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.NO_OPTION)
+          return false;
+      }
+    }
+    else if (!file.exists())
+    {
+      try {
+        file.createNewFile();
+      } catch (IOException e) {
+        JOptionPane.showMessageDialog(this,
+            "Cannot write to file, permission denied.", "Error",
+            JOptionPane.ERROR_MESSAGE);
+        return false;
+      }
+    }
+
+    if (!saveFile6lines(file)) {
+      return false;
+    }
+    return true;
+  }
+
   // perform checks before window is closed
   private void formWindowClosing() {
     if (drawArea1.getFileModifed()) {
@@ -1128,6 +1221,35 @@ public class FizzimGui extends javax.swing.JFrame {
 
   }
 
+  /**
+   * Allows to save the file in a 6 lines format
+   * 
+   * @param evt
+   */
+  private void FileItemSaveAs6LinesActionPerformed(
+      java.awt.event.ActionEvent evt) {
+    try {
+      if (currFile == null)
+      {
+        // Default to cwd
+        FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
+            .getProperty("user.dir")).getAbsoluteFile());
+      }
+      else
+        FileSave6LinesAction.setSelectedFile(currFile);
+
+      FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
+          .getProperty("user.dir")).getAbsoluteFile());
+      FileSave6LinesAction.showSaveDialog(this);
+    } catch (java.awt.HeadlessException e1) {
+      e1.printStackTrace();
+    }
+    if (FileSave6LinesAction.getSelected())
+      if (tryToSave6lines(FileSave6LinesAction.getSelectedFile(), "txt", true))
+        setTitle("Graphe 6 lignes - " + currFile.getName());
+
+  }
+
   private void FileItemOpenActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_FileItemOpenActionPerformed
     boolean open = true;
     if (drawArea1.getFileModifed()) {
@@ -1211,6 +1333,85 @@ public class FizzimGui extends javax.swing.JFrame {
       ind = ind + "   ";
     }
     return ind;
+  }
+
+  /**
+   * Function that save the graph into a 6lines format text
+   * 
+   * @param selectedFile
+   *          the targeted file to save in
+   * @return
+   */
+
+  private boolean saveFile6lines(File selectedFile) {
+    currFile = selectedFile;
+    try {
+      BufferedWriter writer = new BufferedWriter(new FileWriter(currFile));
+      // Put all the objects of the graph in object
+      Vector<Object> object = drawArea1.getObjList();
+      for (int i = 1; i < object.size(); i++) {
+        GeneralObj temp = (GeneralObj) object.get(i);
+        // verify that the object is a transition.
+        if (temp instanceof TransitionObj) {
+          TransitionObj transition = (TransitionObj) temp;
+          writer.write(selectedFile.getName().substring(0, selectedFile.getName().length()-4));
+          writer.newLine();
+          StateObj initial_state = transition.getStartState();
+          // write the number of the initial state in the file.
+          writer.write(initial_state.getName());
+          writer.newLine();
+          StateObj final_state = transition.getEndState();
+          /*
+           * Verify if the transition is a loopback and
+           * write the number of the final state in the file (it will be
+           * the same as the initial state if it's a loop).
+           */
+          if (temp instanceof LoopbackTransitionObj) {
+            writer.write(initial_state.getName());
+            writer.newLine();
+          } else {
+            writer.write(final_state.getName());
+            writer.newLine();
+          }
+          LinkedList<ObjAttribute> attributes = transition.getAttributeList();
+          String event = null, condition = null, actions = null;
+          for (ObjAttribute attribute : attributes) {
+            String name = (String) attribute.get(0);
+            String value = (String) attribute.get(1);
+            if (name.equals(event_field)) {
+              event = value;
+            } else if (name.equals(condition_field)) {
+              condition = value;
+            } else if (name.equals(action_field)) {
+              actions = value;
+            }
+
+          }
+          if (event == null || condition == null || actions == null) {
+            writer.close();
+            throw new IOException(
+                "One of the variable event, condition and actions are null");
+          }
+          writer.write(event + " " + event_field);
+          writer.newLine();
+          writer.write(condition + " " + condition_field );
+          writer.newLine();
+          writer.write(actions + " " + action_field);
+          writer.newLine();
+        }
+      }
+      writer.close();
+      return true;
+
+    } catch (IOException ex) {
+      // ex.printStackTrace();
+      JOptionPane.showMessageDialog(this,
+          "Error saving file",
+          "error",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+
   }
 
   private boolean saveFile(File selectedFile) {
@@ -1427,6 +1628,7 @@ public class FizzimGui extends javax.swing.JFrame {
   private javax.swing.JMenuItem FileItemPrint;
   private javax.swing.JMenuItem FileItemSave;
   private javax.swing.JMenuItem FileItemSaveAs;
+  private javax.swing.JMenuItem FileItemSaveAs6Lines;
   private javax.swing.JMenu FileExport;
   private javax.swing.JMenuItem FileExportClipboard;
   private javax.swing.JMenuItem FileExportPNG;
@@ -1434,6 +1636,7 @@ public class FizzimGui extends javax.swing.JFrame {
   private javax.swing.JMenu FileMenu;
   private MyJFileChooser FileOpenAction;
   private MyJFileChooser FileSaveAction;
+  private MyJFileChooser FileSave6LinesAction;
   private MyJFileChooser ExportChooser;
   private javax.swing.JMenuItem GlobalItemInputs;
   private javax.swing.JMenuItem GlobalItemMachine;

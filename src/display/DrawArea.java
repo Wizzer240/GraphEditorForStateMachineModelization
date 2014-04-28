@@ -1751,6 +1751,10 @@ public class DrawArea extends JPanel implements MouseListener,
   public boolean getRedraw() {
     return Redraw;
   }
+  
+  public Vector<Object> getObjList(){
+    return objList;
+  }
 
 }
 
