@@ -1387,7 +1387,7 @@ public class FizzimGui extends javax.swing.JFrame {
         FizzimGui fzim = new FizzimGui();
         fzim.setVisible(true);
         fzim.setSize(new java.awt.Dimension(1000, 685));
-        new HelpItemAboutActionPerformed();
+        // new HelpItemAboutActionPerformed();
         // If command line filename is not null, open
         // this file.
         if (clfilename != "") {
