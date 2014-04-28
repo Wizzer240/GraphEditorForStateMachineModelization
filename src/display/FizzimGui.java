@@ -27,6 +27,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -35,9 +36,15 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -158,8 +165,8 @@ public class FizzimGui extends JFrame {
         ObjAttribute.GLOBAL_VAR };
     globalList.get(EnumGlobalList.MACHINE).add(
         new ObjAttribute("name", "def_name", EnumVisibility.NO, "", "",
-            Color.black, "", "",
-            editable));
+            Color.black, "", "", editable));
+
     globalList.get(EnumGlobalList.MACHINE).add(
         new ObjAttribute("clock", "clk", EnumVisibility.NO,
             "posedge", "", Color.black, "", "", editable));
@@ -175,7 +182,6 @@ public class FizzimGui extends JFrame {
     globalList.get(EnumGlobalList.TRANSITIONS).add(
         new ObjAttribute("equation", "1", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
-
   }
 
   // GEN-BEGIN:variables
@@ -230,7 +236,7 @@ public class FizzimGui extends JFrame {
   // GEN-BEGIN:initComponents
   // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
   private void initComponents() {
-    java.awt.GridBagConstraints gridBagConstraints;
+    GridBagConstraints gridBagConstraints;
 
     FileOpenAction = new MyJFileChooser("fzm");
     FileSaveAction = new MyJFileChooser("fzm");
@@ -271,22 +277,22 @@ public class FizzimGui extends JFrame {
     jSeparator4 = new JSeparator();
     HelpItemAbout = new JMenuItem();
 
-    FileOpenAction.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        FileOpenActionActionPerformed(evt);
-      }
-    });
-
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     setTitle("Fizzim");
-    addComponentListener(new java.awt.event.ComponentAdapter() {
-      public void componentResized(java.awt.event.ComponentEvent evt) {
+    addComponentListener(new ComponentAdapter() {
+      public void componentResized(ComponentEvent evt) {
         formComponentResized(evt);
       }
     });
-    addWindowListener(new java.awt.event.WindowAdapter() {
-      public void windowClosing(java.awt.event.WindowEvent evt) {
-        formWindowClosing(evt);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent evt) {
+        formWindowClosing();
+      }
+    });
+
+    FileOpenAction.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        FileOpenActionActionPerformed(evt);
       }
     });
 
@@ -360,14 +366,14 @@ public class FizzimGui extends JFrame {
     jPanel3.repaint();
 
     FileMenu.setText("File");
-    FileMenu.setMnemonic(java.awt.event.KeyEvent.VK_F);
+    FileMenu.setMnemonic(KeyEvent.VK_F);
     FileItemNew.setAccelerator(KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_N,
-        java.awt.event.InputEvent.CTRL_MASK));
-    FileItemNew.setMnemonic(java.awt.event.KeyEvent.VK_N);
+        KeyEvent.VK_N,
+        InputEvent.CTRL_MASK));
+    FileItemNew.setMnemonic(KeyEvent.VK_N);
     FileItemNew.setText("New");
-    FileItemNew.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemNew.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemNewActionPerformed(evt);
       }
     });
@@ -375,12 +381,12 @@ public class FizzimGui extends JFrame {
     FileMenu.add(FileItemNew);
 
     FileItemOpen.setAccelerator(KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_O,
-        java.awt.event.InputEvent.CTRL_MASK));
-    FileItemOpen.setMnemonic(java.awt.event.KeyEvent.VK_O);
+        KeyEvent.VK_O,
+        InputEvent.CTRL_MASK));
+    FileItemOpen.setMnemonic(KeyEvent.VK_O);
     FileItemOpen.setText("Open");
-    FileItemOpen.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemOpen.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemOpenActionPerformed(evt);
       }
     });
@@ -388,12 +394,12 @@ public class FizzimGui extends JFrame {
     FileMenu.add(FileItemOpen);
 
     FileItemSave.setAccelerator(KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_S,
-        java.awt.event.InputEvent.CTRL_MASK));
-    FileItemSave.setMnemonic(java.awt.event.KeyEvent.VK_S);
+        KeyEvent.VK_S,
+        InputEvent.CTRL_MASK));
+    FileItemSave.setMnemonic(KeyEvent.VK_S);
     FileItemSave.setText("Save");
-    FileItemSave.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemSave.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemSaveActionPerformed(evt);
       }
     });
@@ -401,10 +407,10 @@ public class FizzimGui extends JFrame {
     FileMenu.add(FileItemSave);
 
     FileItemSaveAs.setText("Save As");
-    FileItemSaveAs.setMnemonic(java.awt.event.KeyEvent.VK_A);
+    FileItemSaveAs.setMnemonic(KeyEvent.VK_A);
     FileItemSaveAs.setDisplayedMnemonicIndex(5);
-    FileItemSaveAs.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemSaveAs.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemSaveAsActionPerformed(evt);
       }
     });
@@ -415,42 +421,42 @@ public class FizzimGui extends JFrame {
 
     FileExportClipboard.setText("Clipboard");
     FileExportClipboard.setAccelerator(KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_F2, 0));
-    FileExportClipboard.setMnemonic(java.awt.event.KeyEvent.VK_C);
-    FileExportClipboard.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        KeyEvent.VK_F2, 0));
+    FileExportClipboard.setMnemonic(KeyEvent.VK_C);
+    FileExportClipboard.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileExportClipboardActionPerformed(evt);
       }
     });
     FileExport.add(FileExportClipboard);
 
     FileExportPNG.setText("PNG");
-    FileExportPNG.setMnemonic(java.awt.event.KeyEvent.VK_P);
-    FileExportPNG.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileExportPNG.setMnemonic(KeyEvent.VK_P);
+    FileExportPNG.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileExportPNGActionPerformed(evt);
       }
     });
     FileExport.add(FileExportPNG);
 
     FileExportJPEG.setText("JPEG");
-    FileExportJPEG.setMnemonic(java.awt.event.KeyEvent.VK_J);
-    FileExportJPEG.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileExportJPEG.setMnemonic(KeyEvent.VK_J);
+    FileExportJPEG.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileExportJPEGActionPerformed(evt);
       }
     });
     FileExport.add(FileExportJPEG);
-    FileExport.setMnemonic(java.awt.event.KeyEvent.VK_E);
+    FileExport.setMnemonic(KeyEvent.VK_E);
 
     FileMenu.add(FileExport);
 
     FileMenu.add(jSeparator1);
 
     FilePref.setText("Preferences");
-    FilePref.setMnemonic(java.awt.event.KeyEvent.VK_R);
-    FilePref.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FilePref.setMnemonic(KeyEvent.VK_R);
+    FilePref.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FilePrefActionPerformed(evt);
       }
     });
@@ -458,10 +464,10 @@ public class FizzimGui extends JFrame {
     FileMenu.add(FilePref);
 
     FileItemPageSetup.setText("Page Setup");
-    FileItemPageSetup.setMnemonic(java.awt.event.KeyEvent.VK_U);
+    FileItemPageSetup.setMnemonic(KeyEvent.VK_U);
     FileItemPageSetup
-        .addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
+        .addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
             FileItemPageSetupActionPerformed(evt);
           }
         });
@@ -469,12 +475,12 @@ public class FizzimGui extends JFrame {
     FileMenu.add(FileItemPageSetup);
 
     FileItemPrint.setAccelerator(KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_P,
-        java.awt.event.InputEvent.CTRL_MASK));
-    FileItemPrint.setMnemonic(java.awt.event.KeyEvent.VK_P);
+        KeyEvent.VK_P,
+        InputEvent.CTRL_MASK));
+    FileItemPrint.setMnemonic(KeyEvent.VK_P);
     FileItemPrint.setText("Print");
-    FileItemPrint.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemPrint.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemPrintActionPerformed(evt);
       }
     });
@@ -484,9 +490,9 @@ public class FizzimGui extends JFrame {
     FileMenu.add(jSeparator2);
 
     FileItemExit.setText("Exit");
-    FileItemExit.setMnemonic(java.awt.event.KeyEvent.VK_X);
-    FileItemExit.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemExit.setMnemonic(KeyEvent.VK_X);
+    FileItemExit.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemExitActionPerformed(evt);
       }
     });
@@ -496,38 +502,38 @@ public class FizzimGui extends JFrame {
     MenuBar.add(FileMenu);
 
     EditMenu.setText("Edit");
-    EditMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
-    EditItemUndo.setMnemonic(java.awt.event.KeyEvent.VK_U);
+    EditMenu.setMnemonic(KeyEvent.VK_E);
+    EditItemUndo.setMnemonic(KeyEvent.VK_U);
     EditItemUndo.setAccelerator(KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_Z,
-        java.awt.event.InputEvent.CTRL_MASK));
+        KeyEvent.VK_Z,
+        InputEvent.CTRL_MASK));
     EditItemUndo.setText("Undo");
-    EditItemUndo.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    EditItemUndo.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         EditItemUndoActionPerformed(evt);
       }
     });
 
     EditMenu.add(EditItemUndo);
-    EditItemRedo.setMnemonic(java.awt.event.KeyEvent.VK_R);
+    EditItemRedo.setMnemonic(KeyEvent.VK_R);
     EditItemRedo.setAccelerator(KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_Y,
-        java.awt.event.InputEvent.CTRL_MASK));
+        KeyEvent.VK_Y,
+        InputEvent.CTRL_MASK));
     EditItemRedo.setText("Redo");
-    EditItemRedo.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    EditItemRedo.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         EditItemRedoActionPerformed(evt);
       }
     });
 
     EditMenu.add(EditItemRedo);
-    EditItemDelete.setMnemonic(java.awt.event.KeyEvent.VK_D);
+    EditItemDelete.setMnemonic(KeyEvent.VK_D);
     EditItemDelete.setAccelerator(KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_DELETE, 0));
+        KeyEvent.VK_DELETE, 0));
     EditItemDelete.setText("Delete");
     // EditItemDelete.setVisible(false);
-    EditItemDelete.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    EditItemDelete.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         EditItemDeleteActionPerformed(evt);
       }
     });
@@ -537,34 +543,34 @@ public class FizzimGui extends JFrame {
     MenuBar.add(EditMenu);
 
     GlobalMenu.setText("Global Attributes");
-    GlobalMenu.setMnemonic(java.awt.event.KeyEvent.VK_G);
+    GlobalMenu.setMnemonic(KeyEvent.VK_G);
 
     GlobalItemMachine.setText("State Machine");
-    GlobalItemMachine.setMnemonic(java.awt.event.KeyEvent.VK_M);
+    GlobalItemMachine.setMnemonic(KeyEvent.VK_M);
     GlobalItemMachine
-        .addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
+        .addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
             GlobalItemMachineActionPerformed(evt);
           }
         });
 
     GlobalMenu.add(GlobalItemMachine);
 
-    GlobalItemInputs.setMnemonic(java.awt.event.KeyEvent.VK_I);
+    GlobalItemInputs.setMnemonic(KeyEvent.VK_I);
     GlobalItemInputs.setText("Inputs");
-    GlobalItemInputs.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    GlobalItemInputs.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         GlobalItemInputsActionPerformed(evt);
       }
     });
 
     GlobalMenu.add(GlobalItemInputs);
 
-    GlobalItemOutputs.setMnemonic(java.awt.event.KeyEvent.VK_O);
+    GlobalItemOutputs.setMnemonic(KeyEvent.VK_O);
     GlobalItemOutputs.setText("Outputs");
     GlobalItemOutputs
-        .addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
+        .addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
             GlobalItemOutputsActionPerformed(evt);
           }
         });
@@ -574,9 +580,9 @@ public class FizzimGui extends JFrame {
     GlobalMenu.add(jSeparator3);
 
     GlobalItemStates.setText("States");
-    GlobalItemStates.setMnemonic(java.awt.event.KeyEvent.VK_S);
-    GlobalItemStates.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    GlobalItemStates.setMnemonic(KeyEvent.VK_S);
+    GlobalItemStates.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         GlobalItemStatesActionPerformed(evt);
       }
     });
@@ -584,10 +590,10 @@ public class FizzimGui extends JFrame {
     GlobalMenu.add(GlobalItemStates);
 
     GlobalItemTransitions.setText("Transitions");
-    GlobalItemTransitions.setMnemonic(java.awt.event.KeyEvent.VK_T);
+    GlobalItemTransitions.setMnemonic(KeyEvent.VK_T);
     GlobalItemTransitions
-        .addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
+        .addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
             GlobalItemTransitionsActionPerformed(evt);
           }
         });
@@ -596,14 +602,14 @@ public class FizzimGui extends JFrame {
 
     MenuBar.add(GlobalMenu);
 
-    HelpMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
+    HelpMenu.setMnemonic(KeyEvent.VK_H);
     HelpMenu.setText("Help");
-    HelpItemHelp.setMnemonic(java.awt.event.KeyEvent.VK_H);
+    HelpItemHelp.setMnemonic(KeyEvent.VK_H);
     HelpItemHelp.setAccelerator(KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_F1, 0));
+        KeyEvent.VK_F1, 0));
     HelpItemHelp.setText("Help");
-    HelpItemHelp.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    HelpItemHelp.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         HelpItemHelpActionPerformed(evt);
       }
     });
@@ -612,11 +618,11 @@ public class FizzimGui extends JFrame {
 
     HelpMenu.add(jSeparator4);
 
-    HelpItemAbout.setMnemonic(java.awt.event.KeyEvent.VK_A);
+    HelpItemAbout.setMnemonic(KeyEvent.VK_A);
     HelpItemAbout.setText("About");
 
-    HelpItemAbout.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    HelpItemAbout.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         HelpItemAboutActionPerformed(evt);
       }
     });
@@ -857,12 +863,12 @@ public class FizzimGui extends JFrame {
   }
 
   // GEN-FIRST:event_FileItemPageSetupActionPerformed
-  private void FileItemPageSetupActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemPageSetupActionPerformed(ActionEvent evt) {
     new PageSetup(this, true).setVisible(true);
   }// GEN-LAST:event_FileItemPageSetupActionPerformed
 
   // GEN-FIRST:event_formComponentResized
-  private void formComponentResized(java.awt.event.ComponentEvent evt) {
+  private void formComponentResized(ComponentEvent evt) {
     // this method makes sure that the draw area size is mostly restricted
     // to dimensions set in page setup
 
@@ -879,13 +885,8 @@ public class FizzimGui extends JFrame {
 
   }// GEN-LAST:event_formComponentResized
 
-  protected void formWindowClosing(WindowEvent evt) {
-    formWindowClosing();
-
-  }
-
   // GEN-FIRST:event_FileItemSaveActionPerformed
-  private void FileItemSaveActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemSaveActionPerformed(ActionEvent evt) {
     if (currFile == null) {
       try {
         // Default to cwd
@@ -1009,7 +1010,7 @@ public class FizzimGui extends JFrame {
   }// GEN-LAST:event_formWindowClosing
 
   // GEN-FIRST:event_FileItemPrintActionPerformed
-  private void FileItemPrintActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemPrintActionPerformed(ActionEvent evt) {
     PrinterJob printJob = PrinterJob.getPrinterJob();
     printJob.setPrintable(drawArea1);
     if (printJob.printDialog())
@@ -1021,27 +1022,27 @@ public class FizzimGui extends JFrame {
   }// GEN-LAST:event_FileItemPrintActionPerformed
 
   // GEN-FIRST:event_EditItemDeleteActionPerformed
-  private void EditItemDeleteActionPerformed(java.awt.event.ActionEvent evt) {
+  private void EditItemDeleteActionPerformed(ActionEvent evt) {
     drawArea1.delete();
   }// GEN-LAST:event_EditItemDeleteActionPerformed
 
   // GEN-FIRST:event_EditItemRedoActionPerformed
-  private void EditItemRedoActionPerformed(java.awt.event.ActionEvent evt) {
+  private void EditItemRedoActionPerformed(ActionEvent evt) {
     drawArea1.redo();
   }// GEN-LAST:event_EditItemRedoActionPerformed
 
   // GEN-FIRST:event_EditItemUndoActionPerformed
-  private void EditItemUndoActionPerformed(java.awt.event.ActionEvent evt) {
+  private void EditItemUndoActionPerformed(ActionEvent evt) {
     drawArea1.undo();
   }// GEN-LAST:event_EditItemUndoActionPerformed
 
   // GEN-FIRST:event_FileItemExitActionPerformed
-  private void FileItemExitActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemExitActionPerformed(ActionEvent evt) {
     formWindowClosing();
   }// GEN-LAST:event_FileItemExitActionPerformed
 
   // GEN-FIRST:event_FileItemNewActionPerformed
-  private void FileItemNewActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemNewActionPerformed(ActionEvent evt) {
 
     boolean createNew = true;
     if (drawArea1.getFileModifed()) {
@@ -1117,19 +1118,19 @@ public class FizzimGui extends JFrame {
 
   }
 
-  private void GlobalItemMachineActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemMachineActionPerformed
+  private void GlobalItemMachineActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemMachineActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 0)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemMachineActionPerformed
 
-  private void GlobalItemInputsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemsInputsActionPerformed
+  private void GlobalItemInputsActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemsInputsActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 1)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemsInputsActionPerformed
 
-  private void GlobalItemOutputsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemOutputsActionPerformed
+  private void GlobalItemOutputsActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemOutputsActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 2)
         .setVisible(true);
@@ -1142,20 +1143,20 @@ public class FizzimGui extends JFrame {
 
   }// GEN-LAST:event_GlobalItemOutputsActionPerformed
 
-  private void GlobalItemStatesActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemStatesActionPerformed
+  private void GlobalItemStatesActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemStatesActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 3)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemStatesActionPerformed
 
   private void GlobalItemTransitionsActionPerformed(
-      java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemTransitionsActionPerformed
+      ActionEvent evt) {// GEN-FIRST:event_GlobalItemTransitionsActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 4)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemTransitionsActionPerformed
 
-  private void FileItemSaveAsActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemSaveAsActionPerformed(ActionEvent evt) {
     try {
       if (currFile == null)
       {
@@ -1178,7 +1179,7 @@ public class FizzimGui extends JFrame {
 
   }
 
-  private void FileItemOpenActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_FileItemOpenActionPerformed
+  private void FileItemOpenActionPerformed(ActionEvent evt) {// GEN-FIRST:event_FileItemOpenActionPerformed
     boolean open = true;
     if (drawArea1.getFileModifed()) {
       Object[] options = { "Yes", "No", "Cancel" };
@@ -1430,7 +1431,6 @@ public class FizzimGui extends JFrame {
           };
         } catch (FileNotFoundException e) {
         }
-
         // sets std err to be written to file
         System.setErr(new PrintStream(fout));
 
@@ -1482,8 +1482,7 @@ public class FizzimGui extends JFrame {
     return -1;
   }
 
-  public void setDASize(int w, int h)
-  {
+  public void setDASize(int w, int h) {
     maxW = w;
     maxH = h;
 
@@ -1511,29 +1510,26 @@ public class FizzimGui extends JFrame {
   }
 
   class MyJFileChooser extends JFileChooser {
-
     boolean selected;
 
-    MyJFileChooser(String type)
-    {
+    MyJFileChooser(String type) {
       if (type.equals("fzm"))
         setFileFilter(new FzmFilter());
     }
 
-    public void approveSelection()
-    {
+    @Override
+    public void approveSelection() {
       selected = true;
       super.approveSelection();
     }
 
-    public void cancelSelection()
-    {
+    @Override
+    public void cancelSelection() {
       selected = false;
       super.cancelSelection();
     }
 
-    public boolean getSelected()
-    {
+    public boolean getSelected() {
       return selected;
     }
   };
@@ -1718,15 +1714,15 @@ public class FizzimGui extends JFrame {
       jLabel4.setText("pixels");
 
       jButton1.setText("Cancel");
-      jButton1.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
+      jButton1.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
           jButton1ActionPerformed(evt);
         }
       });
 
       jButton2.setText("OK");
-      jButton2.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
+      jButton2.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
           jButton2ActionPerformed(evt);
         }
       });
@@ -1797,12 +1793,12 @@ public class FizzimGui extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // GEN-FIRST:event_jButton1ActionPerformed
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void jButton1ActionPerformed(ActionEvent evt) {
       dispose();
     }// GEN-LAST:event_jButton1ActionPerformed
 
     // GEN-FIRST:event_jButton2ActionPerformed
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void jButton2ActionPerformed(ActionEvent evt) {
       if (JOptionPane
           .showConfirmDialog(
               this,
