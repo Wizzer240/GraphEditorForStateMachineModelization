@@ -56,6 +56,9 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -215,6 +218,7 @@ public class FizzimGui extends JFrame {
   private JSeparator jSeparator3;
   private JSeparator jSeparator4;
   private MyJTabbedPane pages_tabbedPane;
+
   // End of variables declaration//GEN-END:variables
 
   /**
@@ -292,15 +296,12 @@ public class FizzimGui extends JFrame {
     pages_tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
     jPanel1 = drawArea1;
-    org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(
-        jPanel1);
+    GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(
-        org.jdesktop.layout.GroupLayout.LEADING).add(0, 1294,
-        Short.MAX_VALUE));
+        Alignment.LEADING).addGap(0, 1294, Short.MAX_VALUE));
     jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
-        org.jdesktop.layout.GroupLayout.LEADING).add(0, 1277,
-        Short.MAX_VALUE));
+        Alignment.LEADING).addGap(0, 1277, Short.MAX_VALUE));
     jScrollPane1.setViewportView(jPanel1);
 
     // pages
@@ -1732,113 +1733,66 @@ public class FizzimGui extends JFrame {
 
       jLabel5.setText("Enter new dimensions:");
 
-      org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
-          getContentPane());
+      GroupLayout layout = new GroupLayout(getContentPane());
       getContentPane().setLayout(layout);
-      layout
-          .setHorizontalGroup(layout
-              .createParallelGroup(
-                  org.jdesktop.layout.GroupLayout.LEADING)
-              .add(
-                  org.jdesktop.layout.GroupLayout.TRAILING,
-                  layout
-                      .createSequentialGroup()
-                      .addContainerGap(23, Short.MAX_VALUE)
-                      .add(jButton2)
+      layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
+          .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+              .addContainerGap(23, Short.MAX_VALUE)
+              .addComponent(jButton2)
+              .addPreferredGap(ComponentPlacement.RELATED)
+              .addComponent(jButton1).addContainerGap())
+          .addGroup(layout.createSequentialGroup()
+              .addContainerGap().addComponent(jLabel5)
+              .addContainerGap(33, Short.MAX_VALUE))
+          .addGroup(layout
+              .createSequentialGroup()
+              .addContainerGap()
+              .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                  .addComponent(jLabel1).addComponent(jLabel2))
+              .addGap(1, 1, 1)
+              .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                  .addGroup(layout.createSequentialGroup()
+                      .addComponent(jTextField2,
+                          GroupLayout.PREFERRED_SIZE,
+                          GroupLayout.DEFAULT_SIZE,
+                          GroupLayout.PREFERRED_SIZE)
                       .addPreferredGap(
-                          org.jdesktop.layout.LayoutStyle.RELATED)
-                      .add(jButton1).addContainerGap())
-              .add(
-                  layout.createSequentialGroup()
-                      .addContainerGap().add(jLabel5)
-                      .addContainerGap(33, Short.MAX_VALUE))
-              .add(
-                  layout
+                          ComponentPlacement.RELATED)
+                      .addComponent(jLabel4))
+                  .addGroup(layout
                       .createSequentialGroup()
-                      .addContainerGap()
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.LEADING)
-                              .add(jLabel1).add(
-                                  jLabel2))
-                      .add(1, 1, 1)
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.LEADING)
-                              .add(
-                                  layout
-                                      .createSequentialGroup()
-                                      .add(
-                                          jTextField2,
-                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-                                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                      .addPreferredGap(
-                                          org.jdesktop.layout.LayoutStyle.RELATED)
-                                      .add(
-                                          jLabel4))
-                              .add(
-                                  layout
-                                      .createSequentialGroup()
-                                      .add(
-                                          jTextField1,
-                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-                                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                      .addPreferredGap(
-                                          org.jdesktop.layout.LayoutStyle.RELATED)
-                                      .add(
-                                          jLabel3)))
-                      .addContainerGap(
-                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                          Short.MAX_VALUE)));
-      layout
-          .setVerticalGroup(layout
-              .createParallelGroup(
-                  org.jdesktop.layout.GroupLayout.LEADING)
-              .add(
-                  org.jdesktop.layout.GroupLayout.TRAILING,
-                  layout
-                      .createSequentialGroup()
-                      .addContainerGap()
-                      .add(jLabel5)
-                      .add(17, 17, 17)
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.BASELINE)
-                              .add(jLabel1)
-                              .add(
-                                  jTextField1,
-                                  org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-                                  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                                  org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                              .add(jLabel3))
-                      .addPreferredGap(
-                          org.jdesktop.layout.LayoutStyle.RELATED)
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.BASELINE)
-                              .add(jLabel2)
-                              .add(
-                                  jTextField2,
-                                  org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-                                  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                                  org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                              .add(jLabel4))
-                      .addPreferredGap(
-                          org.jdesktop.layout.LayoutStyle.RELATED,
-                          16, Short.MAX_VALUE)
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.BASELINE)
-                              .add(jButton1).add(
-                                  jButton2))
-                      .addContainerGap()));
+                      .addComponent(jTextField1,
+                          GroupLayout.PREFERRED_SIZE,
+                          GroupLayout.DEFAULT_SIZE,
+                          GroupLayout.PREFERRED_SIZE)
+                      .addPreferredGap(ComponentPlacement.RELATED)
+                      .addComponent(jLabel3)))
+              .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+
+      layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
+          .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+              .addContainerGap()
+              .addComponent(jLabel5)
+              .addGap(17, 17, 17)
+              .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                  .addComponent(jLabel1)
+                  .addComponent(jTextField1,
+                      GroupLayout.PREFERRED_SIZE,
+                      GroupLayout.DEFAULT_SIZE,
+                      GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jLabel3))
+              .addPreferredGap(ComponentPlacement.RELATED)
+              .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                  .addComponent(jLabel2)
+                  .addComponent(jTextField2,
+                      GroupLayout.PREFERRED_SIZE,
+                      GroupLayout.DEFAULT_SIZE,
+                      GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jLabel4))
+              .addPreferredGap(ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+              .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                  .addComponent(jButton1).addComponent(jButton2))
+              .addContainerGap()));
       pack();
     }// </editor-fold>//GEN-END:initComponents
 
