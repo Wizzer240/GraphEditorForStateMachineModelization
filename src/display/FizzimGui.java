@@ -1392,11 +1392,11 @@ public class FizzimGui extends javax.swing.JFrame {
             throw new IOException(
                 "One of the variable event, condition and actions are null");
           }
-          writer.write(event + " " + event_field);
+          writer.write(event + " " + "Evenement");
           writer.newLine();
-          writer.write(condition + " " + condition_field );
+          writer.write(condition + " " + "Condition");
           writer.newLine();
-          writer.write(actions + " " + action_field);
+          writer.write(actions + " " + "Action");
           writer.newLine();
         }
       }
