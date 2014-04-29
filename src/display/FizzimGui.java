@@ -91,6 +91,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import entities.GeneralObj;
@@ -223,10 +224,10 @@ public class FizzimGui extends JFrame {
   private JMenuItem FileExportPNG;
   private JMenuItem FileExportJPEG;
   private JMenu FileMenu;
-  private MyJFileChooser FileOpenAction;
-  private MyJFileChooser FileSaveAction;
-  private MyJFileChooser ExportChooser;
-  private MyJFileChooser FileSave6LinesAction;
+  private JFileChooser FileOpenAction;
+  private JFileChooser FileSaveAction;
+  private JFileChooser ExportChooser;
+  private JFileChooser FileSave6LinesAction;
   private JMenuItem GlobalItemInputs;
   private JMenuItem GlobalItemMachine;
   private JMenuItem GlobalItemOutputs;
@@ -259,10 +260,21 @@ public class FizzimGui extends JFrame {
   private void initComponents() {
     GridBagConstraints gridBagConstraints;
 
-    FileOpenAction = new MyJFileChooser("fzm");
-    FileSaveAction = new MyJFileChooser("fzm");
-    FileSave6LinesAction = new MyJFileChooser("txt");
-    ExportChooser = new MyJFileChooser("png");
+    FileNameExtensionFilter filter =
+        new FileNameExtensionFilter("Fizzim Files (*.fzm)", "fzm");
+    FileNameExtensionFilter PNGfilter =
+        new FileNameExtensionFilter("PNG", "png");
+    FileNameExtensionFilter TXTfilter =
+        new FileNameExtensionFilter("TXT", "txt");
+
+    FileOpenAction = new JFileChooser();
+    FileOpenAction.setFileFilter(filter);
+    FileSaveAction = new JFileChooser();
+    FileSaveAction.setFileFilter(filter);
+    ExportChooser = new JFileChooser();
+    ExportChooser.setFileFilter(PNGfilter);
+    FileSave6LinesAction = new JFileChooser();
+    FileSave6LinesAction.setFileFilter(TXTfilter);
 
     jPanel3 = new JPanel();
     pages_tabbedPane = new MyJTabbedPane();
@@ -745,14 +757,12 @@ public class FizzimGui extends JFrame {
 
   protected void FileExportPNGActionPerformed(ActionEvent evt) {
 
-    try {
-      ExportChooser.setCurrentDirectory(currFile);
-      ExportChooser.showSaveDialog(this);
-    } catch (java.awt.HeadlessException e1) {
-      e1.printStackTrace();
-    }
-    if (ExportChooser.getSelected())
+    ExportChooser.setCurrentDirectory(currFile);
+    int returnVal = ExportChooser.showSaveDialog(this);
+
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
       tryToSave(ExportChooser.getSelectedFile(), "png", true);
+    }
 
   }
 
@@ -765,14 +775,12 @@ public class FizzimGui extends JFrame {
   }
 
   protected void FileExportJPEGActionPerformed(ActionEvent evt) {
-    try {
-      ExportChooser.setCurrentDirectory(currFile);
-      ExportChooser.showSaveDialog(this);
-    } catch (java.awt.HeadlessException e1) {
-      e1.printStackTrace();
-    }
-    if (ExportChooser.getSelected())
+
+    ExportChooser.setCurrentDirectory(currFile);
+    int returnVal = ExportChooser.showSaveDialog(this);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
       tryToSave(ExportChooser.getSelectedFile(), "jpg", true);
+    }
   }
 
   protected void FileExportClipboardActionPerformed(ActionEvent evt) {
@@ -924,19 +932,19 @@ public class FizzimGui extends JFrame {
   // GEN-FIRST:event_FileItemSaveActionPerformed
   private void FileItemSaveActionPerformed(ActionEvent evt) {
     if (currFile == null) {
-      try {
-        // Default to cwd
-        // FileSaveAction.setCurrentDirectory(new
-        // java.io.File("").getAbsoluteFile());
-        FileSaveAction.setCurrentDirectory(new java.io.File(System
-            .getProperty("user.dir")).getAbsoluteFile());
-        FileSaveAction.showSaveDialog(this);
-      } catch (java.awt.HeadlessException e1) {
-        e1.printStackTrace();
-      }
-      if (FileSaveAction.getSelected())
-        if (tryToSave(FileSaveAction.getSelectedFile(), "fzm", true))
+
+      // Default to cwd
+      // FileSaveAction.setCurrentDirectory(new
+      // java.io.File("").getAbsoluteFile());
+      FileSaveAction.setCurrentDirectory(new File(System
+          .getProperty("user.dir")).getAbsoluteFile());
+      int returnVal = FileSaveAction.showSaveDialog(this);
+
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        if (tryToSave(FileSaveAction.getSelectedFile(), "fzm", true)) {
           setTitle("Fizzim - " + currFile.getName());
+        }
+      }
 
     } else {
       setTitle("Fizzim - " + currFile.getName());
@@ -1070,15 +1078,12 @@ public class FizzimGui extends JFrame {
                 JOptionPane.QUESTION_MESSAGE, null, options,
                 options[0]);
         if (n == JOptionPane.YES_OPTION) {
-          try {
-            FileSaveAction.setCurrentDirectory(new java.io.File(System
-                .getProperty("user.dir")).getAbsoluteFile());
-            FileSaveAction.showSaveDialog(this);
-          } catch (java.awt.HeadlessException e1) {
-            e1.printStackTrace();
-          }
-          if (FileSaveAction.getSelected())
-          {
+
+          FileSaveAction.setCurrentDirectory(new File(System
+              .getProperty("user.dir")).getAbsoluteFile());
+          int returnVal = FileSaveAction.showSaveDialog(this);
+
+          if (returnVal == JFileChooser.APPROVE_OPTION) {
             if (tryToSave(FileSaveAction.getSelectedFile(), "fzm", true))
               System.exit(0);
           }
@@ -1152,15 +1157,14 @@ public class FizzimGui extends JFrame {
                 options[0]);
 
         if (n == JOptionPane.YES_OPTION) {
-          try {
-            FileSaveAction.setCurrentDirectory(new java.io.File(System
-                .getProperty("user.dir")).getAbsoluteFile());
-            FileSaveAction.showSaveDialog(this);
-          } catch (java.awt.HeadlessException e1) {
-            e1.printStackTrace();
-          }
-          if (FileSaveAction.getSelected())
+
+          FileSaveAction.setCurrentDirectory(new File(System
+              .getProperty("user.dir")).getAbsoluteFile());
+          int returnVal = FileSaveAction.showSaveDialog(this);
+
+          if (returnVal == JFileChooser.APPROVE_OPTION) {
             tryToSave(FileSaveAction.getSelectedFile(), "fzm", true);
+          }
         }
         else if (n == JOptionPane.CANCEL_OPTION || n == -1)
           createNew = false;
@@ -1253,25 +1257,24 @@ public class FizzimGui extends JFrame {
   }// GEN-LAST:event_GlobalItemTransitionsActionPerformed
 
   private void FileItemSaveAsActionPerformed(ActionEvent evt) {
-    try {
-      if (currFile == null)
-      {
-        // Default to cwd
-        FileSaveAction.setCurrentDirectory(new java.io.File(System
-            .getProperty("user.dir")).getAbsoluteFile());
-      }
-      else
-        FileSaveAction.setSelectedFile(currFile);
 
-      FileSaveAction.setCurrentDirectory(new java.io.File(System
+    if (currFile == null) {
+      // Default to cwd
+      FileSaveAction.setCurrentDirectory(new File(System
           .getProperty("user.dir")).getAbsoluteFile());
-      FileSaveAction.showSaveDialog(this);
-    } catch (java.awt.HeadlessException e1) {
-      e1.printStackTrace();
+    } else {
+      FileSaveAction.setSelectedFile(currFile);
     }
-    if (FileSaveAction.getSelected())
-      if (tryToSave(FileSaveAction.getSelectedFile(), "fzm", true))
+
+    FileSaveAction.setCurrentDirectory(new File(System
+        .getProperty("user.dir")).getAbsoluteFile());
+    int returnVal = FileSaveAction.showSaveDialog(this);
+
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+      if (tryToSave(FileSaveAction.getSelectedFile(), "fzm", true)) {
         setTitle("Fizzim - " + currFile.getName());
+      }
+    }
 
   }
 
@@ -1282,23 +1285,20 @@ public class FizzimGui extends JFrame {
    */
   private void FileItemSaveAs6LinesActionPerformed(
       java.awt.event.ActionEvent evt) {
-    try {
-      if (currFile == null)
-      {
-        // Default to cwd
-        FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
-            .getProperty("user.dir")).getAbsoluteFile());
-      }
-      else
-        FileSave6LinesAction.setSelectedFile(currFile);
-
+    if (currFile == null)
+    {
+      // Default to cwd
       FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
           .getProperty("user.dir")).getAbsoluteFile());
-      FileSave6LinesAction.showSaveDialog(this);
-    } catch (java.awt.HeadlessException e1) {
-      e1.printStackTrace();
     }
-    if (FileSave6LinesAction.getSelected())
+    else
+      FileSave6LinesAction.setSelectedFile(currFile);
+
+    FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
+        .getProperty("user.dir")).getAbsoluteFile());
+    int returnVal = FileSave6LinesAction.showSaveDialog(this);
+
+    if (returnVal == JFileChooser.APPROVE_OPTION)
       if (tryToSave6lines(FileSave6LinesAction.getSelectedFile(), "txt", true))
         setTitle("Graphe 6 lignes - " + currFile.getName());
 
@@ -1316,14 +1316,10 @@ public class FizzimGui extends JFrame {
               JOptionPane.QUESTION_MESSAGE, null, options,
               options[0]);
       if (n == JOptionPane.YES_OPTION) {
-        try {
-          FileSaveAction.setCurrentDirectory(currFile);
-          FileSaveAction.showSaveDialog(this);
-        } catch (java.awt.HeadlessException e1) {
-          e1.printStackTrace();
-        }
-        if (FileSaveAction.getSelected())
-        {
+        FileSaveAction.setCurrentDirectory(currFile);
+        int returnVal = FileSaveAction.showSaveDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
           if (!tryToSave(FileSaveAction.getSelectedFile(), "fzm", true))
             open = false;
         }
@@ -1331,25 +1327,20 @@ public class FizzimGui extends JFrame {
       else if (n == JOptionPane.CANCEL_OPTION || n == -1)
         open = false;
     }
-    if (open)
-    {
-      try {
+    if (open) {
 
-        if (currFile == null)
-          // Default to cwd
-          // FileOpenAction.setCurrentDirectory(new
-          // java.io.File("").getAbsoluteFile());
-          FileOpenAction.setCurrentDirectory(new java.io.File(System
-              .getProperty("user.dir")).getAbsoluteFile());
-        else
-          FileOpenAction.setCurrentDirectory(currFile);
-        FileOpenAction.showOpenDialog(null);
-      } catch (java.awt.HeadlessException e1) {
-        e1.printStackTrace();
+      if (currFile == null) {
+        // Default to cwd
+        // FileOpenAction.setCurrentDirectory(new
+        // java.io.File("").getAbsoluteFile());
+        FileOpenAction.setCurrentDirectory(new File(System
+            .getProperty("user.dir")).getAbsoluteFile());
+      } else {
+        FileOpenAction.setCurrentDirectory(currFile);
       }
+      int returnVal = FileOpenAction.showOpenDialog(null);
 
-      if (FileOpenAction.getSelected())
-      {
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
         File tempFile = FileOpenAction.getSelectedFile();
         String fileName = tempFile.getName().toLowerCase();
         if (!tempFile.isDirectory() && fileName.endsWith(".fzm")) {
@@ -1714,31 +1705,6 @@ public class FizzimGui extends JFrame {
     repaint();
 
   }
-
-  class MyJFileChooser extends JFileChooser {
-    boolean selected;
-
-    MyJFileChooser(String type) {
-      if (type.equals("fzm"))
-        setFileFilter(new FzmFilter());
-    }
-
-    @Override
-    public void approveSelection() {
-      selected = true;
-      super.approveSelection();
-    }
-
-    @Override
-    public void cancelSelection() {
-      selected = false;
-      super.cancelSelection();
-    }
-
-    public boolean getSelected() {
-      return selected;
-    }
-  };
 
   // following 3 classes use code from:
   // http://forum.java.sun.com/thread.jspa?threadID=337070&messageID=1429062
