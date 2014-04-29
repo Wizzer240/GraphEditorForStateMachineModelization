@@ -1,5 +1,25 @@
 package display;
 
+/*
+ Copyright 2007-2011 Zimmer Design Services mike@zimmerdesignservices.com
+ Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
+
+ This file is part of Fizzim.
+
+ Fizzim is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ Fizzim is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -7,6 +27,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -15,9 +36,15 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -37,11 +64,33 @@ import java.util.LinkedList;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.JWindow;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import entities.GeneralObj;
@@ -52,31 +101,11 @@ import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 
-//Written by: Michael Zimmer - mike@zimmerdesignservices.com
-
-/*
- Copyright 2007-2011 Zimmer Design Services
-
- This file is part of Fizzim.
-
- Fizzim is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- Fizzim is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 /* This file was originally created with matisse GUI Builder for MyEclipse.
  * Due to bugs and limitations, in is now being manually edited
  */
-public class FizzimGui extends javax.swing.JFrame {
+@SuppressWarnings("serial")
+public class FizzimGui extends JFrame {
 
   static String currVer = "14.02.28";
   static String action_field = "Action";
@@ -94,6 +123,10 @@ public class FizzimGui extends javax.swing.JFrame {
   int maxH = 1296;
   int maxW = 936;
   boolean loading = false;
+
+  File currFile = null;
+  /* The DrawArea is the central editing window */
+  private DrawArea drawArea1;
 
   /** Creates new form FizzimGui */
   public FizzimGui() {
@@ -140,8 +173,8 @@ public class FizzimGui extends javax.swing.JFrame {
         ObjAttribute.GLOBAL_VAR };
     globalList.get(EnumGlobalList.MACHINE).add(
         new ObjAttribute("name", "def_name", EnumVisibility.NO, "", "",
-            Color.black, "", "",
-            editable));
+            Color.black, "", "", editable));
+
     globalList.get(EnumGlobalList.MACHINE).add(
         new ObjAttribute("clock", "clk", EnumVisibility.NO,
             "posedge", "", Color.black, "", "", editable));
@@ -168,8 +201,52 @@ public class FizzimGui extends javax.swing.JFrame {
     globalList.get(EnumGlobalList.TRANSITIONS).add(
         new ObjAttribute(action_field, "", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
-
   }
+
+  // GEN-BEGIN:variables
+  // Variables declaration - do not modify
+  private JMenuItem EditItemDelete;
+  private JMenuItem EditItemRedo;
+  private JMenuItem EditItemUndo;
+  private JMenu EditMenu;
+  private JMenuItem FileItemExit;
+  private JMenuItem FileItemNew;
+  private JMenuItem FileItemOpen;
+  private JMenuItem FilePref;
+  private JMenuItem FileItemPageSetup;
+  private JMenuItem FileItemPrint;
+  private JMenuItem FileItemSave;
+  private JMenuItem FileItemSaveAs;
+  private JMenuItem FileItemSaveAs6Lines;
+  private JMenu FileExport;
+  private JMenuItem FileExportClipboard;
+  private JMenuItem FileExportPNG;
+  private JMenuItem FileExportJPEG;
+  private JMenu FileMenu;
+  private MyJFileChooser FileOpenAction;
+  private MyJFileChooser FileSaveAction;
+  private MyJFileChooser ExportChooser;
+  private MyJFileChooser FileSave6LinesAction;
+  private JMenuItem GlobalItemInputs;
+  private JMenuItem GlobalItemMachine;
+  private JMenuItem GlobalItemOutputs;
+  private JMenuItem GlobalItemStates;
+  private JMenuItem GlobalItemTransitions;
+  private JMenu GlobalMenu;
+  private JMenuItem HelpItemAbout;
+  private JMenuItem HelpItemHelp;
+  private JMenu HelpMenu;
+  private JMenuBar MenuBar;
+  private JPanel jPanel1;
+  private JPanel jPanel3;
+  private JScrollPane jScrollPane1;
+  private JSeparator jSeparator1;
+  private JSeparator jSeparator2;
+  private JSeparator jSeparator3;
+  private JSeparator jSeparator4;
+  private MyJTabbedPane pages_tabbedPane;
+
+  // End of variables declaration//GEN-END:variables
 
   /**
    * This method is called from within the constructor to
@@ -177,116 +254,98 @@ public class FizzimGui extends javax.swing.JFrame {
    * WARNING: Do NOT modify this code. The content of this method is
    * always regenerated by the Form Editor.
    */
-
   // GEN-BEGIN:initComponents
   // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
   private void initComponents() {
-    java.awt.GridBagConstraints gridBagConstraints;
+    GridBagConstraints gridBagConstraints;
 
     FileOpenAction = new MyJFileChooser("fzm");
     FileSaveAction = new MyJFileChooser("fzm");
     FileSave6LinesAction = new MyJFileChooser("txt");
     ExportChooser = new MyJFileChooser("png");
-    jPanel3 = new javax.swing.JPanel();
-    jTabbedPane1 = new MyJTabbedPane();
-    jScrollPane1 = new javax.swing.JScrollPane();
-    jPanel1 = new javax.swing.JPanel();
-    MenuBar = new javax.swing.JMenuBar();
-    FileMenu = new javax.swing.JMenu();
-    FileItemNew = new javax.swing.JMenuItem();
-    FileItemOpen = new javax.swing.JMenuItem();
-    FileItemSave = new javax.swing.JMenuItem();
-    FileItemSaveAs = new javax.swing.JMenuItem();
-    FileItemSaveAs6Lines = new javax.swing.JMenuItem();
-    FileExport = new javax.swing.JMenu("Export to...");
-    FileExportClipboard = new javax.swing.JMenuItem();
-    FileExportPNG = new javax.swing.JMenuItem();
-    FileExportJPEG = new javax.swing.JMenuItem();
-    jSeparator1 = new javax.swing.JSeparator();
-    FilePref = new javax.swing.JMenuItem();
-    FileItemPageSetup = new javax.swing.JMenuItem();
-    FileItemPrint = new javax.swing.JMenuItem();
-    jSeparator2 = new javax.swing.JSeparator();
-    FileItemExit = new javax.swing.JMenuItem();
-    EditMenu = new javax.swing.JMenu();
-    EditItemUndo = new javax.swing.JMenuItem();
-    EditItemRedo = new javax.swing.JMenuItem();
-    EditItemDelete = new javax.swing.JMenuItem();
-    GlobalMenu = new javax.swing.JMenu();
-    GlobalItemMachine = new javax.swing.JMenuItem();
-    GlobalItemStates = new javax.swing.JMenuItem();
-    GlobalItemTransitions = new javax.swing.JMenuItem();
-    jSeparator3 = new javax.swing.JSeparator();
-    GlobalItemInputs = new javax.swing.JMenuItem();
-    GlobalItemOutputs = new javax.swing.JMenuItem();
-    HelpMenu = new javax.swing.JMenu();
-    HelpItemHelp = new javax.swing.JMenuItem();
-    jSeparator4 = new javax.swing.JSeparator();
-    HelpItemAbout = new javax.swing.JMenuItem();
 
-    FileOpenAction.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        FileOpenActionActionPerformed(evt);
-      }
-    });
+    jPanel3 = new JPanel();
+    pages_tabbedPane = new MyJTabbedPane();
+    jScrollPane1 = new JScrollPane();
+    jPanel1 = new JPanel();
+    MenuBar = new JMenuBar();
+    FileMenu = new JMenu();
+    FileItemNew = new JMenuItem();
+    FileItemOpen = new JMenuItem();
+    FileItemSave = new JMenuItem();
+    FileItemSaveAs = new JMenuItem();
+    FileItemSaveAs6Lines = new JMenuItem();
+    FileExport = new JMenu("Export to...");
+    FileExportClipboard = new JMenuItem();
+    FileExportPNG = new JMenuItem();
+    FileExportJPEG = new JMenuItem();
+    jSeparator1 = new JSeparator();
+    FilePref = new JMenuItem();
+    FileItemPageSetup = new JMenuItem();
+    FileItemPrint = new JMenuItem();
+    jSeparator2 = new JSeparator();
+    FileItemExit = new JMenuItem();
+    EditMenu = new JMenu();
+    EditItemUndo = new JMenuItem();
+    EditItemRedo = new JMenuItem();
+    EditItemDelete = new JMenuItem();
+    GlobalMenu = new JMenu();
+    GlobalItemMachine = new JMenuItem();
+    GlobalItemStates = new JMenuItem();
+    GlobalItemTransitions = new JMenuItem();
+    jSeparator3 = new JSeparator();
+    GlobalItemInputs = new JMenuItem();
+    GlobalItemOutputs = new JMenuItem();
+    HelpMenu = new JMenu();
+    HelpItemHelp = new JMenuItem();
+    jSeparator4 = new JSeparator();
+    HelpItemAbout = new JMenuItem();
 
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     setTitle("Fizzim");
-    addComponentListener(new java.awt.event.ComponentAdapter() {
-      public void componentResized(java.awt.event.ComponentEvent evt) {
+    addComponentListener(new ComponentAdapter() {
+      public void componentResized(ComponentEvent evt) {
         formComponentResized(evt);
       }
     });
-    addWindowListener(new java.awt.event.WindowAdapter() {
-      public void windowClosing(java.awt.event.WindowEvent evt) {
-        formWindowClosing(evt);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent evt) {
+        formWindowClosing();
+      }
+    });
+
+    FileOpenAction.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        FileOpenActionActionPerformed(evt);
       }
     });
 
     jPanel3.setLayout(new java.awt.GridBagLayout());
 
     jPanel3.setMinimumSize(new java.awt.Dimension(100, 100));
-    jTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
-    // jTabbedPane1.setMinimumSize(getScrollPaneSize());
-    // jTabbedPane1.setPreferredSize(new java.awt.Dimension(1000, 685));
-    // jScrollPane1.setMaximumSize(new Dimension(maxW, maxH));
-    // jScrollPane1.setMinimumSize(new Dimension(maxW, maxH));
-    // jScrollPane1.setPreferredSize(new Dimension(maxW, maxH));
+    pages_tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
+
     jPanel1 = drawArea1;
-    org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(
-        jPanel1);
+    GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(
-        org.jdesktop.layout.GroupLayout.LEADING).add(0, 1294,
-        Short.MAX_VALUE));
+        Alignment.LEADING).addGap(0, 1294, Short.MAX_VALUE));
     jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
-        org.jdesktop.layout.GroupLayout.LEADING).add(0, 1277,
-        Short.MAX_VALUE));
+        Alignment.LEADING).addGap(0, 1277, Short.MAX_VALUE));
     jScrollPane1.setViewportView(jPanel1);
 
     // pages
-    /*
-     * 
-     * System.err.println("test");
-     * 
-     * try {
-     * throw new RuntimeException("Test");
-     * } catch (Exception e) {
-     * e.printStackTrace();
-     * }
-     */
-
-    jTabbedPane1.addBlankTab("Create New Page", new JPanel());
-    jTabbedPane1.addTab("Page 1", jScrollPane1);
-    jTabbedPane1.setSelectedIndex(1);
-    jTabbedPane1.setBackgroundAt(0, new Color(200, 200, 200));
-    jTabbedPane1.addChangeListener(new ChangeListener() {
+    pages_tabbedPane.addBlankTab("Create New Page", new JPanel());
+    pages_tabbedPane.addTab("Page 1", jScrollPane1);
+    pages_tabbedPane.setSelectedIndex(1);
+    pages_tabbedPane.setBackgroundAt(0, new Color(200, 200, 200));
+    pages_tabbedPane.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent e) {
         TabChanged(e);
       }
     });
 
-    jTabbedPane1.addMouseListener(new MouseListener() {
+    pages_tabbedPane.addMouseListener(new MouseListener() {
 
       public void mouseClicked(MouseEvent arg0) {
         if (arg0.getButton() == MouseEvent.BUTTON3 || arg0.getModifiers() == 20)
@@ -315,7 +374,7 @@ public class FizzimGui extends javax.swing.JFrame {
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
-    jPanel3.add(jTabbedPane1, gridBagConstraints);
+    jPanel3.add(pages_tabbedPane, gridBagConstraints);
 
     getContentPane().add(jPanel3, java.awt.BorderLayout.CENTER);
 
@@ -325,46 +384,46 @@ public class FizzimGui extends javax.swing.JFrame {
     if (coord.width > maxW)
       coord.setSize(maxW + 23, coord.height);
 
-    jTabbedPane1.setMinimumSize(coord);
-    jTabbedPane1.setSize(coord);
+    pages_tabbedPane.setMinimumSize(coord);
+    pages_tabbedPane.setSize(coord);
     jPanel3.doLayout();
     jPanel3.repaint();
 
     FileMenu.setText("File");
-    FileMenu.setMnemonic(java.awt.event.KeyEvent.VK_F);
-    FileItemNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_N,
-        java.awt.event.InputEvent.CTRL_MASK));
-    FileItemNew.setMnemonic(java.awt.event.KeyEvent.VK_N);
+    FileMenu.setMnemonic(KeyEvent.VK_F);
+    FileItemNew.setAccelerator(KeyStroke.getKeyStroke(
+        KeyEvent.VK_N,
+        InputEvent.CTRL_MASK));
+    FileItemNew.setMnemonic(KeyEvent.VK_N);
     FileItemNew.setText("New");
-    FileItemNew.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemNew.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemNewActionPerformed(evt);
       }
     });
 
     FileMenu.add(FileItemNew);
 
-    FileItemOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_O,
-        java.awt.event.InputEvent.CTRL_MASK));
-    FileItemOpen.setMnemonic(java.awt.event.KeyEvent.VK_O);
+    FileItemOpen.setAccelerator(KeyStroke.getKeyStroke(
+        KeyEvent.VK_O,
+        InputEvent.CTRL_MASK));
+    FileItemOpen.setMnemonic(KeyEvent.VK_O);
     FileItemOpen.setText("Open");
-    FileItemOpen.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemOpen.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemOpenActionPerformed(evt);
       }
     });
 
     FileMenu.add(FileItemOpen);
 
-    FileItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_S,
-        java.awt.event.InputEvent.CTRL_MASK));
-    FileItemSave.setMnemonic(java.awt.event.KeyEvent.VK_S);
+    FileItemSave.setAccelerator(KeyStroke.getKeyStroke(
+        KeyEvent.VK_S,
+        InputEvent.CTRL_MASK));
+    FileItemSave.setMnemonic(KeyEvent.VK_S);
     FileItemSave.setText("Save");
-    FileItemSave.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemSave.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemSaveActionPerformed(evt);
       }
     });
@@ -372,10 +431,10 @@ public class FizzimGui extends javax.swing.JFrame {
     FileMenu.add(FileItemSave);
 
     FileItemSaveAs.setText("Save As");
-    FileItemSaveAs.setMnemonic(java.awt.event.KeyEvent.VK_A);
+    FileItemSaveAs.setMnemonic(KeyEvent.VK_A);
     FileItemSaveAs.setDisplayedMnemonicIndex(5);
-    FileItemSaveAs.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemSaveAs.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemSaveAsActionPerformed(evt);
       }
     });
@@ -397,43 +456,43 @@ public class FizzimGui extends javax.swing.JFrame {
     // export
 
     FileExportClipboard.setText("Clipboard");
-    FileExportClipboard.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_F2, 0));
-    FileExportClipboard.setMnemonic(java.awt.event.KeyEvent.VK_C);
-    FileExportClipboard.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileExportClipboard.setAccelerator(KeyStroke.getKeyStroke(
+        KeyEvent.VK_F2, 0));
+    FileExportClipboard.setMnemonic(KeyEvent.VK_C);
+    FileExportClipboard.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileExportClipboardActionPerformed(evt);
       }
     });
     FileExport.add(FileExportClipboard);
 
     FileExportPNG.setText("PNG");
-    FileExportPNG.setMnemonic(java.awt.event.KeyEvent.VK_P);
-    FileExportPNG.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileExportPNG.setMnemonic(KeyEvent.VK_P);
+    FileExportPNG.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileExportPNGActionPerformed(evt);
       }
     });
     FileExport.add(FileExportPNG);
 
     FileExportJPEG.setText("JPEG");
-    FileExportJPEG.setMnemonic(java.awt.event.KeyEvent.VK_J);
-    FileExportJPEG.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileExportJPEG.setMnemonic(KeyEvent.VK_J);
+    FileExportJPEG.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileExportJPEGActionPerformed(evt);
       }
     });
     FileExport.add(FileExportJPEG);
-    FileExport.setMnemonic(java.awt.event.KeyEvent.VK_E);
+    FileExport.setMnemonic(KeyEvent.VK_E);
 
     FileMenu.add(FileExport);
 
     FileMenu.add(jSeparator1);
 
     FilePref.setText("Preferences");
-    FilePref.setMnemonic(java.awt.event.KeyEvent.VK_R);
-    FilePref.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FilePref.setMnemonic(KeyEvent.VK_R);
+    FilePref.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FilePrefActionPerformed(evt);
       }
     });
@@ -441,23 +500,23 @@ public class FizzimGui extends javax.swing.JFrame {
     FileMenu.add(FilePref);
 
     FileItemPageSetup.setText("Page Setup");
-    FileItemPageSetup.setMnemonic(java.awt.event.KeyEvent.VK_U);
+    FileItemPageSetup.setMnemonic(KeyEvent.VK_U);
     FileItemPageSetup
-        .addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
+        .addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
             FileItemPageSetupActionPerformed(evt);
           }
         });
 
     FileMenu.add(FileItemPageSetup);
 
-    FileItemPrint.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_P,
-        java.awt.event.InputEvent.CTRL_MASK));
-    FileItemPrint.setMnemonic(java.awt.event.KeyEvent.VK_P);
+    FileItemPrint.setAccelerator(KeyStroke.getKeyStroke(
+        KeyEvent.VK_P,
+        InputEvent.CTRL_MASK));
+    FileItemPrint.setMnemonic(KeyEvent.VK_P);
     FileItemPrint.setText("Print");
-    FileItemPrint.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemPrint.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemPrintActionPerformed(evt);
       }
     });
@@ -467,9 +526,9 @@ public class FizzimGui extends javax.swing.JFrame {
     FileMenu.add(jSeparator2);
 
     FileItemExit.setText("Exit");
-    FileItemExit.setMnemonic(java.awt.event.KeyEvent.VK_X);
-    FileItemExit.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    FileItemExit.setMnemonic(KeyEvent.VK_X);
+    FileItemExit.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         FileItemExitActionPerformed(evt);
       }
     });
@@ -479,38 +538,38 @@ public class FizzimGui extends javax.swing.JFrame {
     MenuBar.add(FileMenu);
 
     EditMenu.setText("Edit");
-    EditMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
-    EditItemUndo.setMnemonic(java.awt.event.KeyEvent.VK_U);
-    EditItemUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_Z,
-        java.awt.event.InputEvent.CTRL_MASK));
+    EditMenu.setMnemonic(KeyEvent.VK_E);
+    EditItemUndo.setMnemonic(KeyEvent.VK_U);
+    EditItemUndo.setAccelerator(KeyStroke.getKeyStroke(
+        KeyEvent.VK_Z,
+        InputEvent.CTRL_MASK));
     EditItemUndo.setText("Undo");
-    EditItemUndo.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    EditItemUndo.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         EditItemUndoActionPerformed(evt);
       }
     });
 
     EditMenu.add(EditItemUndo);
-    EditItemRedo.setMnemonic(java.awt.event.KeyEvent.VK_R);
-    EditItemRedo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_Y,
-        java.awt.event.InputEvent.CTRL_MASK));
+    EditItemRedo.setMnemonic(KeyEvent.VK_R);
+    EditItemRedo.setAccelerator(KeyStroke.getKeyStroke(
+        KeyEvent.VK_Y,
+        InputEvent.CTRL_MASK));
     EditItemRedo.setText("Redo");
-    EditItemRedo.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    EditItemRedo.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         EditItemRedoActionPerformed(evt);
       }
     });
 
     EditMenu.add(EditItemRedo);
-    EditItemDelete.setMnemonic(java.awt.event.KeyEvent.VK_D);
-    EditItemDelete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_DELETE, 0));
+    EditItemDelete.setMnemonic(KeyEvent.VK_D);
+    EditItemDelete.setAccelerator(KeyStroke.getKeyStroke(
+        KeyEvent.VK_DELETE, 0));
     EditItemDelete.setText("Delete");
     // EditItemDelete.setVisible(false);
-    EditItemDelete.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    EditItemDelete.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         EditItemDeleteActionPerformed(evt);
       }
     });
@@ -520,34 +579,34 @@ public class FizzimGui extends javax.swing.JFrame {
     MenuBar.add(EditMenu);
 
     GlobalMenu.setText("Global Attributes");
-    GlobalMenu.setMnemonic(java.awt.event.KeyEvent.VK_G);
+    GlobalMenu.setMnemonic(KeyEvent.VK_G);
 
     GlobalItemMachine.setText("State Machine");
-    GlobalItemMachine.setMnemonic(java.awt.event.KeyEvent.VK_M);
+    GlobalItemMachine.setMnemonic(KeyEvent.VK_M);
     GlobalItemMachine
-        .addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
+        .addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
             GlobalItemMachineActionPerformed(evt);
           }
         });
 
     GlobalMenu.add(GlobalItemMachine);
 
-    GlobalItemInputs.setMnemonic(java.awt.event.KeyEvent.VK_I);
+    GlobalItemInputs.setMnemonic(KeyEvent.VK_I);
     GlobalItemInputs.setText("Inputs");
-    GlobalItemInputs.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    GlobalItemInputs.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         GlobalItemInputsActionPerformed(evt);
       }
     });
 
     GlobalMenu.add(GlobalItemInputs);
 
-    GlobalItemOutputs.setMnemonic(java.awt.event.KeyEvent.VK_O);
+    GlobalItemOutputs.setMnemonic(KeyEvent.VK_O);
     GlobalItemOutputs.setText("Outputs");
     GlobalItemOutputs
-        .addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
+        .addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
             GlobalItemOutputsActionPerformed(evt);
           }
         });
@@ -557,9 +616,9 @@ public class FizzimGui extends javax.swing.JFrame {
     GlobalMenu.add(jSeparator3);
 
     GlobalItemStates.setText("States");
-    GlobalItemStates.setMnemonic(java.awt.event.KeyEvent.VK_S);
-    GlobalItemStates.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    GlobalItemStates.setMnemonic(KeyEvent.VK_S);
+    GlobalItemStates.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         GlobalItemStatesActionPerformed(evt);
       }
     });
@@ -567,10 +626,10 @@ public class FizzimGui extends javax.swing.JFrame {
     GlobalMenu.add(GlobalItemStates);
 
     GlobalItemTransitions.setText("Transitions");
-    GlobalItemTransitions.setMnemonic(java.awt.event.KeyEvent.VK_T);
+    GlobalItemTransitions.setMnemonic(KeyEvent.VK_T);
     GlobalItemTransitions
-        .addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
+        .addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
             GlobalItemTransitionsActionPerformed(evt);
           }
         });
@@ -579,14 +638,14 @@ public class FizzimGui extends javax.swing.JFrame {
 
     MenuBar.add(GlobalMenu);
 
-    HelpMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
+    HelpMenu.setMnemonic(KeyEvent.VK_H);
     HelpMenu.setText("Help");
-    HelpItemHelp.setMnemonic(java.awt.event.KeyEvent.VK_H);
-    HelpItemHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_F1, 0));
+    HelpItemHelp.setMnemonic(KeyEvent.VK_H);
+    HelpItemHelp.setAccelerator(KeyStroke.getKeyStroke(
+        KeyEvent.VK_F1, 0));
     HelpItemHelp.setText("Help");
-    HelpItemHelp.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    HelpItemHelp.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         HelpItemHelpActionPerformed(evt);
       }
     });
@@ -595,11 +654,11 @@ public class FizzimGui extends javax.swing.JFrame {
 
     HelpMenu.add(jSeparator4);
 
-    HelpItemAbout.setMnemonic(java.awt.event.KeyEvent.VK_A);
+    HelpItemAbout.setMnemonic(KeyEvent.VK_A);
     HelpItemAbout.setText("About");
 
-    HelpItemAbout.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    HelpItemAbout.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         HelpItemAboutActionPerformed(evt);
       }
     });
@@ -789,12 +848,12 @@ public class FizzimGui extends javax.swing.JFrame {
         JOptionPane.PLAIN_MESSAGE,
         null,
         null,
-        jTabbedPane1.getTitleAt(tab));
+        pages_tabbedPane.getTitleAt(tab));
 
     if (s != null)
     {
       if (getPageIndex(s) == -1)
-        jTabbedPane1.setTitleAt(tab, s);
+        pages_tabbedPane.setTitleAt(tab, s);
       else
         JOptionPane.showMessageDialog(this,
             "Page must have unique name",
@@ -812,24 +871,24 @@ public class FizzimGui extends javax.swing.JFrame {
       // Get current tab
       int sel = pane.getSelectedIndex();
       // fill all but current tab with empty panels
-      for (int i = 1; i < jTabbedPane1.getTabCount(); i++)
+      for (int i = 1; i < pages_tabbedPane.getTabCount(); i++)
       {
         if (i != sel)
-          jTabbedPane1.setComponentAt(i, new JPanel());
+          pages_tabbedPane.setComponentAt(i, new JPanel());
       }
 
       if (sel == 0)
       {
-        int index = jTabbedPane1.getTabCount();
-        jTabbedPane1.addTab("Page " + String.valueOf(index), jScrollPane1);
-        jTabbedPane1.setSelectedIndex(index);
+        int index = pages_tabbedPane.getTabCount();
+        pages_tabbedPane.addTab("Page " + String.valueOf(index), jScrollPane1);
+        pages_tabbedPane.setSelectedIndex(index);
         drawArea1.setCurrPage(index);
       }
       else
       {
         // set current tab
         drawArea1.setCurrPage(sel);
-        jTabbedPane1.setComponentAt(sel, jScrollPane1);
+        pages_tabbedPane.setComponentAt(sel, jScrollPane1);
       }
       drawArea1.unselectObjs();
     }
@@ -840,12 +899,12 @@ public class FizzimGui extends javax.swing.JFrame {
   }
 
   // GEN-FIRST:event_FileItemPageSetupActionPerformed
-  private void FileItemPageSetupActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemPageSetupActionPerformed(ActionEvent evt) {
     new PageSetup(this, true).setVisible(true);
   }// GEN-LAST:event_FileItemPageSetupActionPerformed
 
   // GEN-FIRST:event_formComponentResized
-  private void formComponentResized(java.awt.event.ComponentEvent evt) {
+  private void formComponentResized(ComponentEvent evt) {
     // this method makes sure that the draw area size is mostly restricted
     // to dimensions set in page setup
 
@@ -855,20 +914,15 @@ public class FizzimGui extends javax.swing.JFrame {
     if (coord.width > maxW)
       coord.setSize(maxW + 23, coord.height);
     drawArea1.setSize(maxW, maxH);
-    jTabbedPane1.setMinimumSize(coord);
-    jTabbedPane1.setSize(coord);
+    pages_tabbedPane.setMinimumSize(coord);
+    pages_tabbedPane.setSize(coord);
     jPanel3.doLayout();
     jPanel3.repaint();
 
   }// GEN-LAST:event_formComponentResized
 
-  protected void formWindowClosing(WindowEvent evt) {
-    formWindowClosing();
-
-  }
-
   // GEN-FIRST:event_FileItemSaveActionPerformed
-  private void FileItemSaveActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemSaveActionPerformed(ActionEvent evt) {
     if (currFile == null) {
       try {
         // Default to cwd
@@ -1052,7 +1106,7 @@ public class FizzimGui extends javax.swing.JFrame {
   }// GEN-LAST:event_formWindowClosing
 
   // GEN-FIRST:event_FileItemPrintActionPerformed
-  private void FileItemPrintActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemPrintActionPerformed(ActionEvent evt) {
     PrinterJob printJob = PrinterJob.getPrinterJob();
     printJob.setPrintable(drawArea1);
     if (printJob.printDialog())
@@ -1064,27 +1118,27 @@ public class FizzimGui extends javax.swing.JFrame {
   }// GEN-LAST:event_FileItemPrintActionPerformed
 
   // GEN-FIRST:event_EditItemDeleteActionPerformed
-  private void EditItemDeleteActionPerformed(java.awt.event.ActionEvent evt) {
+  private void EditItemDeleteActionPerformed(ActionEvent evt) {
     drawArea1.delete();
   }// GEN-LAST:event_EditItemDeleteActionPerformed
 
   // GEN-FIRST:event_EditItemRedoActionPerformed
-  private void EditItemRedoActionPerformed(java.awt.event.ActionEvent evt) {
+  private void EditItemRedoActionPerformed(ActionEvent evt) {
     drawArea1.redo();
   }// GEN-LAST:event_EditItemRedoActionPerformed
 
   // GEN-FIRST:event_EditItemUndoActionPerformed
-  private void EditItemUndoActionPerformed(java.awt.event.ActionEvent evt) {
+  private void EditItemUndoActionPerformed(ActionEvent evt) {
     drawArea1.undo();
   }// GEN-LAST:event_EditItemUndoActionPerformed
 
   // GEN-FIRST:event_FileItemExitActionPerformed
-  private void FileItemExitActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemExitActionPerformed(ActionEvent evt) {
     formWindowClosing();
   }// GEN-LAST:event_FileItemExitActionPerformed
 
   // GEN-FIRST:event_FileItemNewActionPerformed
-  private void FileItemNewActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemNewActionPerformed(ActionEvent evt) {
 
     boolean createNew = true;
     if (drawArea1.getFileModifed()) {
@@ -1130,11 +1184,11 @@ public class FizzimGui extends javax.swing.JFrame {
     }
     if (createNew)
     {
-      for (int i = jTabbedPane1.getTabCount() - 1; i > 1; i--)
+      for (int i = pages_tabbedPane.getTabCount() - 1; i > 1; i--)
       {
-        jTabbedPane1.remove(i);
+        pages_tabbedPane.remove(i);
       }
-      jTabbedPane1.setComponentAt(1, jScrollPane1);
+      pages_tabbedPane.setComponentAt(1, jScrollPane1);
       currFile = null;
       setTitle("Fizzim");
       for (int i = 0; i < globalList.size(); i++)
@@ -1148,31 +1202,31 @@ public class FizzimGui extends javax.swing.JFrame {
   }// GEN-LAST:event_FileItemNewActionPerformed
 
   public void resetTabs() {
-    for (int i = jTabbedPane1.getTabCount() - 1; i > 0; i--)
+    for (int i = pages_tabbedPane.getTabCount() - 1; i > 0; i--)
     {
-      jTabbedPane1.remove(i);
+      pages_tabbedPane.remove(i);
     }
 
   }
 
   public void addNewTab(String line) {
-    jTabbedPane1.addTab(line, new JPanel());
+    pages_tabbedPane.addTab(line, new JPanel());
 
   }
 
-  private void GlobalItemMachineActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemMachineActionPerformed
+  private void GlobalItemMachineActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemMachineActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 0)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemMachineActionPerformed
 
-  private void GlobalItemInputsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemsInputsActionPerformed
+  private void GlobalItemInputsActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemsInputsActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 1)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemsInputsActionPerformed
 
-  private void GlobalItemOutputsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemOutputsActionPerformed
+  private void GlobalItemOutputsActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemOutputsActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 2)
         .setVisible(true);
@@ -1185,20 +1239,20 @@ public class FizzimGui extends javax.swing.JFrame {
 
   }// GEN-LAST:event_GlobalItemOutputsActionPerformed
 
-  private void GlobalItemStatesActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemStatesActionPerformed
+  private void GlobalItemStatesActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemStatesActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 3)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemStatesActionPerformed
 
   private void GlobalItemTransitionsActionPerformed(
-      java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GlobalItemTransitionsActionPerformed
+      ActionEvent evt) {// GEN-FIRST:event_GlobalItemTransitionsActionPerformed
     globalList = drawArea1.setUndoPoint();
     new GlobalProperties(drawArea1, this, true, globalList, 4)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemTransitionsActionPerformed
 
-  private void FileItemSaveAsActionPerformed(java.awt.event.ActionEvent evt) {
+  private void FileItemSaveAsActionPerformed(ActionEvent evt) {
     try {
       if (currFile == null)
       {
@@ -1250,7 +1304,8 @@ public class FizzimGui extends javax.swing.JFrame {
 
   }
 
-  private void FileItemOpenActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_FileItemOpenActionPerformed
+  private void FileItemOpenActionPerformed(ActionEvent evt) {// GEN-FIRST:event_FileItemOpenActionPerformed
+
     boolean open = true;
     if (drawArea1.getFileModifed()) {
       Object[] options = { "Yes", "No", "Cancel" };
@@ -1313,8 +1368,8 @@ public class FizzimGui extends javax.swing.JFrame {
     loading = true;
     currFile = selectedFile;
     FileParser fileParser = new FileParser(currFile, this, drawArea1);
-    jTabbedPane1.setComponentAt(1, jScrollPane1);
-    jTabbedPane1.setSelectedIndex(1);
+    pages_tabbedPane.setComponentAt(1, jScrollPane1);
+    pages_tabbedPane.setSelectedIndex(1);
     drawArea1.setCurrPage(1);
     loading = false;
 
@@ -1354,7 +1409,8 @@ public class FizzimGui extends javax.swing.JFrame {
         // verify that the object is a transition.
         if (temp instanceof TransitionObj) {
           TransitionObj transition = (TransitionObj) temp;
-          writer.write(selectedFile.getName().substring(0, selectedFile.getName().length()-4));
+          writer.write(selectedFile.getName().substring(0,
+              selectedFile.getName().length() - 4));
           writer.newLine();
           StateObj initial_state = transition.getStartState();
           // write the number of the initial state in the file.
@@ -1474,9 +1530,9 @@ public class FizzimGui extends javax.swing.JFrame {
       writer.write("</globals>\n");
 
       writer.write("<tabs>\n");
-      for (int i = 1; i < jTabbedPane1.getTabCount(); i++)
+      for (int i = 1; i < pages_tabbedPane.getTabCount(); i++)
       {
-        writer.write(i(1) + jTabbedPane1.getTitleAt(i) + "\n");
+        writer.write(i(1) + pages_tabbedPane.getTitleAt(i) + "\n");
       }
       writer.write("</tabs>\n");
 
@@ -1511,7 +1567,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
   public int getPages()
   {
-    return jTabbedPane1.getTabCount();
+    return pages_tabbedPane.getTabCount();
   }
 
   private void removePage(int i)
@@ -1581,14 +1637,13 @@ public class FizzimGui extends javax.swing.JFrame {
           };
         } catch (FileNotFoundException e) {
         }
-
         // sets std err to be written to file
         System.setErr(new PrintStream(fout));
 
         FizzimGui fzim = new FizzimGui();
         fzim.setVisible(true);
         fzim.setSize(new java.awt.Dimension(1000, 685));
-        new HelpItemAboutActionPerformed();
+        // new HelpItemAboutActionPerformed();
         // If command line filename is not null, open
         // this file.
         if (clfilename != "") {
@@ -1614,53 +1669,6 @@ public class FizzimGui extends javax.swing.JFrame {
     return clfilename;
   }
 
-  // GEN-BEGIN:variables
-  // Variables declaration - do not modify
-  private javax.swing.JMenuItem EditItemDelete;
-  private javax.swing.JMenuItem EditItemRedo;
-  private javax.swing.JMenuItem EditItemUndo;
-  private javax.swing.JMenu EditMenu;
-  private javax.swing.JMenuItem FileItemExit;
-  private javax.swing.JMenuItem FileItemNew;
-  private javax.swing.JMenuItem FileItemOpen;
-  private javax.swing.JMenuItem FilePref;
-  private javax.swing.JMenuItem FileItemPageSetup;
-  private javax.swing.JMenuItem FileItemPrint;
-  private javax.swing.JMenuItem FileItemSave;
-  private javax.swing.JMenuItem FileItemSaveAs;
-  private javax.swing.JMenuItem FileItemSaveAs6Lines;
-  private javax.swing.JMenu FileExport;
-  private javax.swing.JMenuItem FileExportClipboard;
-  private javax.swing.JMenuItem FileExportPNG;
-  private javax.swing.JMenuItem FileExportJPEG;
-  private javax.swing.JMenu FileMenu;
-  private MyJFileChooser FileOpenAction;
-  private MyJFileChooser FileSaveAction;
-  private MyJFileChooser FileSave6LinesAction;
-  private MyJFileChooser ExportChooser;
-  private javax.swing.JMenuItem GlobalItemInputs;
-  private javax.swing.JMenuItem GlobalItemMachine;
-  private javax.swing.JMenuItem GlobalItemOutputs;
-  private javax.swing.JMenuItem GlobalItemStates;
-  private javax.swing.JMenuItem GlobalItemTransitions;
-  private javax.swing.JMenu GlobalMenu;
-  private javax.swing.JMenuItem HelpItemAbout;
-  private javax.swing.JMenuItem HelpItemHelp;
-  private javax.swing.JMenu HelpMenu;
-  private javax.swing.JMenuBar MenuBar;
-  private javax.swing.JPanel jPanel1;
-  private javax.swing.JPanel jPanel3;
-  private javax.swing.JScrollPane jScrollPane1;
-  private javax.swing.JSeparator jSeparator1;
-  private javax.swing.JSeparator jSeparator2;
-  private javax.swing.JSeparator jSeparator3;
-  private javax.swing.JSeparator jSeparator4;
-  private MyJTabbedPane jTabbedPane1;
-  // End of variables declaration//GEN-END:variables
-
-  File currFile = null;
-  private DrawArea drawArea1;
-
   public void updateGlobal(LinkedList<LinkedList<ObjAttribute>> globalList2) {
     globalList = globalList2;
 
@@ -1668,20 +1676,19 @@ public class FizzimGui extends javax.swing.JFrame {
 
   public String getPageName(int i)
   {
-    return jTabbedPane1.getTitleAt(i);
+    return pages_tabbedPane.getTitleAt(i);
   }
 
   public int getPageIndex(String name) {
-    for (int i = 1; i < jTabbedPane1.getTabCount(); i++)
+    for (int i = 1; i < pages_tabbedPane.getTabCount(); i++)
     {
-      if (jTabbedPane1.getTitleAt(i).equals(name))
+      if (pages_tabbedPane.getTitleAt(i).equals(name))
         return i;
     }
     return -1;
   }
 
-  public void setDASize(int w, int h)
-  {
+  public void setDASize(int w, int h) {
     maxW = w;
     maxH = h;
 
@@ -1700,38 +1707,35 @@ public class FizzimGui extends javax.swing.JFrame {
     if (coord.width > maxW)
       coord.setSize(maxW + 23, coord.height);
 
-    jTabbedPane1.setMinimumSize(coord);
-    jTabbedPane1.setSize(coord);
-    jTabbedPane1.doLayout();
+    pages_tabbedPane.setMinimumSize(coord);
+    pages_tabbedPane.setSize(coord);
+    pages_tabbedPane.doLayout();
     jPanel3.doLayout();
     repaint();
 
   }
 
   class MyJFileChooser extends JFileChooser {
-
     boolean selected;
 
-    MyJFileChooser(String type)
-    {
+    MyJFileChooser(String type) {
       if (type.equals("fzm"))
         setFileFilter(new FzmFilter());
     }
 
-    public void approveSelection()
-    {
+    @Override
+    public void approveSelection() {
       selected = true;
       super.approveSelection();
     }
 
-    public void cancelSelection()
-    {
+    @Override
+    public void cancelSelection() {
       selected = false;
       super.cancelSelection();
     }
 
-    public boolean getSelected()
-    {
+    public boolean getSelected() {
       return selected;
     }
   };
@@ -1869,7 +1873,7 @@ public class FizzimGui extends javax.swing.JFrame {
 
   }
 
-  class PageSetup extends javax.swing.JDialog {
+  class PageSetup extends JDialog {
 
     FizzimGui fizzim;
 
@@ -1889,17 +1893,17 @@ public class FizzimGui extends javax.swing.JFrame {
     // GEN-BEGIN:initComponents
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
     private void initComponents() {
-      jLabel1 = new javax.swing.JLabel();
-      jLabel2 = new javax.swing.JLabel();
-      jTextField1 = new javax.swing.JTextField();
-      jTextField2 = new javax.swing.JTextField();
-      jLabel3 = new javax.swing.JLabel();
-      jLabel4 = new javax.swing.JLabel();
-      jButton1 = new javax.swing.JButton();
-      jButton2 = new javax.swing.JButton();
-      jLabel5 = new javax.swing.JLabel();
+      jLabel1 = new JLabel();
+      jLabel2 = new JLabel();
+      jTextField1 = new JTextField();
+      jTextField2 = new JTextField();
+      jLabel3 = new JLabel();
+      jLabel4 = new JLabel();
+      jButton1 = new JButton();
+      jButton2 = new JButton();
+      jLabel5 = new JLabel();
 
-      setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       jLabel1.setText("Width:");
 
       this.setTitle("Page Setup");
@@ -1916,138 +1920,91 @@ public class FizzimGui extends javax.swing.JFrame {
       jLabel4.setText("pixels");
 
       jButton1.setText("Cancel");
-      jButton1.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
+      jButton1.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
           jButton1ActionPerformed(evt);
         }
       });
 
       jButton2.setText("OK");
-      jButton2.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
+      jButton2.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
           jButton2ActionPerformed(evt);
         }
       });
 
       jLabel5.setText("Enter new dimensions:");
 
-      org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(
-          getContentPane());
+      GroupLayout layout = new GroupLayout(getContentPane());
       getContentPane().setLayout(layout);
-      layout
-          .setHorizontalGroup(layout
-              .createParallelGroup(
-                  org.jdesktop.layout.GroupLayout.LEADING)
-              .add(
-                  org.jdesktop.layout.GroupLayout.TRAILING,
-                  layout
-                      .createSequentialGroup()
-                      .addContainerGap(23, Short.MAX_VALUE)
-                      .add(jButton2)
+      layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
+          .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+              .addContainerGap(23, Short.MAX_VALUE)
+              .addComponent(jButton2)
+              .addPreferredGap(ComponentPlacement.RELATED)
+              .addComponent(jButton1).addContainerGap())
+          .addGroup(layout.createSequentialGroup()
+              .addContainerGap().addComponent(jLabel5)
+              .addContainerGap(33, Short.MAX_VALUE))
+          .addGroup(layout
+              .createSequentialGroup()
+              .addContainerGap()
+              .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                  .addComponent(jLabel1).addComponent(jLabel2))
+              .addGap(1, 1, 1)
+              .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                  .addGroup(layout.createSequentialGroup()
+                      .addComponent(jTextField2,
+                          GroupLayout.PREFERRED_SIZE,
+                          GroupLayout.DEFAULT_SIZE,
+                          GroupLayout.PREFERRED_SIZE)
                       .addPreferredGap(
-                          org.jdesktop.layout.LayoutStyle.RELATED)
-                      .add(jButton1).addContainerGap())
-              .add(
-                  layout.createSequentialGroup()
-                      .addContainerGap().add(jLabel5)
-                      .addContainerGap(33, Short.MAX_VALUE))
-              .add(
-                  layout
+                          ComponentPlacement.RELATED)
+                      .addComponent(jLabel4))
+                  .addGroup(layout
                       .createSequentialGroup()
-                      .addContainerGap()
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.LEADING)
-                              .add(jLabel1).add(
-                                  jLabel2))
-                      .add(1, 1, 1)
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.LEADING)
-                              .add(
-                                  layout
-                                      .createSequentialGroup()
-                                      .add(
-                                          jTextField2,
-                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-                                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                      .addPreferredGap(
-                                          org.jdesktop.layout.LayoutStyle.RELATED)
-                                      .add(
-                                          jLabel4))
-                              .add(
-                                  layout
-                                      .createSequentialGroup()
-                                      .add(
-                                          jTextField1,
-                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-                                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                                          org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                      .addPreferredGap(
-                                          org.jdesktop.layout.LayoutStyle.RELATED)
-                                      .add(
-                                          jLabel3)))
-                      .addContainerGap(
-                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                          Short.MAX_VALUE)));
-      layout
-          .setVerticalGroup(layout
-              .createParallelGroup(
-                  org.jdesktop.layout.GroupLayout.LEADING)
-              .add(
-                  org.jdesktop.layout.GroupLayout.TRAILING,
-                  layout
-                      .createSequentialGroup()
-                      .addContainerGap()
-                      .add(jLabel5)
-                      .add(17, 17, 17)
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.BASELINE)
-                              .add(jLabel1)
-                              .add(
-                                  jTextField1,
-                                  org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-                                  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                                  org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                              .add(jLabel3))
-                      .addPreferredGap(
-                          org.jdesktop.layout.LayoutStyle.RELATED)
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.BASELINE)
-                              .add(jLabel2)
-                              .add(
-                                  jTextField2,
-                                  org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-                                  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-                                  org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                              .add(jLabel4))
-                      .addPreferredGap(
-                          org.jdesktop.layout.LayoutStyle.RELATED,
-                          16, Short.MAX_VALUE)
-                      .add(
-                          layout
-                              .createParallelGroup(
-                                  org.jdesktop.layout.GroupLayout.BASELINE)
-                              .add(jButton1).add(
-                                  jButton2))
-                      .addContainerGap()));
+                      .addComponent(jTextField1,
+                          GroupLayout.PREFERRED_SIZE,
+                          GroupLayout.DEFAULT_SIZE,
+                          GroupLayout.PREFERRED_SIZE)
+                      .addPreferredGap(ComponentPlacement.RELATED)
+                      .addComponent(jLabel3)))
+              .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+
+      layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
+          .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+              .addContainerGap()
+              .addComponent(jLabel5)
+              .addGap(17, 17, 17)
+              .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                  .addComponent(jLabel1)
+                  .addComponent(jTextField1,
+                      GroupLayout.PREFERRED_SIZE,
+                      GroupLayout.DEFAULT_SIZE,
+                      GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jLabel3))
+              .addPreferredGap(ComponentPlacement.RELATED)
+              .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                  .addComponent(jLabel2)
+                  .addComponent(jTextField2,
+                      GroupLayout.PREFERRED_SIZE,
+                      GroupLayout.DEFAULT_SIZE,
+                      GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jLabel4))
+              .addPreferredGap(ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+              .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                  .addComponent(jButton1).addComponent(jButton2))
+              .addContainerGap()));
       pack();
     }// </editor-fold>//GEN-END:initComponents
 
     // GEN-FIRST:event_jButton1ActionPerformed
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void jButton1ActionPerformed(ActionEvent evt) {
       dispose();
     }// GEN-LAST:event_jButton1ActionPerformed
 
     // GEN-FIRST:event_jButton2ActionPerformed
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void jButton2ActionPerformed(ActionEvent evt) {
       if (JOptionPane
           .showConfirmDialog(
               this,
@@ -2071,15 +2028,15 @@ public class FizzimGui extends javax.swing.JFrame {
 
     // GEN-BEGIN:variables
     // Variables declaration - do not modify
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private JButton jButton1;
+    private JButton jButton2;
+    private JLabel jLabel1;
+    private JLabel jLabel2;
+    private JLabel jLabel3;
+    private JLabel jLabel4;
+    private JLabel jLabel5;
+    private JTextField jTextField1;
+    private JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
   }
 
