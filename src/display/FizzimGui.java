@@ -1402,11 +1402,11 @@ public class FizzimGui extends JFrame {
           TransitionObj transition = (TransitionObj) temp;
           writer.write(selectedFile.getName().substring(0,
               selectedFile.getName().length() - 4));
-          writer.newLine();
+          writer.write("\r\n");
           StateObj initial_state = transition.getStartState();
           // write the number of the initial state in the file.
           writer.write(initial_state.getName());
-          writer.newLine();
+          writer.write("\r\n");
           StateObj final_state = transition.getEndState();
           /*
            * Verify if the transition is a loopback and
@@ -1415,10 +1415,10 @@ public class FizzimGui extends JFrame {
            */
           if (temp instanceof LoopbackTransitionObj) {
             writer.write(initial_state.getName());
-            writer.newLine();
+            writer.write("\r\n");
           } else {
             writer.write(final_state.getName());
-            writer.newLine();
+            writer.write("\r\n");
           }
           LinkedList<ObjAttribute> attributes = transition.getAttributeList();
           String event = null, condition = null, actions = null;
@@ -1442,13 +1442,13 @@ public class FizzimGui extends JFrame {
           String text;
           text = event + " " + "Evenement" ;
           writer.write(text.trim());
-          writer.newLine();
+          writer.write("\r\n");
           text = condition + " " + "Condition" ;
           writer.write(text.trim());
-          writer.newLine();
+          writer.write("\r\n");
           text = actions + " " + "Action" ;
           writer.write(text.trim());
-          writer.newLine();
+          writer.write("\r\n");
         }
       }
       writer.close();
