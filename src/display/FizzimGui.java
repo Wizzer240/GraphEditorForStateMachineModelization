@@ -1443,6 +1443,7 @@ public class FizzimGui extends JFrame {
           text = event + " " + "Evenement" ;
           writer.write(text.trim());
           writer.newLine();
+          text = condition + " " + "Condition" ;
           writer.write(text.trim());
           writer.newLine();
           text = actions + " " + "Action" ;
