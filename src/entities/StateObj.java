@@ -76,7 +76,7 @@ public class StateObj extends GeneralObj implements Cloneable {
     selectStatus = SelectOptions.NONE;
     color = border_color;
 
-    objName = "state" + numb;
+    objName = String.valueOf(numb);
     myPage = page;
 
     grid = b;

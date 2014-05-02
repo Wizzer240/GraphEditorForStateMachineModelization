@@ -189,9 +189,9 @@ public class FizzimGui extends JFrame {
             "def_type", "", Color.black, "", "", editable));
 
     /* User defined properties */
-    globalList.get(EnumGlobalList.STATES).add(
-        new ObjAttribute("Ind. vrais", "", EnumVisibility.YES,
-            "def_type", "", Color.black, "", "", editable));
+    //globalList.get(EnumGlobalList.STATES).add(
+    //    new ObjAttribute("Ind. vrais", "", EnumVisibility.YES,
+    //        "def_type", "", Color.black, "", "", editable));
 
     globalList.get(EnumGlobalList.TRANSITIONS).add(
         new ObjAttribute(event_field, "", EnumVisibility.YES,
@@ -1392,6 +1392,7 @@ public class FizzimGui extends JFrame {
   private boolean saveFile6lines(File selectedFile) {
     currFile = selectedFile;
     try {
+      int j = 1;
       BufferedWriter writer = new BufferedWriter(new FileWriter(currFile));
       // Put all the objects of the graph in object
       Vector<Object> object = drawArea1.getObjList();
@@ -1399,6 +1400,10 @@ public class FizzimGui extends JFrame {
         GeneralObj temp = (GeneralObj) object.get(i);
         // verify that the object is a transition.
         if (temp instanceof TransitionObj) {
+          if (j != 1) {
+            writer.write("\r\n");
+          }
+          j++;
           TransitionObj transition = (TransitionObj) temp;
           writer.write(selectedFile.getName().substring(0,
               selectedFile.getName().length() - 4));
@@ -1448,9 +1453,7 @@ public class FizzimGui extends JFrame {
           writer.write("\r\n");
           text = actions + " " + "Action";
           writer.write(text.trim());
-          if (i == object.size()) {
-            writer.write("\r\n");
-          }
+
         }
       }
       writer.close();
