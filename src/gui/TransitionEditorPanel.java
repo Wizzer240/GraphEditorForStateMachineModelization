@@ -195,6 +195,8 @@ public class TransitionEditorPanel extends JPanel {
       for (ObjAttribute one_attribute : attributes) {
         String value = fields[y_index].getText();
         one_attribute.set(1, value);
+        /* This line is necessary to consider the new value added as local. */
+        one_attribute.setEditable(1, ObjAttribute.LOCAL);
 
         y_index++;
       }
