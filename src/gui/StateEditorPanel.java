@@ -111,6 +111,7 @@ public class StateEditorPanel extends JPanel {
      */
     window.getBtnOk().addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
+        /* We update the data of the details tab with the data in General */
         updateData(1);
         second_tab.SPOKActionPerformed(evt);
       }
