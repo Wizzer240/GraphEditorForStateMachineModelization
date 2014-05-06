@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import attributes.EnumVisibility;
 import attributes.ObjAttribute;
 import entities.LoopbackTransitionObj;
 import entities.StateObj;
@@ -663,6 +664,11 @@ public class FileParser {
       pointer += 1; // go to value
       int page = Integer.parseInt(list.get(pointer));
       pointer += 2; // skip over end
+
+      /* For backyard compatibility */
+      if (!vis.equals("NO") && !vis.equals("YES") && !vis.equals("NONDEFAULT")) {
+        vis = EnumVisibility.fromInt(Integer.parseInt(vis));
+      }
 
       ObjAttribute obj = new ObjAttribute(name, nameStatus, value, valueStatus,
           vis, visStatus, type, typeStatus,

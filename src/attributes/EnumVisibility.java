@@ -18,4 +18,22 @@ public enum EnumVisibility {
       throw new IllegalArgumentException();
     }
   }
+
+  /**
+   * @deprecated Use the EnumVisibility directly instead of integer equivalents
+   */
+  @Deprecated
+  static public String fromInt(int i) {
+    if (i == 0) {
+      return "NO";
+    } else if (i == 1) {
+      return "YES";
+    } else if (i == 2) {
+      return "NONDEFAULT";
+    } else {
+      System.err.println(i
+          + " is not recognized as a visibility. NO taken as default");
+      return "NO";
+    }
+  }
 }
