@@ -103,7 +103,7 @@ import attributes.ObjAttribute;
 @SuppressWarnings("serial")
 public class FizzimGui extends JFrame {
 
-  static String currVer = "14.03.0";
+  static String currVer = "14.03.1";
 
   // pointer to global lists
   LinkedList<ObjAttribute> globalMachineAttributes;
