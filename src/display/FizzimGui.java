@@ -189,9 +189,9 @@ public class FizzimGui extends JFrame {
             "def_type", "", Color.black, "", "", editable));
 
     /* User defined properties */
-    //globalList.get(EnumGlobalList.STATES).add(
-    //    new ObjAttribute("Ind. vrais", "", EnumVisibility.YES,
-    //        "def_type", "", Color.black, "", "", editable));
+    // globalList.get(EnumGlobalList.STATES).add(
+    // new ObjAttribute("Ind. vrais", "", EnumVisibility.YES,
+    // "def_type", "", Color.black, "", "", editable));
 
     globalList.get(EnumGlobalList.TRANSITIONS).add(
         new ObjAttribute(event_field, "", EnumVisibility.YES,
@@ -1383,6 +1383,8 @@ public class FizzimGui extends JFrame {
 
   /**
    * Function that save the graph into a 6lines format text
+   * each page contains an independant graph and the name of the page will be
+   * the name of the graph in the file.
    * 
    * @param selectedFile
    *          the targeted file to save in
@@ -1392,6 +1394,7 @@ public class FizzimGui extends JFrame {
   private boolean saveFile6lines(File selectedFile) {
     currFile = selectedFile;
     try {
+
       int j = 1;
       BufferedWriter writer = new BufferedWriter(new FileWriter(currFile));
       // Put all the objects of the graph in object
@@ -1405,14 +1408,34 @@ public class FizzimGui extends JFrame {
           }
           j++;
           TransitionObj transition = (TransitionObj) temp;
-          writer.write(selectedFile.getName().substring(0,
-              selectedFile.getName().length() - 4));
-          writer.write("\r\n");
+          // writer.write(selectedFile.getName().substring(0,
+          // selectedFile.getName().length() - 4));
+          // writer.write("\r\n");
+
           StateObj initial_state = transition.getStartState();
+          writer.write(pages_tabbedPane.getTitleAt(initial_state.getPage()));
+          writer.write("\r\n");
+          int page_init_state = initial_state.getPage();
           // write the number of the initial state in the file.
           writer.write(initial_state.getName());
           writer.write("\r\n");
           StateObj final_state = transition.getEndState();
+          int page_final_state = final_state.getPage();
+          if (page_final_state != page_init_state) {
+            String final_page = String.valueOf(page_final_state);
+            String init_page = Integer.toString(page_init_state);
+            JOptionPane
+                .showMessageDialog(
+                    this,
+                    "Two states are not of the same page in a transition.\n The transition between the state "
+                        + initial_state.getName()
+                        + " page " + init_page + " and the state "
+                        + final_state.getName() + " page " + final_page,
+                    "Transition overflow",
+                    JOptionPane.ERROR_MESSAGE);
+            writer.close();
+            return false;
+          }
           /*
            * Verify if the transition is a loopback and
            * write the number of the final state in the file (it will be

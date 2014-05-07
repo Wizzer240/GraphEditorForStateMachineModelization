@@ -769,10 +769,10 @@ public class DrawArea extends JPanel implements MouseListener,
     JPopupMenu popup = new JPopupMenu();
 
     // create submenu for moving pages
-    JMenu pages = new JMenu("Move to Page...");
-    FizzimGui fgui = (FizzimGui) frame;
+//    JMenu pages = new JMenu("Move to Page...");
+//    FizzimGui fgui = (FizzimGui) frame;
 
-    for (int i = 1; i < fgui.getPages(); i++) {
+ /*   for (int i = 1; i < fgui.getPages(); i++) {
       if (i != currPage) {
         menuItem = new JMenuItem(fgui.getPageName(i));
         menuItem.addActionListener(this);
@@ -780,7 +780,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
     }
     if (obj == null)
-      popup.add(pages);
+      popup.add(pages);*/
 
     if (obj != null && obj.getType() == GeneralObjType.STATE) {
       menuItem = new JMenuItem("Add Loopback Transition");
@@ -794,7 +794,8 @@ public class DrawArea extends JPanel implements MouseListener,
       for (int j = 1; j < objList.size(); j++) {
         GeneralObj obj1 = (GeneralObj) objList.get(j);
         if (obj1.getType() == GeneralObjType.STATE
-            && !obj.getName().equals(obj1.getName())) {
+            && !obj.getName().equals(obj1.getName())
+            && obj.getPage() == obj1.getPage()) {
           menuItem = new JMenuItem(obj1.getName());
           menuItem.addActionListener(this);
           states.add(menuItem);
@@ -806,7 +807,7 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-      popup.add(pages);
+//      popup.add(pages);
     }
     if (obj != null && obj.getType() == GeneralObjType.TRANSITION) {
 
@@ -814,7 +815,7 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-      if (obj.getSelectStatus() == SelectOptions.TXT) {
+/*      if (obj.getSelectStatus() == SelectOptions.TXT) {
         JMenu pages2 = new JMenu("Move to Page...");
         StateTransitionObj sobj = (StateTransitionObj) obj;
         for (int i = 1; i < fgui.getPages(); i++) {
@@ -826,7 +827,7 @@ public class DrawArea extends JPanel implements MouseListener,
         }
         popup.add(pages2);
       }
-
+*/
     }
     if (obj != null && obj.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
       menuItem = new JMenuItem("Edit Loopback Transition Properties");
@@ -839,7 +840,7 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-      popup.add(pages);
+//      popup.add(pages);
     }
 
     popup.show(e.getComponent(), e.getX(), e.getY());
@@ -1193,7 +1194,7 @@ public class DrawArea extends JPanel implements MouseListener,
     int stateCounter = 0;
     for (int i = 1; i < objList.size(); i++) {
       GeneralObj obj = (GeneralObj) objList.get(i);
-      if (obj.getType() == GeneralObjType.STATE) {
+      if (obj.getType() == GeneralObjType.STATE && obj.getPage()== currPage) {
         stateSet.add(obj.getName());
         stateCounter++;
       }
@@ -1751,8 +1752,8 @@ public class DrawArea extends JPanel implements MouseListener,
   public boolean getRedraw() {
     return Redraw;
   }
-  
-  public Vector<Object> getObjList(){
+
+  public Vector<Object> getObjList() {
     return objList;
   }
 
