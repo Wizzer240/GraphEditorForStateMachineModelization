@@ -112,7 +112,8 @@ public class DrawArea extends JPanel implements MouseListener,
   private boolean fileModified = false;
 
   // used for auto generation of state and transition names
-  private int createSCounter = 0, createTCounter = 0;
+  private Vector<Integer> createSCounter;
+  private int createTCounter = 0;
 
   // pages
   private int currPage = 1;
@@ -136,6 +137,9 @@ public class DrawArea extends JPanel implements MouseListener,
     objList = new Vector<Object>();
     undoList = new Vector<Vector<Object>>();
     tempList = new Vector<Object>();
+    createSCounter = new Vector<Integer>();
+    createSCounter.add(0, 0);
+    createSCounter.add(1, 0);
     this.setFocusable(true);
     this.requestFocus();
     currUndoIndex = -1;
@@ -769,18 +773,20 @@ public class DrawArea extends JPanel implements MouseListener,
     JPopupMenu popup = new JPopupMenu();
 
     // create submenu for moving pages
-//    JMenu pages = new JMenu("Move to Page...");
-//    FizzimGui fgui = (FizzimGui) frame;
+    // JMenu pages = new JMenu("Move to Page...");
+    // FizzimGui fgui = (FizzimGui) frame;
 
- /*   for (int i = 1; i < fgui.getPages(); i++) {
-      if (i != currPage) {
-        menuItem = new JMenuItem(fgui.getPageName(i));
-        menuItem.addActionListener(this);
-        pages.add(menuItem);
-      }
-    }
-    if (obj == null)
-      popup.add(pages);*/
+    /*
+     * for (int i = 1; i < fgui.getPages(); i++) {
+     * if (i != currPage) {
+     * menuItem = new JMenuItem(fgui.getPageName(i));
+     * menuItem.addActionListener(this);
+     * pages.add(menuItem);
+     * }
+     * }
+     * if (obj == null)
+     * popup.add(pages);
+     */
 
     if (obj != null && obj.getType() == GeneralObjType.STATE) {
       menuItem = new JMenuItem("Add Loopback Transition");
@@ -807,7 +813,7 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-//      popup.add(pages);
+      // popup.add(pages);
     }
     if (obj != null && obj.getType() == GeneralObjType.TRANSITION) {
 
@@ -815,19 +821,20 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-/*      if (obj.getSelectStatus() == SelectOptions.TXT) {
-        JMenu pages2 = new JMenu("Move to Page...");
-        StateTransitionObj sobj = (StateTransitionObj) obj;
-        for (int i = 1; i < fgui.getPages(); i++) {
-          if (i != currPage && (i == sobj.getEPage() || i == sobj.getSPage())) {
-            menuItem = new JMenuItem(fgui.getPageName(i));
-            menuItem.addActionListener(this);
-            pages2.add(menuItem);
-          }
-        }
-        popup.add(pages2);
-      }
-*/
+      /*
+       * if (obj.getSelectStatus() == SelectOptions.TXT) {
+       * JMenu pages2 = new JMenu("Move to Page...");
+       * StateTransitionObj sobj = (StateTransitionObj) obj;
+       * for (int i = 1; i < fgui.getPages(); i++) {
+       * if (i != currPage && (i == sobj.getEPage() || i == sobj.getSPage())) {
+       * menuItem = new JMenuItem(fgui.getPageName(i));
+       * menuItem.addActionListener(this);
+       * pages2.add(menuItem);
+       * }
+       * }
+       * popup.add(pages2);
+       * }
+       */
     }
     if (obj != null && obj.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
       menuItem = new JMenuItem("Edit Loopback Transition Properties");
@@ -840,7 +847,7 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-//      popup.add(pages);
+      // popup.add(pages);
     }
 
     popup.show(e.getComponent(), e.getX(), e.getY());
@@ -921,18 +928,23 @@ public class DrawArea extends JPanel implements MouseListener,
       // .setVisible(true);
     } else if (input == "Quick New State") {
       GeneralObj state = new StateObj(rXTemp - StateW / 2, rYTemp - StateH / 2,
-          rXTemp + StateW / 2, rYTemp + StateH / 2, createSCounter, currPage,
+          rXTemp + StateW / 2, rYTemp + StateH / 2, createSCounter
+              .get(currPage), currPage,
           defSC, grid, gridS);
-      createSCounter++;
+
+      int temp_value = createSCounter.get(currPage) + 1;
+      createSCounter.set(currPage, temp_value);
       objList.add(state);
       state.updateAttrib(globalList, 3);
       commitUndo();
 
     } else if (input == "New State") {
       StateObj state = new StateObj(rXTemp - StateW / 2, rYTemp - StateH / 2,
-          rXTemp + StateW / 2, rYTemp + StateH / 2, createSCounter, currPage,
+          rXTemp + StateW / 2, rYTemp + StateH / 2, createSCounter
+              .get(currPage), currPage,
           defSC, grid, gridS);
-      createSCounter++;
+      int temp_value = createSCounter.get(currPage) + 1;
+      createSCounter.set(currPage, temp_value);
       objList.add(state);
       state.updateAttrib(globalList, 3);
       new StateEditorWindow(frame, this, state);
@@ -1027,6 +1039,10 @@ public class DrawArea extends JPanel implements MouseListener,
       objList.add(text);
       editText((TextObj) text);
     } else if (checkStateName(input)) {
+      /*
+       * Creation of a new transition using the "Add Transition State to..."
+       * menu
+       */
       GeneralObj trans = new StateTransitionObj(createTCounter, currPage, this,
           (StateObj) tempObj, getStateObj(input), defSTC);
       createTCounter++;
@@ -1106,7 +1122,7 @@ public class DrawArea extends JPanel implements MouseListener,
   private StateObj getStateObj(String name) {
     for (int j = 1; j < objList.size(); j++) {
       GeneralObj obj1 = (GeneralObj) objList.get(j);
-      if (obj1.getType() == GeneralObjType.STATE && obj1.getName().equals(name))
+      if (obj1.getType() == GeneralObjType.STATE && obj1.getName().equals(name) && obj1.getPage() == currPage )
         return (StateObj) obj1;
     }
     return null;
@@ -1194,7 +1210,7 @@ public class DrawArea extends JPanel implements MouseListener,
     int stateCounter = 0;
     for (int i = 1; i < objList.size(); i++) {
       GeneralObj obj = (GeneralObj) objList.get(i);
-      if (obj.getType() == GeneralObjType.STATE && obj.getPage()== currPage) {
+      if (obj.getType() == GeneralObjType.STATE && obj.getPage() == currPage) {
         stateSet.add(obj.getName());
         stateCounter++;
       }
@@ -1225,7 +1241,12 @@ public class DrawArea extends JPanel implements MouseListener,
 
   public void save(BufferedWriter writer) throws IOException {
     writer.write("## START PREFERENCES\n");
-    writer.write("<SCounter>\n" + createSCounter + "\n</SCounter>\n");
+    int j = 1;
+    do  {
+      writer.write("<SCounter>\n" + createSCounter.get(j) + "\n" + j
+          + "\n</SCounter>\n");
+      j++;
+    } while (j < createSCounter.size());
     writer.write("<TCounter>\n" + createTCounter + "\n</TCounter>\n");
     writer.write("<TableVis>\n" + tableVis + "\n</TableVis>\n");
     writer.write("<TableSpace>\n" + space + "\n</TableSpace>\n");
@@ -1445,7 +1466,7 @@ public class DrawArea extends JPanel implements MouseListener,
     tempOld = null;
     tempClone = null;
     fileModified = false;
-    createSCounter = 0;
+    createSCounter.add(0, 0);
     createTCounter = 0;
     updateStates();
     updateTrans(); // Added by pz, but no sure why (initial paint of flags is
@@ -1454,8 +1475,8 @@ public class DrawArea extends JPanel implements MouseListener,
 
   }
 
-  public void setSCounter(String readLine) {
-    createSCounter = Integer.parseInt(readLine);
+  public void setSCounter(int index, String readLine) {
+    createSCounter.add(index, Integer.parseInt(readLine));
 
   }
 

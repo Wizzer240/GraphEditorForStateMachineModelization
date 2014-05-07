@@ -123,7 +123,8 @@ public class FileParser {
           String line2 = reader.readLine();
           while (line2.startsWith("##"))
             line2 = reader.readLine();
-          drawArea.setSCounter(line2);
+           String line3 = reader.readLine();
+          drawArea.setSCounter(Integer.valueOf(line3), line2);
         }
         else if (line.equals("<TCounter>"))
         {

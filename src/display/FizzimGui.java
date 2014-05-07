@@ -891,9 +891,8 @@ public class FizzimGui extends JFrame {
         pages_tabbedPane.addTab("Page " + String.valueOf(index), jScrollPane1);
         pages_tabbedPane.setSelectedIndex(index);
         drawArea1.setCurrPage(index);
-      }
-      else
-      {
+        drawArea1.setSCounter(index, "0");
+      } else {
         // set current tab
         drawArea1.setCurrPage(sel);
         pages_tabbedPane.setComponentAt(sel, jScrollPane1);
