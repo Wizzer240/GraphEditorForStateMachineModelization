@@ -6,10 +6,9 @@ import java.util.LinkedList;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
-import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 import entities.GeneralObj;
 
@@ -33,23 +32,24 @@ public class AttributesTableModel extends AbstractTableModel {
   /* The object the properties of which it it describing */
   GeneralObj obj;
   LinkedList<ObjAttribute> attrib;
-  LinkedList<LinkedList<ObjAttribute>> globalList;
+  GlobalAttributes global_attributes;
   JDialog dialog;
-  int positionInGlobalList;
+
+  // int positionInGlobalList;
 
   AttributesTableModel(GeneralObj s, JDialog dia,
-      LinkedList<LinkedList<ObjAttribute>> global, int k) {
+      GlobalAttributes globals, int k) {
     obj = s;
     attrib = obj.getAttributeList();
-    globalList = global;
+    global_attributes = globals;
     dialog = dia;
-    positionInGlobalList = k;
+    // positionInGlobalList = k;
   }
 
   AttributesTableModel(LinkedList<ObjAttribute> list,
-      LinkedList<LinkedList<ObjAttribute>> globalL) {
+      GlobalAttributes globals) {
     global = true;
-    globalList = globalL;
+    global_attributes = globals;
     attrib = list;
     // pz
     // columnNames = new String[] {"Attribute Name", "Default Value",
@@ -86,7 +86,7 @@ public class AttributesTableModel extends AbstractTableModel {
     return obj;
   }
 
-  // get type for column
+  // Get type for column
   public Class getColumnClass(int col) {
     return getValueAt(0, col).getClass();
   }
@@ -101,7 +101,7 @@ public class AttributesTableModel extends AbstractTableModel {
     if ((attrib.get(row).getEditable(col) == ObjAttribute.GLOBAL_FIXED && !global)
         || attrib.get(row).getEditable(col) == ObjAttribute.ABS)
       return false;
-    else if (global && attrib.equals(globalList.get(1))
+    else if (global && attrib.equals(global_attributes.getInputsAttributes())
         && (col == 2 || col == 5))
       return false;
     else
@@ -192,7 +192,7 @@ public class AttributesTableModel extends AbstractTableModel {
     // state tab
     if (global
         && col == 3
-        && attrib.equals(globalList.get(2))
+        && attrib.equals(global_attributes.getOutputsAttributes())
         && (value.equals("regdp") || value.equals("comb")
             || value.equals("reg") || value.equals("flag"))
         && attrib.get(row).get(col).equals("")) {
@@ -206,11 +206,12 @@ public class AttributesTableModel extends AbstractTableModel {
           .getValue(),
           attrib.get(row).getVisibility(), "output", "", Color.black, "", "",
           editable);
-      globalList.get(3).addLast(newObj);
+      global_attributes.getStateAttributes().addLast(newObj);
     }
 
     // if rename something of type output
-    if (global && col != 3 && globalList.get(2).equals(attrib)
+    if (global && col != 3
+        && global_attributes.getOutputsAttributes().equals(attrib)
         && !attrib.get(row).get(col).equals(value)) {
       renameAttribute(3, attrib.get(row).getName(), col, value, row);
     }
@@ -219,13 +220,13 @@ public class AttributesTableModel extends AbstractTableModel {
     // changed
     if (global &&
         // can't edit anything but type in states
-        (col != 3 && attrib.equals(globalList.get(3)) && attrib
+        (col != 3 && attrib.equals(global_attributes.getStateAttributes()) && attrib
             .get(row)
             .getType()
             .equals("output"))
         // can't edit default value in transitions
         // new fizzim.pl (>=4.3 uses default from outputs page)
-        || (col == 1 && attrib.equals(globalList.get(4)) && attrib
+        || (col == 1 && attrib.equals(global_attributes.getTransAttributes()) && attrib
             .get(row)
             .getType()
             .equals("output"))) {
@@ -269,7 +270,7 @@ public class AttributesTableModel extends AbstractTableModel {
 
     // restore to default if empty string was entered
     if (col != 2 && value.equals("") && !global) {
-      obj.updateAttrib(globalList, positionInGlobalList);
+      obj.updateAttrib(global_attributes);
     }
 
     fireTableCellUpdated(row, col);
@@ -277,7 +278,7 @@ public class AttributesTableModel extends AbstractTableModel {
   }
 
   private boolean checkValue(int row, int col, Object value) {
-    LinkedList<ObjAttribute> list = globalList.get(positionInGlobalList);
+    LinkedList<ObjAttribute> list = obj.getAttributes(global_attributes);
     String name = attrib.get(row).getName();
     Object val = attrib.get(row).get(col);
     for (int i = 0; i < list.size(); i++) {
@@ -290,14 +291,16 @@ public class AttributesTableModel extends AbstractTableModel {
 
   private void renameAttribute(int t, String name, int col, Object value,
       int row) {
-    // try to find cooresponding field in states tab that is in the same
+    // try to find coresponding field in states tab that is in the same
     // relative position
     // (fixes errors due to multiple fields with same names)
     int num = 0;
     boolean needed = true;
 
-    for (int h = 0; h < globalList.get(t).size(); h++) {
-      ObjAttribute obj = globalList.get(t).get(h);
+    for (int h = 0; h < global_attributes.getSpecificGlobalAttributes(t).size(); h++) {
+      ObjAttribute obj = global_attributes
+          .getSpecificGlobalAttributes(t)
+          .get(h);
       // check if field is of type output in state tab
       if (obj.getType().equals("output") && t == 3 && num <= row) {
         if (num == row && obj.getName().equals(name)) {
@@ -310,8 +313,12 @@ public class AttributesTableModel extends AbstractTableModel {
     }
 
     if (needed) {
-      for (int i = 0; i < globalList.get(t).size(); i++) {
-        ObjAttribute obj = globalList.get(t).get(i);
+      for (int i = 0; i < global_attributes
+          .getSpecificGlobalAttributes(t)
+          .size(); i++) {
+        ObjAttribute obj = global_attributes
+            .getSpecificGlobalAttributes(t)
+            .get(i);
         if (obj.getName().equals(name)) {
           obj.set(col, value);
           break;
@@ -322,7 +329,8 @@ public class AttributesTableModel extends AbstractTableModel {
   }
 
   private boolean checkOutputs(ObjAttribute objAttribute) {
-    LinkedList<ObjAttribute> outputList = globalList.get(2);
+    LinkedList<ObjAttribute> outputList = global_attributes
+        .getOutputsAttributes();
     String name = objAttribute.getName();
     for (int i = 0; i < outputList.size(); i++) {
       ObjAttribute obj = outputList.get(i);
@@ -330,7 +338,6 @@ public class AttributesTableModel extends AbstractTableModel {
         return true;
     }
     return false;
-
   }
 
   private boolean checkName(LinkedList<ObjAttribute> linkedList, String name) {

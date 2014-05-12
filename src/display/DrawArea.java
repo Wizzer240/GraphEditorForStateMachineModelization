@@ -9,6 +9,7 @@ import java.util.*;
 
 import javax.swing.*;
 
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 import entities.GeneralObj;
 import entities.GeneralObjType;
@@ -75,35 +76,35 @@ public class DrawArea extends JPanel implements MouseListener,
   private int mYTemp = 0;
   private int mX0, mY0, mX1, mY1;
   private LinkedList<Integer> selectedIndices = new LinkedList<Integer>();
-  private boolean ctrlDown = false;
+  //private boolean ctrlDown = false;
 
-  // font
+  // Fonts
   private Font currFont = new Font("Arial", Font.PLAIN, 11);
   private Font tableFont = new Font("Arial", Font.PLAIN, 11);
 
-  // global color chooser
+  // Global color chooser
   private JColorChooser colorChooser = new JColorChooser();
 
   private boolean loading = false;
 
   private boolean Redraw = false;
 
-  // default settings for global table
+  // Default settings for global table
   private boolean tableVis = true;
   private Color tableColor = Color.black;
-  private Color defSC = Color.black;
-  private Color defSTC = Color.black;
-  private Color defLTC = Color.black;
+  private Color defaultStatesColor = Color.black;
+  private Color defaultStateTransitionsColor = Color.black;
+  private Color defaultTransitionsColor = Color.black;
 
-  // state size
-  private int StateW = 130;
-  private int StateH = 130;
+  // Default size of states
+  private int defaultStatesWidth = 130;
+  private int defaultStatesHeight = 130;
 
   // line widths
   private int LineWidth = 1;
 
   // list of global lists
-  private LinkedList<LinkedList<ObjAttribute>> globalList;
+  //private LinkedList<LinkedList<ObjAttribute>> globalList;
 
   // parent frame
   private JFrame frame;
@@ -129,8 +130,9 @@ public class DrawArea extends JPanel implements MouseListener,
   // global table, default tab settings
   private int space = 20;
 
-  public DrawArea(LinkedList<LinkedList<ObjAttribute>> globals) {
-    globalList = globals;
+  //private GlobalAttributes global_attributes;
+  public DrawArea(GlobalAttributes globals) {
+    //global_attributes = globals;
 
     // create arrays to store created objects
     objList = new Vector<Object>();
@@ -141,9 +143,9 @@ public class DrawArea extends JPanel implements MouseListener,
     currUndoIndex = -1;
 
     // global attributes stored at index 0 of object array
-    objList.add(globalList);
+    objList.add(globals);
 
-    TextObj globalTable = new TextObj(10, 10, globalList, tableFont);
+    TextObj globalTable = new TextObj(10, 10, globals, tableFont);
 
     objList.add(globalTable);
     undoList.add(objList);
@@ -207,12 +209,12 @@ public class DrawArea extends JPanel implements MouseListener,
     objsSelected = false;
 
     // update
-    globalList = (LinkedList<LinkedList<ObjAttribute>>) objList.get(0);
+    globals = (GlobalAttributes) objList.get(0);
     updateStates();
     updateTrans();
     updateGlobalTable();
     FizzimGui fgui = (FizzimGui) frame;
-    fgui.updateGlobal(globalList);
+    fgui.updateGlobal(globals);
     repaint();
 
   }
@@ -919,18 +921,18 @@ public class DrawArea extends JPanel implements MouseListener,
       // stateObjs, false, null)
       // .setVisible(true);
     } else if (input == "Quick New State") {
-      GeneralObj state = new StateObj(rXTemp - StateW / 2, rYTemp - StateH / 2,
-          rXTemp + StateW / 2, rYTemp + StateH / 2, createSCounter, currPage,
-          defSC, grid, gridS);
+      GeneralObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp - defaultStatesHeight / 2,
+          rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2, createSCounter, currPage,
+          defaultStatesColor, grid, gridS);
       createSCounter++;
       objList.add(state);
       state.updateAttrib(globalList, 3);
       commitUndo();
 
     } else if (input == "New State") {
-      StateObj state = new StateObj(rXTemp - StateW / 2, rYTemp - StateH / 2,
-          rXTemp + StateW / 2, rYTemp + StateH / 2, createSCounter, currPage,
-          defSC, grid, gridS);
+      StateObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp - defaultStatesHeight / 2,
+          rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2, createSCounter, currPage,
+          defaultStatesColor, grid, gridS);
       createSCounter++;
       objList.add(state);
       state.updateAttrib(globalList, 3);
@@ -947,7 +949,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
       if (stateObjs.size() > 1) {
         GeneralObj trans = new StateTransitionObj(createTCounter, currPage,
-            this, defSTC);
+            this, defaultStateTransitionsColor);
         createTCounter++;
         objList.add(trans);
         trans.updateAttrib(globalList, 4);
@@ -974,7 +976,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
       if (stateObjs.size() > 0) {
         GeneralObj trans = new LoopbackTransitionObj(rXTemp, rYTemp,
-            createTCounter, currPage, defLTC);
+            createTCounter, currPage, defaultTransitionsColor);
         createTCounter++;
         objList.add(trans);
         trans.updateAttrib(globalList, 4);
@@ -1003,7 +1005,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
       if (stateObjs.size() > 0) {
         GeneralObj trans = new LoopbackTransitionObj(rXTemp, rYTemp,
-            createTCounter, currPage, defLTC);
+            createTCounter, currPage, defaultTransitionsColor);
         createTCounter++;
         objList.add(trans);
         trans.updateAttrib(globalList, 4);
@@ -1027,7 +1029,7 @@ public class DrawArea extends JPanel implements MouseListener,
       editText((TextObj) text);
     } else if (checkStateName(input)) {
       GeneralObj trans = new StateTransitionObj(createTCounter, currPage, this,
-          (StateObj) tempObj, getStateObj(input), defSTC);
+          (StateObj) tempObj, getStateObj(input), defaultStateTransitionsColor);
       createTCounter++;
       objList.add(trans);
       StateTransitionObj sTrans = (StateTransitionObj) trans;
@@ -1426,10 +1428,10 @@ public class DrawArea extends JPanel implements MouseListener,
 
   }
 
-  public void open(LinkedList<LinkedList<ObjAttribute>> global) {
+  public void open(GlobalAttributes globals) {
     loading = true;
     currPage = 1;
-    globalList = global;
+    globalList = globals;
     objList.clear();
     objList.add(globalList);
     TextObj globalTable = new TextObj(10, 10, globalList, tableFont);
@@ -1697,27 +1699,27 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public Color getDefSC() {
-    return defSC;
+    return defaultStatesColor;
   }
 
   public void setDefSC(Color defSC) {
-    this.defSC = defSC;
+    this.defaultStatesColor = defSC;
   }
 
   public Color getDefSTC() {
-    return defSTC;
+    return defaultStateTransitionsColor;
   }
 
   public void setDefSTC(Color defSTC) {
-    this.defSTC = defSTC;
+    this.defaultStateTransitionsColor = defSTC;
   }
 
   public Color getDefLTC() {
-    return defLTC;
+    return defaultTransitionsColor;
   }
 
   public void setDefLTC(Color defLTC) {
-    this.defLTC = defLTC;
+    this.defaultTransitionsColor = defLTC;
   }
 
   public JColorChooser getColorChooser() {
@@ -1725,11 +1727,11 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public int getStateW() {
-    return StateW;
+    return defaultStatesWidth;
   }
 
   public int getStateH() {
-    return StateH;
+    return defaultStatesHeight;
   }
 
   public int getLineWidth() {
@@ -1737,11 +1739,11 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void setStateW(int w) {
-    StateW = w;
+    defaultStatesWidth = w;
   }
 
   public void setStateH(int h) {
-    StateH = h;
+    defaultStatesHeight = h;
   }
 
   public void setLineWidth(int w) {
@@ -1753,59 +1755,3 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
 }
-
-/*
- * class ColorChooserIcon implements Icon, MouseListener {
- * 
- * private Color color;
- * private JColorChooser colorChooser;
- * 
- * public ColorChooserIcon(Color color, JColorChooser colorChooser) {
- * this.color = color;
- * this.colorChooser = colorChooser;
- * }
- * 
- * public void paintIcon(Component c, Graphics g, int x, int y) {
- * Color old_color = g.getColor();
- * g.setColor(color);
- * g.fillRect(x,y,15,15);
- * g.setColor(old_color);
- * }
- * 
- * public int getIconWidth() {
- * return 15;
- * }
- * 
- * public int getIconHeight() {
- * return 15;
- * }
- * 
- * public void mouseClicked(MouseEvent e) {
- * System.out.println("test");
- * color = JColorChooser.showDialog(null, "Choose Color", color);
- * }
- * 
- * public void mouseEntered(MouseEvent e) {
- * // TODO Auto-generated method stub
- * 
- * }
- * 
- * public void mouseExited(MouseEvent e) {
- * // TODO Auto-generated method stub
- * 
- * }
- * 
- * public void mousePressed(MouseEvent e) {
- * // TODO Auto-generated method stub
- * 
- * }
- * 
- * public void mouseReleased(MouseEvent e) {
- * // TODO Auto-generated method stub
- * 
- * }
- * 
- * 
- * 
- * }
- */

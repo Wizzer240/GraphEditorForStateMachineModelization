@@ -2,7 +2,11 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.util.LinkedList;
 import java.util.Vector;
+
+import attributes.GlobalAttributes;
+import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -96,4 +100,8 @@ public abstract class TransitionObj extends GeneralObj implements Cloneable {
   public void setSelectStatus(boolean b) {
   };
 
+  @Override
+  public LinkedList<ObjAttribute> getAttributes(GlobalAttributes globals) {
+    return globals.getTransAttributes();
+  }
 }

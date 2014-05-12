@@ -9,6 +9,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
@@ -38,7 +40,7 @@ public class TextObj extends GeneralObj {
   private int tX, tY, tW, tH, xTemp, yTemp;
   private int selectboxLeft, selectboxRight, selectboxBottom, selectboxTop;
   private String text = null;
-  //private GeneralObj connectedObj = null; Was it useful ?
+  // private GeneralObj connectedObj = null; Was it useful ?
   private boolean parentSelected = false;
   LinkedList<LinkedList<ObjAttribute>> globalList = null;
 
@@ -492,6 +494,11 @@ public class TextObj extends GeneralObj {
 
   public Color getColor() {
     return color;
+  }
+
+  @Override
+  public LinkedList<ObjAttribute> getAttributes(GlobalAttributes globals) {
+    throw new NotImplementedException();
   }
 
 }

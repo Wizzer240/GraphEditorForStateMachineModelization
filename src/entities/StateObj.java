@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
@@ -452,6 +453,11 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   public void setColor(Color c) {
     color = c;
+  }
+
+  @Override
+  public LinkedList<ObjAttribute> getAttributes(GlobalAttributes globals) {
+    return globals.getStateAttributes();
   }
 
 }

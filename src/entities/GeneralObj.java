@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 
 //Written by: Michael Zimmer - mike@zimmerdesignservices.com
@@ -67,8 +68,7 @@ public abstract class GeneralObj implements Cloneable {
    */
   public abstract SelectOptions getSelectStatus();
 
-  public Object clone() throws CloneNotSupportedException
-  {
+  public Object clone() throws CloneNotSupportedException {
     return super.clone();
   }
 
@@ -76,33 +76,30 @@ public abstract class GeneralObj implements Cloneable {
 
   public abstract boolean containsParent(GeneralObj oldObj);
 
-  /** Returns the type of object :
-   * 0 for StateObj
-   * 1 for StateTransitionObj
-   * 2 for LoopbackTransitionObj
-   * 3 for TextObj*/
+  /**
+   * Returns the type of object.
+   * 
+   * @see GeneralObjType
+   */
   public abstract GeneralObjType getType();
 
   public abstract boolean isModified();
 
   public boolean modified = false;
 
-  public void setModified(boolean b)
-  {
+  public void setModified(boolean b) {
     modified = b;
   }
 
   public abstract void updateObj();
 
-  public boolean isParentModified()
-  {
+  public boolean isParentModified() {
     return modifiedParent;
   }
 
   public boolean modifiedParent = false;
 
-  public void setParentModified(boolean b)
-  {
+  public void setParentModified(boolean b) {
     modifiedParent = b;
   }
 
@@ -120,35 +117,39 @@ public abstract class GeneralObj implements Cloneable {
   /* List of obj attributes for the object */
   LinkedList<ObjAttribute> attrib = new LinkedList<ObjAttribute>();
   LinkedList<ObjAttribute> global;
-  LinkedList<LinkedList<ObjAttribute>> allGlobal;
+  GlobalAttributes allGlobal;
 
-  public LinkedList<ObjAttribute> getAttributeList()
-  {
+  public LinkedList<ObjAttribute> getAttributeList() {
     return attrib;
   }
 
   // public int jumpCount = 0; Unused ?
 
+  /**
+   * Return the global attributes associated with the current object type.
+   * 
+   * @param globals
+   *          The GlobalAttributes containing all the global attributes.
+   * @return The global attributes for the current object.
+   */
+  public abstract LinkedList<ObjAttribute>
+      getAttributes(GlobalAttributes globals);
+
   // updates the attribute list for a particular object by reading in the global
   // list
-  public void updateAttrib(LinkedList<LinkedList<ObjAttribute>> glist, int a) {
-    global = glist.get(a);
-    allGlobal = glist;
-    for (int i = 0; i < global.size(); i++)
-    {
-      ObjAttribute obj = global.get(i);
-    }
+  public void updateAttrib(GlobalAttributes globals) {
+    global = getAttributes(globals);
+    allGlobal = globals;
 
-    for (int i = 0; i < global.size(); i++)
-    {
+    for (int i = 0; i < global.size(); i++) {
       ObjAttribute g = global.get(i);
       ObjAttribute l = null;
-      if (attrib.size() > i)
+      if (attrib.size() > i) {
         l = attrib.get(i);
+      }
 
       // if names match for current index
-      if (l != null && g.getName().equals(l.getName()))
-      {
+      if (l != null && g.getName().equals(l.getName())) {
         // global attribute name can't be local
         if (l.getEditable(0) == ObjAttribute.LOCAL)
           l.setEditable(0, ObjAttribute.GLOBAL_FIXED);
@@ -158,8 +159,7 @@ public abstract class GeneralObj implements Cloneable {
         if (l.get(3).equals(""))
           l.setEditable(3, ObjAttribute.GLOBAL_VAR);
 
-        for (int j = 0; j < 7; j++)
-        {
+        for (int j = 0; j < 7; j++) {
           // if value in field isn't locally set variable, replace with global
           if (l.getEditable(j) != ObjAttribute.LOCAL)
             l.set(j, g.get(j));
@@ -171,12 +171,10 @@ public abstract class GeneralObj implements Cloneable {
           l.setEditable(1, ObjAttribute.GLOBAL_VAR);
       }
       // TODO rerun check on swapped lists
-      else
-      {
+      else {
         boolean breaker = false;
         // look for attribute in wrong place
-        for (int k = 0; k < attrib.size(); k++)
-        {
+        for (int k = 0; k < attrib.size(); k++) {
           ObjAttribute l2 = attrib.get(k);
           // if one is found, fix it
           if (g.getName().equals(l2.getName()))
@@ -189,16 +187,14 @@ public abstract class GeneralObj implements Cloneable {
           }
         }
         // if wasnt fixed, then it doesnt exist and needs to be created
-        if (!breaker)
-        {
+        if (!breaker) {
           ObjAttribute cloned = null;
           try {
             cloned = (ObjAttribute) g.clone();
           } catch (CloneNotSupportedException e) {
             e.printStackTrace();
           }
-          if (cloned.getName().equals("name"))
-          {
+          if (cloned.getName().equals("name")) {
             cloned.setValue(objName);
             cloned.setEditable(1, ObjAttribute.LOCAL);
           }
@@ -207,11 +203,9 @@ public abstract class GeneralObj implements Cloneable {
       }
     }
 
-    // delete attributes that were removed in global
-    if (attrib.size() > global.size())
-    {
-      for (int i = attrib.size() - 1; i > global.size() - 1; i--)
-      {
+    /* Delete attributes that were removed in global */
+    if (attrib.size() > global.size()) {
+      for (int i = attrib.size() - 1; i > global.size() - 1; i--) {
         ObjAttribute obj = attrib.get(i);
         if (obj.getEditable(0) != ObjAttribute.LOCAL)
           attrib.remove(i);
@@ -219,20 +213,16 @@ public abstract class GeneralObj implements Cloneable {
     }
 
     // set up correct pages
-    for (int i = 0; i < attrib.size(); i++)
-    {
+    for (int i = 0; i < attrib.size(); i++) {
       ObjAttribute l = attrib.get(i);
       l.setPage(myPage, "update");
       // l.setOutputTypeFlag(true);
-      if (l.getType().equals("output"))
-      {
+      if (l.getType().equals("output")) {
         boolean b = false;
         boolean f = false;
-        for (int j = 0; j < allGlobal.get(2).size(); j++)
-        {
-          ObjAttribute obj = allGlobal.get(2).get(j);
-          if (obj.getName().equals(l.getName()))
-          {
+        for (int j = 0; j < allGlobal.getOutputsAttributes().size(); j++) {
+          ObjAttribute obj = allGlobal.getOutputsAttributes().get(j);
+          if (obj.getName().equals(l.getName())) {
             if (obj.getType().equals("reg") || obj.getType().equals("regdp"))
               b = true;
             if (obj.getType().equals("flag"))
@@ -242,9 +232,7 @@ public abstract class GeneralObj implements Cloneable {
         }
         l.setOutputTypeReg(b);
         l.setOutputTypeFlag(f);
-      }
-      else
-      {
+      } else {
         l.setOutputTypeReg(false);
         l.setOutputTypeFlag(false);
       }
@@ -252,31 +240,27 @@ public abstract class GeneralObj implements Cloneable {
 
   }
 
-  public String getOutputType(String name)
-  {
-    LinkedList<ObjAttribute> list = allGlobal.get(2);
+  public String getOutputType(String name) {
+    LinkedList<ObjAttribute> list = allGlobal.getOutputsAttributes();
     // / find output with matching name, and return its type
-    for (int i = 0; i < list.size(); i++)
-    {
+    for (int i = 0; i < list.size(); i++) {
       ObjAttribute obj = list.get(i);
-      if (obj.getName().equals(name))
+      if (obj.getName().equals(name)) {
         return obj.getType();
+      }
     }
     return "";
   }
 
-  public String toString()
-  {
+  public String toString() {
     return objName;
   }
 
-  public String getName()
-  {
+  public String getName() {
     return objName;
   }
 
-  public void setName(String str)
-  {
+  public void setName(String str) {
     objName = str;
   }
 
@@ -286,49 +270,42 @@ public abstract class GeneralObj implements Cloneable {
   int currPage = 1;
   int myPage = 1;
 
-  public void paintComponent(Graphics g, int i)
-  {
+  public void paintComponent(Graphics g, int i) {
     currPage = i;
     paintComponent(g);
-    if (attrib != null)
-    {
+    if (attrib != null) {
       int step = -1;
-      for (int j = 0; j < attrib.size(); j++)
-      {
+      for (int j = 0; j < attrib.size(); j++) {
         ObjAttribute obj = attrib.get(j);
-        if (obj.getVisible())
+        if (obj.getVisible()) {
           step++;
+        }
         obj.paintComponent(g, currPage, getCenter(currPage), getSelectStatus(),
             step);
       }
     }
   }
 
-  public int getPage()
-  {
+  public int getPage() {
     return myPage;
   }
 
-  public void setPage(int i)
-  {
+  public void setPage(int i) {
     myPage = i;
-    if (attrib != null)
-    {
-      for (int j = 0; j < attrib.size(); j++)
-      {
+    if (attrib != null) {
+      for (int j = 0; j < attrib.size(); j++) {
         ObjAttribute obj = attrib.get(j);
-        if (getType() != GeneralObjType.TRANSITION)
+        if (getType() != GeneralObjType.TRANSITION) {
           obj.setPage(i);
+        }
       }
     }
   }
 
   public void decrementPage() {
     myPage = myPage - 1;
-    if (attrib != null)
-    {
-      for (int i = 0; i < attrib.size(); i++)
-      {
+    if (attrib != null) {
+      for (int i = 0; i < attrib.size(); i++) {
         ObjAttribute obj = attrib.get(i);
         obj.setPage(myPage);
       }
@@ -337,14 +314,11 @@ public abstract class GeneralObj implements Cloneable {
   }
 
   // indentation (also exits in FizzimGui.java and ObjAttribute.java
-  public String i(int indent)
-  {
+  public String i(int indent) {
     String ind = "";
-    for (int i = 0; i < indent; i++)
-    {
+    for (int i = 0; i < indent; i++) {
       ind = ind + "   ";
     }
     return ind;
   }
-
 }

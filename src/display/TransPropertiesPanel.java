@@ -148,8 +148,7 @@ public class TransPropertiesPanel extends JPanel {
       // setTitle("Edit Loopback Transition Properties");
       TPLabel.setText(locale.getString("trans_editor_text_loopback"));
     }
-    TPTable.setModel(new AttributesTableModel(trans, parent_window, globalList,
-        EnumGlobalList.TRANSITIONS));
+    TPTable.setModel(new AttributesTableModel(trans, parent_window, globalList));
     TPTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     // use dropdown boxes

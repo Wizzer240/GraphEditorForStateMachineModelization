@@ -95,6 +95,7 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 
 /* This file was originally created with matisse GUI Builder for MyEclipse.
@@ -105,14 +106,17 @@ public class FizzimGui extends JFrame {
 
   static String currVer = "14.03.1";
 
-  // pointer to global lists
-  LinkedList<ObjAttribute> globalMachineAttributes;
-  LinkedList<ObjAttribute> globalInputsAttributes;
-  LinkedList<ObjAttribute> globalOutputsAttributes;
-  LinkedList<ObjAttribute> globalStateAttributes;
-  LinkedList<ObjAttribute> globalTransAttributes;
+  private GlobalAttributes global_attributes;
 
-  LinkedList<LinkedList<ObjAttribute>> globalList;
+  // pointer to global lists
+  // LinkedList<ObjAttribute> globalMachineAttributes;
+  // LinkedList<ObjAttribute> globalInputsAttributes;
+  // LinkedList<ObjAttribute> globalOutputsAttributes;
+  // LinkedList<ObjAttribute> globalStateAttributes;
+  // LinkedList<ObjAttribute> globalTransAttributes;
+
+  // LinkedList<LinkedList<ObjAttribute>> globalList;
+
   int maxH = 1296;
   int maxW = 936;
   boolean loading = false;
@@ -127,18 +131,20 @@ public class FizzimGui extends JFrame {
     ImageIcon icon = new ImageIcon("icon.png");
     this.setIconImage(icon.getImage());
     // create global lists
-    globalList = new LinkedList<LinkedList<ObjAttribute>>();
-    globalMachineAttributes = new LinkedList<ObjAttribute>();
-    globalInputsAttributes = new LinkedList<ObjAttribute>();
-    globalOutputsAttributes = new LinkedList<ObjAttribute>();
-    globalStateAttributes = new LinkedList<ObjAttribute>();
-    globalTransAttributes = new LinkedList<ObjAttribute>();
+    // globalList = new LinkedList<LinkedList<ObjAttribute>>();
+    // globalMachineAttributes = new LinkedList<ObjAttribute>();
+    // globalInputsAttributes = new LinkedList<ObjAttribute>();
+    // globalOutputsAttributes = new LinkedList<ObjAttribute>();
+    // globalStateAttributes = new LinkedList<ObjAttribute>();
+    // globalTransAttributes = new LinkedList<ObjAttribute>();
 
-    globalList.add(globalInputsAttributes);
-    globalList.add(globalOutputsAttributes);
-    globalList.add(globalMachineAttributes);
-    globalList.add(globalStateAttributes);
-    globalList.add(globalTransAttributes);
+    // globalList.add(globalInputsAttributes);
+    // globalList.add(globalOutputsAttributes);
+    // globalList.add(globalMachineAttributes);
+    // globalList.add(globalStateAttributes);
+    // globalList.add(globalTransAttributes);
+
+    global_attributes = new GlobalAttributes();
 
     drawArea1 = new DrawArea(globalList);
 
@@ -164,23 +170,24 @@ public class FizzimGui extends JFrame {
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR };
-    globalList.get(EnumGlobalList.MACHINE).add(
+
+    global_attributes.addMachineAttribute(
         new ObjAttribute("name", "def_name", EnumVisibility.NO, "", "",
             Color.black, "", "", editable));
 
-    globalList.get(EnumGlobalList.MACHINE).add(
+    global_attributes.addMachineAttribute(
         new ObjAttribute("clock", "clk", EnumVisibility.NO,
             "posedge", "", Color.black, "", "", editable));
 
-    globalList.get(EnumGlobalList.STATES).add(
+    global_attributes.addStateAttribute(
         new ObjAttribute("name", "def_name", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
 
-    globalList.get(EnumGlobalList.TRANSITIONS).add(
+    global_attributes.addTransitionAttribute(
         new ObjAttribute("name", "def_name", EnumVisibility.NO,
             "def_type", "", Color.black, "", "", editable));
 
-    globalList.get(EnumGlobalList.TRANSITIONS).add(
+    global_attributes.addTransitionAttribute(
         new ObjAttribute("equation", "1", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
   }
@@ -1274,7 +1281,7 @@ public class FizzimGui extends JFrame {
       writer.write("<globals>\n");
 
       writer.write(i(1) + "<machine>\n");
-      tempList = (LinkedList<ObjAttribute>) globalList.get(0);
+      tempList = global_attributes.getMachineAttributes();
       for (int i = 0; i < tempList.size(); i++) {
         ObjAttribute obj = tempList.get(i);
         obj.save(writer, 1);
@@ -1282,7 +1289,7 @@ public class FizzimGui extends JFrame {
       writer.write(i(1) + "</machine>\n");
 
       writer.write(i(1) + "<inputs>\n");
-      tempList = (LinkedList<ObjAttribute>) globalList.get(1);
+      tempList = global_attributes.getInputsAttributes();
       for (int i = 0; i < tempList.size(); i++) {
         ObjAttribute obj = tempList.get(i);
         obj.save(writer, 1);
@@ -1290,7 +1297,7 @@ public class FizzimGui extends JFrame {
       writer.write(i(1) + "</inputs>\n");
 
       writer.write(i(1) + "<outputs>\n");
-      tempList = (LinkedList<ObjAttribute>) globalList.get(2);
+      tempList = global_attributes.getOutputsAttributes();
       for (int i = 0; i < tempList.size(); i++) {
         ObjAttribute obj = tempList.get(i);
         obj.save(writer, 1);
@@ -1298,7 +1305,7 @@ public class FizzimGui extends JFrame {
       writer.write(i(1) + "</outputs>\n");
 
       writer.write(i(1) + "<state>\n");
-      tempList = (LinkedList<ObjAttribute>) globalList.get(3);
+      tempList = global_attributes.getStateAttributes();
       for (int i = 0; i < tempList.size(); i++) {
         ObjAttribute obj = tempList.get(i);
         obj.save(writer, 1);
@@ -1306,7 +1313,7 @@ public class FizzimGui extends JFrame {
       writer.write(i(1) + "</state>\n");
 
       writer.write(i(1) + "<trans>\n");
-      tempList = (LinkedList<ObjAttribute>) globalList.get(4);
+      tempList = global_attributes.getTransAttributes();
       for (int i = 0; i < tempList.size(); i++) {
         ObjAttribute obj = tempList.get(i);
         obj.save(writer, 1);
@@ -1455,9 +1462,8 @@ public class FizzimGui extends JFrame {
     return clfilename;
   }
 
-  public void updateGlobal(LinkedList<LinkedList<ObjAttribute>> globalList2) {
-    globalList = globalList2;
-
+  public void updateGlobal(GlobalAttributes new_global_attributes) {
+    global_attributes = new_global_attributes;
   }
 
   public String getPageName(int i)

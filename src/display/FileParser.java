@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.Vector;
 
 import attributes.EnumVisibility;
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 import entities.LoopbackTransitionObj;
 import entities.StateObj;
@@ -52,12 +53,14 @@ public class FileParser {
   private FizzimGui fizzim;
   ArrayList<String> tempList;
   ArrayList<String> tempList2;
-  LinkedList<ObjAttribute> globalMachineAttributes;
-  LinkedList<ObjAttribute> globalStateAttributes;
-  LinkedList<ObjAttribute> globalTransAttributes;
-  LinkedList<ObjAttribute> globalInputsAttributes;
-  LinkedList<ObjAttribute> globalOutputsAttributes;
-  LinkedList<LinkedList<ObjAttribute>> globalList;
+  //LinkedList<ObjAttribute> globalMachineAttributes;
+  //LinkedList<ObjAttribute> globalStateAttributes;
+  //LinkedList<ObjAttribute> globalTransAttributes;
+  //LinkedList<ObjAttribute> globalInputsAttributes;
+  // LinkedList<ObjAttribute> globalOutputsAttributes;
+  
+  //LinkedList<LinkedList<ObjAttribute>> globalList;
+  GlobalAttributes global_attributes;
   DrawArea drawArea;
   Vector<Object> objList;;
   private int ver = 0;
@@ -496,20 +499,9 @@ public class FileParser {
 
   private void openGlobal(ArrayList<String> list) {
 
-    // create global list
-    globalList = new LinkedList<LinkedList<ObjAttribute>>();
-    globalMachineAttributes = new LinkedList<ObjAttribute>();
-    globalInputsAttributes = new LinkedList<ObjAttribute>();
-    globalOutputsAttributes = new LinkedList<ObjAttribute>();
-    globalStateAttributes = new LinkedList<ObjAttribute>();
-    globalTransAttributes = new LinkedList<ObjAttribute>();
-
-    globalList.add(globalMachineAttributes);
-    globalList.add(globalInputsAttributes);
-    globalList.add(globalOutputsAttributes);
-    globalList.add(globalStateAttributes);
-    globalList.add(globalTransAttributes);
-
+    /* Create global attributes */
+    global_attributes = new GlobalAttributes();
+    
     int mS = list.indexOf("<machine>") + 1;
     int mE = list.indexOf("</machine>") - 1;
     int iS = list.indexOf("<inputs>") + 1;
@@ -561,8 +553,8 @@ public class FileParser {
      * openAttributeList(list, start+1, counter-1,globalTransAttributes);
      */
 
-    drawArea.updateGlobal(globalList);
-    fizzim.updateGlobal(globalList);
+    drawArea.updateGlobal(global_attributes);
+    fizzim.updateGlobal(global_attributes);
     objList.add(globalList);
     tempList.clear();
 
