@@ -107,7 +107,7 @@ import attributes.ObjAttribute;
 @SuppressWarnings("serial")
 public class FizzimGui extends JFrame {
 
-  static String currVer = "14.03.1";
+  static final String currVer = "14.03.2";
 
   /*
    * Global attributes for the machine, the inputs, outputs, states and
