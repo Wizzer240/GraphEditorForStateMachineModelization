@@ -1827,15 +1827,27 @@ public class DrawArea extends JPanel implements MouseListener,
    * @param y1
    */
   GeneralObj addNewState(String stateName, int x0, int y0, int x1, int y1) {
-/*    GeneralObj state = new StateObj(x0, y0, x1, y1,
-        new LinkedList<ObjAttribute>(globalList
-            .get(EnumGlobalList.STATES)), stateName, grid, currPage, defSC); */
-    GeneralObj state = new StateObj(x0, y0, x1, y1, stateName, currPage, defSTC, grid, gridS);
+    /*
+     * GeneralObj state = new StateObj(x0, y0, x1, y1,
+     * new LinkedList<ObjAttribute>(globalList
+     * .get(EnumGlobalList.STATES)), stateName, grid, currPage, defSC);
+     */
+    GeneralObj state = new StateObj(x0, y0, x1, y1, stateName, currPage,
+        defSTC, grid, gridS);
+    
+    // Check if the name of the state is an Integer, if it's the case, set
+    // createSCounter to that Integer + 1.
+    if (stateName.matches("^\\p{Digit}+$")){
+      if (Integer.valueOf(stateName)>=createSCounter.get(currPage)){
+      createSCounter.set(currPage, Integer.valueOf(stateName) +1); 
+      }
+    }else{
     createSCounter.set(currPage, createSCounter.get(currPage) + 1);
+    }
     objList.add(state);
     state.updateAttrib(globalList, EnumGlobalList.STATES);
 
-   // commitUndo();
+    // commitUndo();
     return state;
   }
 
@@ -1884,10 +1896,10 @@ public class DrawArea extends JPanel implements MouseListener,
     point1.setLocation(544.0, 185.0);
 
     LoopbackTransitionObj trans = new LoopbackTransitionObj(
-         point1,
-         point2,
-         point3,
-         point4,
+        point1,
+        point2,
+        point3,
+        point4,
         new LinkedList<ObjAttribute>(globalList.get(EnumGlobalList.TRANSITIONS)),
         name, state, state, sIndex,
         sIndex,
@@ -1895,8 +1907,8 @@ public class DrawArea extends JPanel implements MouseListener,
     // GeneralObj trans1 = new LoopbackTransitionObj(x0, y0, x1, y1, globalList
     // , name, state, state, createSCounter.indexOf(state),
     // createSCounter.indexOf(state), currPage, defSTC);
-//    trans.initTrans(getStateObj(state));
-//    trans.adjustShapeOrPosition(x0, y0);
+    // trans.initTrans(getStateObj(state));
+    // trans.adjustShapeOrPosition(x0, y0);
     createTCounter++;
     objList.add(trans);
     trans.updateAttrib(globalList, EnumGlobalList.TRANSITIONS);
