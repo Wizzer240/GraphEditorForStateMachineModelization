@@ -99,6 +99,11 @@ public class GlobalAttributes {
     }
   }
 
+  @Deprecated
+  public int size() {
+    return 5;
+  }
+
   public void addMachineAttribute(ObjAttribute attribute) {
     machineAttributes.add(attribute);
   }
@@ -137,6 +142,45 @@ public class GlobalAttributes {
 
   public LinkedList<ObjAttribute> getTransAttributes() {
     return transAttributes;
+  }
+
+  @Deprecated
+  private void set(int i, LinkedList<ObjAttribute> newList) {
+    if (i == 0) {
+      machineAttributes = newList;
+    } else if (i == 1) {
+      inputsAttributes = newList;
+    } else if (i == 2) {
+      outputsAttributes = newList;
+    } else if (i == 3) {
+      stateAttributes = newList;
+    } else if (i == 4) {
+      transAttributes = newList;
+    } else {
+      throw new NoSuchElementException();
+    }
+  }
+
+  @Deprecated
+  public GlobalAttributes clone() {
+    GlobalAttributes result = new GlobalAttributes();
+
+    for (int i = 0; i < this.size(); i++) {
+      LinkedList<ObjAttribute> oldList = (LinkedList<ObjAttribute>) this
+          .getSpecificGlobalAttributes(i);
+      LinkedList<ObjAttribute> newList = (LinkedList<ObjAttribute>) oldList
+          .clone();
+      for (int j = 0; j < oldList.size(); j++) {
+        try {
+          newList.set(j, (ObjAttribute) oldList.get(j).clone());
+        } catch (CloneNotSupportedException e) {
+          e.printStackTrace();
+        }
+      }
+      result.set(i, newList);
+
+    }
+    return result;
   }
 
 }

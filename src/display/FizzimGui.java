@@ -93,7 +93,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
-import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
 import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
@@ -146,7 +145,7 @@ public class FizzimGui extends JFrame {
 
     global_attributes = new GlobalAttributes();
 
-    drawArea1 = new DrawArea(globalList);
+    drawArea1 = new DrawArea(global_attributes);
 
     drawArea1.setPreferredSize(new Dimension(maxW, maxH));
 
@@ -1074,9 +1073,9 @@ public class FizzimGui extends JFrame {
           if (returnVal == JFileChooser.APPROVE_OPTION) {
             tryToSave(FileSaveAction.getSelectedFile(), "fzm", true);
           }
-        }
-        else if (n == JOptionPane.CANCEL_OPTION || n == -1)
+        } else if (n == JOptionPane.CANCEL_OPTION || n == -1) {
           createNew = false;
+        }
       } else {
         Object[] options = { "Yes", "No", "Cancel" };
 
@@ -1086,30 +1085,28 @@ public class FizzimGui extends JFrame {
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, options,
                 options[0]);
-        if (n == JOptionPane.YES_OPTION)
-        {
-          if (!saveFile(currFile))
+        if (n == JOptionPane.YES_OPTION) {
+          if (!saveFile(currFile)) {
             createNew = false;
-        }
-        else if (n == JOptionPane.CANCEL_OPTION || n == -1)
+          }
+        } else if (n == JOptionPane.CANCEL_OPTION || n == -1) {
           createNew = false;
+        }
       }
     }
-    if (createNew)
-    {
-      for (int i = pages_tabbedPane.getTabCount() - 1; i > 1; i--)
-      {
+    if (createNew) {
+      for (int i = pages_tabbedPane.getTabCount() - 1; i > 1; i--) {
         pages_tabbedPane.remove(i);
       }
       pages_tabbedPane.setComponentAt(1, jScrollPane1);
       currFile = null;
       setTitle("Fizzim");
-      for (int i = 0; i < globalList.size(); i++)
+      for (int i = 0; i < global_attributes.size(); i++)
       {
-        globalList.get(i).clear();
+        global_attributes.getSpecificGlobalAttributes(i).clear();
       }
       initGlobal();
-      drawArea1.open(globalList);
+      drawArea1.open(global_attributes);
     }
 
   }// GEN-LAST:event_FileItemNewActionPerformed
@@ -1128,20 +1125,23 @@ public class FizzimGui extends JFrame {
   }
 
   private void GlobalItemMachineActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemMachineActionPerformed
-    globalList = drawArea1.setUndoPoint();
-    new GlobalProperties(drawArea1, this, true, globalList, 0)
+    global_attributes = drawArea1.setUndoPoint();
+    new GlobalProperties(drawArea1, this, true, global_attributes,
+        GlobalAttributes.MACHINE)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemMachineActionPerformed
 
   private void GlobalItemInputsActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemsInputsActionPerformed
-    globalList = drawArea1.setUndoPoint();
-    new GlobalProperties(drawArea1, this, true, globalList, 1)
+    global_attributes = drawArea1.setUndoPoint();
+    new GlobalProperties(drawArea1, this, true, global_attributes,
+        GlobalAttributes.INPUTS)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemsInputsActionPerformed
 
   private void GlobalItemOutputsActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemOutputsActionPerformed
-    globalList = drawArea1.setUndoPoint();
-    new GlobalProperties(drawArea1, this, true, globalList, 2)
+    global_attributes = drawArea1.setUndoPoint();
+    new GlobalProperties(drawArea1, this, true, global_attributes,
+        GlobalAttributes.OUTPUTS)
         .setVisible(true);
     /*
      * GlobalAttributesFrame.setSize(600, 300);
@@ -1153,15 +1153,17 @@ public class FizzimGui extends JFrame {
   }// GEN-LAST:event_GlobalItemOutputsActionPerformed
 
   private void GlobalItemStatesActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemStatesActionPerformed
-    globalList = drawArea1.setUndoPoint();
-    new GlobalProperties(drawArea1, this, true, globalList, 3)
+    global_attributes = drawArea1.setUndoPoint();
+    new GlobalProperties(drawArea1, this, true, global_attributes,
+        GlobalAttributes.STATES)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemStatesActionPerformed
 
   private void GlobalItemTransitionsActionPerformed(
       ActionEvent evt) {// GEN-FIRST:event_GlobalItemTransitionsActionPerformed
-    globalList = drawArea1.setUndoPoint();
-    new GlobalProperties(drawArea1, this, true, globalList, 4)
+    global_attributes = drawArea1.setUndoPoint();
+    new GlobalProperties(drawArea1, this, true, global_attributes,
+        GlobalAttributes.TRANSITIONS)
         .setVisible(true);
   }// GEN-LAST:event_GlobalItemTransitionsActionPerformed
 

@@ -38,7 +38,7 @@ public class AttributesTableModel extends AbstractTableModel {
   // int positionInGlobalList;
 
   AttributesTableModel(GeneralObj s, JDialog dia,
-      GlobalAttributes globals, int k) {
+      GlobalAttributes globals) {
     obj = s;
     attrib = obj.getAttributeList();
     global_attributes = globals;

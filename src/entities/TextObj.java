@@ -42,7 +42,7 @@ public class TextObj extends GeneralObj {
   private String text = null;
   // private GeneralObj connectedObj = null; Was it useful ?
   private boolean parentSelected = false;
-  LinkedList<LinkedList<ObjAttribute>> globalList = null;
+  private GlobalAttributes global_attributes;
 
   private boolean globalLoad = true;
   private boolean globalTable = false;
@@ -52,44 +52,40 @@ public class TextObj extends GeneralObj {
 
   private Color color = Color.black;
 
-  Font tableFont;
+  private Font tableFont;
 
-  FontMetrics fm;
+  private FontMetrics fm;
 
-  LinkedList<String> col1 = new LinkedList<String>();
-  LinkedList<String> col2 = new LinkedList<String>();
-  LinkedList<String> col3 = new LinkedList<String>();
-  LinkedList<String> col4 = new LinkedList<String>();
-  int col1W = 0, col2W = 0, col3W = 0, col4W = 0;
+  private LinkedList<String> col1 = new LinkedList<String>();
+  private LinkedList<String> col2 = new LinkedList<String>();
+  private LinkedList<String> col3 = new LinkedList<String>();
+  private LinkedList<String> col4 = new LinkedList<String>();
+  private int col1W = 0, col2W = 0, col3W = 0, col4W = 0;
 
-  public TextObj(int x, int y, LinkedList<LinkedList<ObjAttribute>> global,
-      Font font)
-  {
+  public TextObj(int x, int y, GlobalAttributes globals,
+      Font font) {
     selectStatus = SelectOptions.NONE;
     tX = x;
     tY = y;
     myPage = 1;
     globalTable = true;
     tableFont = font;
-    globalList = global;
+    global_attributes = globals;
 
   }
 
-  public TextObj(int x, int y, LinkedList<LinkedList<ObjAttribute>> global,
-      int p)
-  {
+  public TextObj(int x, int y, GlobalAttributes globals,
+      int p) {
     selectStatus = SelectOptions.NONE;
     tX = x;
     tY = y;
     myPage = p;
-    globalList = global;
+    global_attributes = globals;
     globalTable = true;
 
   }
 
-  public TextObj(String s, int x, int y, int page)
-  {
-
+  public TextObj(String s, int x, int y, int page) {
     selectStatus = SelectOptions.NONE;
     text = s;
     tX = x;
@@ -98,25 +94,22 @@ public class TextObj extends GeneralObj {
 
   }
 
-  public void loadGlobalTable(Font font)
-  {
+  public void loadGlobalTable(Font font) {
     tableFont = font;
   }
 
-  public void updateTableFont(Font font)
-  {
+  public void updateTableFont(Font font) {
     tableFont = font;
   }
 
-  public void updateGlobalText(LinkedList<LinkedList<ObjAttribute>> global,
+  public void updateGlobalText(GlobalAttributes globals,
       Font font, boolean b, int s, Color c) {
-
     tableFont = font;
     tableVis = b;
     space = s;
     tableColor = c;
 
-    globalList = global;
+    global_attributes = globals;
     col1.clear();
     col2.clear();
     col3.clear();
@@ -128,11 +121,11 @@ public class TextObj extends GeneralObj {
     col3W = 0;
     col4W = 0;
 
-    for (int i = 0; i < globalList.size(); i++)
-    {
-      if (i >= 3 && globalList.get(i).size() < 2)
+    for (int i = 0; i < global_attributes.size(); i++) {
+      if (i >= 3 && global_attributes.getSpecificGlobalAttributes(i).size() < 2)
         continue;
-      else if (i < 3 && globalList.get(i).size() < 1)
+      else if (i < 3
+          && global_attributes.getSpecificGlobalAttributes(i).size() < 1)
         continue;
       switch (i) {
       case 0:
@@ -155,12 +148,15 @@ public class TextObj extends GeneralObj {
       col2.add(" ");
       col3.add(" ");
       col4.add(" ");
-      for (int j = 0; j < globalList.get(i).size(); j++)
-      {
+      for (int j = 0; j < global_attributes
+          .getSpecificGlobalAttributes(i)
+          .size(); j++) {
         // skip "name" for state and transition
         if ((i == 3 || i == 4) && j == 0)
           continue;
-        ObjAttribute obj = globalList.get(i).get(j);
+        ObjAttribute obj = global_attributes
+            .getSpecificGlobalAttributes(i)
+            .get(j);
         String name = "   " + obj.getName();
 
         if (col1W < fm.stringWidth(name))
@@ -192,34 +188,28 @@ public class TextObj extends GeneralObj {
 
   }
 
-  public boolean getGlobalTable()
-  {
+  public boolean getGlobalTable() {
     return globalTable;
   }
 
-  public String getText()
-  {
+  public String getText() {
     return text;
   }
 
-  public void setText(String str)
-  {
+  public void setText(String str) {
     text = str;
   }
 
   @Override
   public void adjustShapeOrPosition(int x, int y) {
-    if (myPage == currPage)
-    {
-      if (selectStatus == SelectOptions.CENTER)
-      {
+    if (myPage == currPage) {
+      if (selectStatus == SelectOptions.CENTER) {
         tX += x - xTemp;
         tY += y - yTemp;
 
         xTemp = x;
         yTemp = y;
       }
-
       modified = true;
     }
 
@@ -250,23 +240,20 @@ public class TextObj extends GeneralObj {
 
     // need to set font metrics, regardless of whether the text list is on
     // current page
-    if (globalTable && tableVis)
-    {
+    if (globalTable && tableVis) {
       Font tempFont = g.getFont();
       g.setFont(tableFont);
       fm = g.getFontMetrics();
 
-      if (globalLoad)
-      {
-        updateGlobalText(globalList, tableFont, tableVis, space, tableColor);
+      if (globalLoad) {
+        updateGlobalText(global_attributes, tableFont, tableVis, space,
+            tableColor);
         globalLoad = false;
 
       }
-      if (myPage == currPage)
-      {
+      if (myPage == currPage) {
         g.setColor(tableColor);
-        for (int i = 0; i < col1.size(); i++)
-        {
+        for (int i = 0; i < col1.size(); i++) {
           g.drawString(col1.get(i), tX, tY + i * fm.getHeight());
           g.drawString(col2.get(i), tX + col1W, tY + i * fm.getHeight());
           g
@@ -281,8 +268,7 @@ public class TextObj extends GeneralObj {
       g.setFont(tempFont);
     }
 
-    if (myPage == currPage)
-    {
+    if (myPage == currPage) {
       int x2Obj = 0; // to make it match ObjAttribute code
       int y2Obj = 0; // to make it match ObjAttribute code
       int txbase = 0;
@@ -356,8 +342,7 @@ public class TextObj extends GeneralObj {
   }
 
   public boolean setSelectStatus(int x, int y) {
-    if (myPage == currPage)
-    {
+    if (myPage == currPage) {
       xTemp = x;
       yTemp = y;
       selectStatus = SelectOptions.NONE;
@@ -375,22 +360,21 @@ public class TextObj extends GeneralObj {
         }
       }
 
-      if (selectStatus == SelectOptions.NONE)
+      if (selectStatus == SelectOptions.NONE) {
         return false;
-      else
+      } else {
         return true;
-    }
-    else
+      }
+    } else {
       return false;
-
+    }
   }
 
   public void unselect() {
     selectStatus = SelectOptions.NONE;
   }
 
-  public Point getCenter(int page)
-  {
+  public Point getCenter(int page) {
     return new Point(tX + (tW / 2), tY + (tH / 2));
   }
 
@@ -436,59 +420,56 @@ public class TextObj extends GeneralObj {
   }
 
   public void moveIfNeeded(int maxW, int maxH) {
-    if (tX > maxW)
+    if (tX > maxW) {
       tX = maxW - tW;
-    if (tY > maxH)
+    }
+    if (tY > maxH) {
       tY = maxH - tH;
-
+    }
   }
 
   @Override
   public boolean setBoxSelectStatus(int x0, int y0, int x1, int y1) {
     selectStatus = SelectOptions.NONE;
-    if (myPage == currPage && x0 <= tX - 4 && x1 >= tX + tW + 3)
-    {
+    if (myPage == currPage && x0 <= tX - 4 && x1 >= tX + tW + 3) {
 
-      if (!globalTable && y0 <= tY - tH + 2 && y1 >= tY + 4)
-      {
+      if (!globalTable && y0 <= tY - tH + 2 && y1 >= tY + 4) {
+        selectStatus = SelectOptions.CENTER;
+        return true;
+      } else if (globalTable && tableVis && y0 <= tY - (tH / col1.size()) + 2
+          && y1 >= tY + 4 + tH - (tH / col1.size())) {
         selectStatus = SelectOptions.CENTER;
         return true;
       }
-      else if (globalTable && tableVis && y0 <= tY - (tH / col1.size()) + 2
-          && y1 >= tY + 4 + tH - (tH / col1.size()))
-      {
-        selectStatus = SelectOptions.CENTER;
-        return true;
-      }
+      return false;
+    } else {
       return false;
     }
-    else
-      return false;
   }
 
-  public boolean setBoxSelectStatus(int x, int y)
-  {
+  public boolean setBoxSelectStatus(int x, int y) {
     xTemp = x;
     yTemp = y;
-    if (myPage == currPage && x >= tX - 4 && x <= tX + tW + 3)
-    {
+    if (myPage == currPage && x >= tX - 4 && x <= tX + tW + 3) {
 
-      if (!globalTable && y >= tY - tH + 2 && y <= tY + 4)
+      if (!globalTable && y >= tY - tH + 2 && y <= tY + 4) {
         return true;
-      else if (globalTable && tableVis && y >= tY - (tH / col1.size()) + 2
-          && y <= tY + 4 + tH - (tH / col1.size()))
+      } else if (globalTable && tableVis && y >= tY - (tH / col1.size()) + 2
+          && y <= tY + 4 + tH - (tH / col1.size())) {
         return true;
+      }
+      return false;
+    } else {
       return false;
     }
-    else
-      return false;
   }
 
   public void setSelectStatus(boolean b) {
-    if (b)
+    if (b) {
       selectStatus = SelectOptions.CENTER;
-    else
+    } else {
       selectStatus = SelectOptions.NONE;
+    }
 
   }
 
@@ -500,5 +481,4 @@ public class TextObj extends GeneralObj {
   public LinkedList<ObjAttribute> getAttributes(GlobalAttributes globals) {
     throw new NotImplementedException();
   }
-
 }

@@ -51,18 +51,18 @@ public class FileParser {
 
   private File file;
   private FizzimGui fizzim;
-  ArrayList<String> tempList;
-  ArrayList<String> tempList2;
-  //LinkedList<ObjAttribute> globalMachineAttributes;
-  //LinkedList<ObjAttribute> globalStateAttributes;
-  //LinkedList<ObjAttribute> globalTransAttributes;
-  //LinkedList<ObjAttribute> globalInputsAttributes;
+  private ArrayList<String> tempList;
+  private ArrayList<String> tempList2;
+  // LinkedList<ObjAttribute> globalMachineAttributes;
+  // LinkedList<ObjAttribute> globalStateAttributes;
+  // LinkedList<ObjAttribute> globalTransAttributes;
+  // LinkedList<ObjAttribute> globalInputsAttributes;
   // LinkedList<ObjAttribute> globalOutputsAttributes;
-  
-  //LinkedList<LinkedList<ObjAttribute>> globalList;
-  GlobalAttributes global_attributes;
-  DrawArea drawArea;
-  Vector<Object> objList;;
+
+  // LinkedList<LinkedList<ObjAttribute>> globalList;
+  private GlobalAttributes global_attributes;
+  private DrawArea drawArea;
+  private Vector<Object> objList;;
   private int ver = 0;
 
   public FileParser(File _file, FizzimGui _fizzim, DrawArea _drawArea)
@@ -75,14 +75,38 @@ public class FileParser {
     parse();
   }
 
+  /**
+   * Return the next uncommented line (i.e. which does not begin with "##").
+   * 
+   * @param reader
+   *          The BufferedReader being used.
+   * @return The next uncommented line from the current position of the
+   *         `reader`.
+   */
+  private String getNextUsefulLine(BufferedReader reader) {
+    String line3 = null;
+    try {
+      line3 = reader.readLine();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    while (line3.startsWith("##")) {
+      try {
+        line3 = reader.readLine();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return line3;
+  }
+
   private void parse() {
     FileReader fileReader;
 
     try {
       fileReader = new FileReader(file);
       BufferedReader reader = new BufferedReader(fileReader) {
-        public String readLine() throws IOException
-        {
+        public String readLine() throws IOException {
           // parse out indents
           String line = super.readLine();
           while (line != null && line.length() > 0 && line.charAt(0) == ' ')
@@ -93,17 +117,14 @@ public class FileParser {
       };
 
       String line = null;
-      while ((line = reader.readLine()) != null)
-      {
+      while ((line = reader.readLine()) != null) {
         // ignore comments
         if (line.startsWith("##"))
           continue;
 
         else if (line.equals("<version>"))
         {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
+          String line2 = getNextUsefulLine(reader);
 
           String temp = line2;
           temp = temp.replaceAll("\\.", "");
@@ -111,70 +132,59 @@ public class FileParser {
         }
 
         // templist holds related chunks of lines
-        else if (line.equals("<globals>"))
-        {
+        else if (line.equals("<globals>")) {
           while ((line = reader.readLine()) != null
-              && !line.equals("</globals>"))
-          {
-            if (line.startsWith("##"))
+              && !line.equals("</globals>")) {
+            if (line.startsWith("##")) {
               continue;
+            }
             tempList.add(line);
           }
           openGlobal(tempList);
-        }
-        else if (line.equals("<SCounter>"))
-        {
+        } else if (line.equals("<SCounter>")) {
           String line2 = reader.readLine();
           while (line2.startsWith("##"))
             line2 = reader.readLine();
           drawArea.setSCounter(line2);
-        }
-        else if (line.equals("<TCounter>"))
-        {
+        } else if (line.equals("<TCounter>")) {
           String line2 = reader.readLine();
           while (line2.startsWith("##"))
             line2 = reader.readLine();
           drawArea.setTCounter(line2);
-        }
-        else if (line.equals("<TableVis>"))
-        {
+        } else if (line.equals("<TableVis>")) {
           String line2 = reader.readLine();
-          while (line2.startsWith("##"))
+          while (line2.startsWith("##")) {
             line2 = reader.readLine();
-          if (line2.equals("false"))
+          }
+          if (line2.equals("false")) {
             drawArea.setTableVis(false);
-          else
+          } else {
             drawArea.setTableVis(true);
-        }
-        else if (line.equals("<TableSpace>"))
-        {
+          }
+        } else if (line.equals("<TableSpace>")) {
           String line2 = reader.readLine();
-          while (line2.startsWith("##"))
+          while (line2.startsWith("##")) {
             line2 = reader.readLine();
+          }
           try {
             drawArea.setSpace(Integer.parseInt(line2));
           } catch (NumberFormatException nfe) {
             drawArea.setSpace(20);
           }
-        }
-        else if (line.equals("<TableFont>"))
-        {
+        } else if (line.equals("<TableFont>")) {
           String line2 = reader.readLine();
-          while (line2.startsWith("##"))
+          while (line2.startsWith("##")) {
             line2 = reader.readLine();
-          String line3 = reader.readLine();
-          while (line3.startsWith("##"))
-            line3 = reader.readLine();
+          }
+          String line3 = getNextUsefulLine(reader);
 
           // get available fonts
           GraphicsEnvironment env = GraphicsEnvironment
               .getLocalGraphicsEnvironment();
           String[] fontNames = env.getAvailableFontFamilyNames();
-          for (int i = 0; i < fontNames.length; i++)
-          {
+          for (int i = 0; i < fontNames.length; i++) {
             try {
-              if (line2.equals(fontNames[i]))
-              {
+              if (line2.equals(fontNames[i])) {
                 Font newFont = new Font(fontNames[i], Font.PLAIN, Integer
                     .parseInt(line3));
                 drawArea.setTableFont(newFont);
@@ -182,36 +192,27 @@ public class FileParser {
             } catch (NumberFormatException nfe) {
             }
           }
-        }
-        else if (line.equals("<TableColor>"))
-        {
+        } else if (line.equals("<TableColor>")) {
           String line2 = reader.readLine();
-          while (line2.startsWith("##"))
+          while (line2.startsWith("##")) {
             line2 = reader.readLine();
+          }
           try {
             drawArea.setTableColor(new Color(Integer.parseInt(line2)));
           } catch (NumberFormatException nfe) {
             drawArea.setTableColor(Color.black);
           }
-        }
-        else if (line.equals("<Font>"))
-        {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
-          String line3 = reader.readLine();
-          while (line3.startsWith("##"))
-            line3 = reader.readLine();
+        } else if (line.equals("<Font>")) {
+          String line2 = getNextUsefulLine(reader);
+          String line3 = getNextUsefulLine(reader);
 
           // get available fonts
           GraphicsEnvironment env = GraphicsEnvironment
               .getLocalGraphicsEnvironment();
           String[] fontNames = env.getAvailableFontFamilyNames();
-          for (int i = 0; i < fontNames.length; i++)
-          {
+          for (int i = 0; i < fontNames.length; i++) {
             try {
-              if (line2.equals(fontNames[i]))
-              {
+              if (line2.equals(fontNames[i])) {
                 Font newFont = new Font(fontNames[i], Font.PLAIN, Integer
                     .parseInt(line3));
                 drawArea.setFont(newFont);
@@ -219,79 +220,46 @@ public class FileParser {
             } catch (NumberFormatException nfe) {
             }
           }
-        }
-        else if (line.equals("<Grid>"))
-        {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
-          String line3 = reader.readLine();
-          while (line3.startsWith("##"))
-            line3 = reader.readLine();
+        } else if (line.equals("<Grid>")) {
+          String line2 = getNextUsefulLine(reader);
+          String line3 = getNextUsefulLine(reader);
 
           boolean grid = false;
-          if (line2.equals("true"))
+          if (line2.equals("true")) {
             grid = true;
+          }
           try {
             drawArea.setGrid(grid, Integer.parseInt(line3));
           } catch (NumberFormatException nfe) {
             drawArea.setGrid(grid, 25);
           }
-        }
-
-        else if (line.equals("<PageSizeW>"))
-        {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
-          String line3 = reader.readLine();
-          while (line3.startsWith("##"))
-            line3 = reader.readLine();
+        } else if (line.equals("<PageSizeW>")) {
+          String line2 = getNextUsefulLine(reader);
+          String line3 = getNextUsefulLine(reader);
 
           try {
             fizzim.setDASize(Integer.parseInt(line2), fizzim.getMaxH());
           } catch (NumberFormatException nfe) {
           }
-        }
-
-        else if (line.equals("<PageSizeH>"))
-        {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
-          String line3 = reader.readLine();
-          while (line3.startsWith("##"))
-            line3 = reader.readLine();
+        } else if (line.equals("<PageSizeH>")) {
+          String line2 = getNextUsefulLine(reader);
+          String line3 = getNextUsefulLine(reader);
 
           try {
             fizzim.setDASize(fizzim.getMaxW(), Integer.parseInt(line2));
           } catch (NumberFormatException nfe) {
           }
-        }
-
-        else if (line.equals("<StateW>"))
-        {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
-          String line3 = reader.readLine();
-          while (line3.startsWith("##"))
-            line3 = reader.readLine();
+        } else if (line.equals("<StateW>")) {
+          String line2 = getNextUsefulLine(reader);
+          String line3 = getNextUsefulLine(reader);
 
           try {
             drawArea.setStateW(Integer.parseInt(line2));
           } catch (NumberFormatException nfe) {
           }
-        }
-
-        else if (line.equals("<StateH>"))
-        {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
-          String line3 = reader.readLine();
-          while (line3.startsWith("##"))
-            line3 = reader.readLine();
+        } else if (line.equals("<StateH>")) {
+          String line2 = getNextUsefulLine(reader);
+          String line3 = getNextUsefulLine(reader);
 
           try {
             drawArea.setStateH(Integer.parseInt(line2));
@@ -301,61 +269,45 @@ public class FileParser {
 
         else if (line.equals("<LineWidth>"))
         {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
-          String line3 = reader.readLine();
-          while (line3.startsWith("##"))
-            line3 = reader.readLine();
+          String line2 = getNextUsefulLine(reader);
+          String line3 = getNextUsefulLine(reader);
 
           try {
             drawArea.setLineWidth(Integer.parseInt(line2));
           } catch (NumberFormatException nfe) {
           }
-        }
-
-        else if (line.equals("<state>"))
-        {
-          while ((line = reader.readLine()) != null && !line.equals("</state>"))
-          {
-            if (line.startsWith("##"))
+        } else if (line.equals("<state>")) {
+          while ((line = reader.readLine()) != null && !line.equals("</state>")) {
+            if (line.startsWith("##")) {
               continue;
+            }
             tempList.add(line);
           }
           openState(tempList);
-        }
-
-        else if (line.equals("<transition>"))
-        {
+        } else if (line.equals("<transition>")) {
           while ((line = reader.readLine()) != null
-              && !line.equals("</transition>"))
-          {
-            if (line.startsWith("##"))
+              && !line.equals("</transition>")) {
+            if (line.startsWith("##")) {
               continue;
+            }
             tempList.add(line);
           }
           openTrans(tempList);
-        }
-
-        else if (line.equals("<textObj>"))
-        {
+        } else if (line.equals("<textObj>")) {
           while ((line = reader.readLine()) != null
-              && !line.equals("</textObj>"))
-          {
-            if (line.startsWith("##"))
+              && !line.equals("</textObj>")) {
+            if (line.startsWith("##")) {
               continue;
+            }
             tempList.add(line);
           }
           openText(tempList);
-        }
-
-        else if (line.equals("<tabs>"))
-        {
+        } else if (line.equals("<tabs>")) {
           fizzim.resetTabs();
-          while ((line = reader.readLine()) != null && !line.equals("</tabs>"))
-          {
-            if (line.startsWith("##"))
+          while ((line = reader.readLine()) != null && !line.equals("</tabs>")) {
+            if (line.startsWith("##")) {
               continue;
+            }
             fizzim.addNewTab(line);
           }
         }
@@ -384,7 +336,7 @@ public class FileParser {
     }
     else
     {
-      TextObj obj = new TextObj(x, y, globalList, page);
+      TextObj obj = new TextObj(x, y, global_attributes, page);
       objList.add(obj);
     }
 
@@ -501,7 +453,7 @@ public class FileParser {
 
     /* Create global attributes */
     global_attributes = new GlobalAttributes();
-    
+
     int mS = list.indexOf("<machine>") + 1;
     int mE = list.indexOf("</machine>") - 1;
     int iS = list.indexOf("<inputs>") + 1;
@@ -513,11 +465,11 @@ public class FileParser {
     int tS = list.indexOf("<trans>") + 1;
     int tE = list.indexOf("</trans>") - 1;
 
-    openAttributeList(list, mS, mE, globalMachineAttributes);
-    openAttributeList(list, iS, iE, globalInputsAttributes);
-    openAttributeList(list, oS, oE, globalOutputsAttributes);
-    openAttributeList(list, sS, sE, globalStateAttributes);
-    openAttributeList(list, tS, tE, globalTransAttributes);
+    openAttributeList(list, mS, mE, global_attributes.getMachineAttributes());
+    openAttributeList(list, iS, iE, global_attributes.getInputsAttributes());
+    openAttributeList(list, oS, oE, global_attributes.getOutputsAttributes());
+    openAttributeList(list, sS, sE, global_attributes.getStateAttributes());
+    openAttributeList(list, tS, tE, global_attributes.getTransAttributes());
 
     /*
      * int counter = 0;
@@ -555,7 +507,7 @@ public class FileParser {
 
     drawArea.updateGlobal(global_attributes);
     fizzim.updateGlobal(global_attributes);
-    objList.add(globalList);
+    objList.add(global_attributes);
     tempList.clear();
 
   }
@@ -564,8 +516,7 @@ public class FileParser {
       int start, int end, LinkedList<ObjAttribute> newList) {
     int pointer;
 
-    while (start < end - 2)
-    {
+    while (start < end - 2) {
 
       // This is a little hokey. Fields are grabbed using
       // absolute offsets. As fields are added, the
@@ -607,9 +558,7 @@ public class FileParser {
       String resetval = "";
       String resetvalStatus = "GLOBAL_VAR";
 
-      if (ver >= 70925)
-      {
-
+      if (ver >= 70925){
         pointer += 1; // go to value
         comm = list.get(pointer);
         pointer += 2; // go to status
@@ -623,8 +572,7 @@ public class FileParser {
         pointer += 3; // skip over end
       }
 
-      if (ver >= 110222)
-      {
+      if (ver >= 110222){
         pointer += 1; // go to value
         useratts = list.get(pointer); // includes the offset from ver changes
                                       // above (while will always be there)
@@ -643,9 +591,12 @@ public class FileParser {
         pointer += 3; // skip over end
       }
 
-      // System.out.println("before x stuff, pointer is " + pointer);
-
+      System.out.println("Starting point : " + start + "; Ending point:" +end);
+      System.out.println("before x stuff, pointer is " + pointer);
+      System.out.println("String: " + list.get(pointer) + " ;pointer: " + pointer);
       pointer += 1; // go to value
+      System.out.println(list);
+      System.out.println("String: " + list.get(pointer) + " ;pointer: " + pointer);
       int x2Obj = Integer.parseInt(list.get(pointer));
       pointer += 2; // skip over end
 

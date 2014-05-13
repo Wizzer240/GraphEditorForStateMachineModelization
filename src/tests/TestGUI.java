@@ -37,6 +37,7 @@ import java.util.LinkedList;
 
 import javax.swing.Action;
 
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 import display.DrawArea;
 import entities.StateObj;
@@ -68,28 +69,11 @@ public class TestGUI extends JFrame {
     JFrame frame = new TestGUI("FrameDemo");
   }
 
-  LinkedList<ObjAttribute> globalMachineAttributes;
-  LinkedList<ObjAttribute> globalInputsAttributes;
-  LinkedList<ObjAttribute> globalOutputsAttributes;
-  LinkedList<ObjAttribute> globalStateAttributes;
-  LinkedList<ObjAttribute> globalTransAttributes;
-
-  LinkedList<LinkedList<ObjAttribute>> globalList;
+  GlobalAttributes globalList;
   private DrawArea drawArea1;
 
   private void initDrawArea() {
-    globalList = new LinkedList<LinkedList<ObjAttribute>>();
-    globalMachineAttributes = new LinkedList<ObjAttribute>();
-    globalInputsAttributes = new LinkedList<ObjAttribute>();
-    globalOutputsAttributes = new LinkedList<ObjAttribute>();
-    globalStateAttributes = new LinkedList<ObjAttribute>();
-    globalTransAttributes = new LinkedList<ObjAttribute>();
-
-    globalList.add(globalInputsAttributes);
-    globalList.add(globalOutputsAttributes);
-    globalList.add(globalMachineAttributes);
-    globalList.add(globalStateAttributes);
-    globalList.add(globalTransAttributes);
+    globalList = new GlobalAttributes();
 
     drawArea1 = new DrawArea(globalList);
   }

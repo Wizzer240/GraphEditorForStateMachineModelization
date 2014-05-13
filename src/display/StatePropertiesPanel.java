@@ -47,6 +47,7 @@ import javax.swing.table.TableColumn;
 
 import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 import entities.StateObj;
 import gui.GeneralEditorWindow;
@@ -64,7 +65,7 @@ public class StatePropertiesPanel extends JPanel {
   private StateObj state;
   private DrawArea drawArea;
   private JColorChooser colorChooser;
-  private LinkedList<LinkedList<ObjAttribute>> globalList;
+  private GlobalAttributes globalList;
   private JDialog parent_window;
 
   private JButton SPDelete;
@@ -129,8 +130,8 @@ public class StatePropertiesPanel extends JPanel {
     SPLabel.setText(locale.getString("state_editor_text"));
 
     // Type column
-    SPTable.setModel(new AttributesTableModel(state, parent_window, globalList,
-        EnumGlobalList.STATES));
+    SPTable
+        .setModel(new AttributesTableModel(state, parent_window, globalList));
     SPTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     // use dropdown boxes
@@ -313,10 +314,12 @@ public class StatePropertiesPanel extends JPanel {
       // TODsO Auto-generated catch block
       e.printStackTrace();
     }
-    for (int j = 0; j < globalList.get(0).size(); j++) {
-      if (globalList.get(0).get(j).getName().equals("reset_state")
-          && globalList.get(0).get(j).getValue().equals(oldName)) {
-        globalList.get(0).get(j).setValue(state.getName());
+    LinkedList<ObjAttribute> machine_attributes =
+        globalList.getMachineAttributes();
+    for (int j = 0; j < machine_attributes.size(); j++) {
+      if (machine_attributes.get(j).getName().equals("reset_state")
+          && machine_attributes.get(j).getValue().equals(oldName)) {
+        machine_attributes.get(j).setValue(state.getName());
       }
     }
     int width = ((Number) SPWField.getValue()).intValue();

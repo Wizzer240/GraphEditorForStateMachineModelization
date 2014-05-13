@@ -53,6 +53,7 @@ import javax.swing.table.TableColumn;
 import locale.UTF8Control;
 import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 import entities.GeneralObjType;
 import entities.StateObj;
@@ -65,18 +66,18 @@ public class TransPropertiesPanel extends JPanel {
   private static final ResourceBundle locale =
       ResourceBundle.getBundle("locale.Editors", new UTF8Control());
 
-  TransitionObj trans;
-  DrawArea drawArea;
-  StateObj start;
-  StateObj end;
-  StateObj pref;
-  Vector<StateObj> stateObjs;
+  private TransitionObj trans;
+  private DrawArea drawArea;
+  private StateObj start;
+  private StateObj end;
+  private StateObj pref;
+  private Vector<StateObj> stateObjs;
   boolean loopback = false;
   boolean stub = false;
-  LinkedList<LinkedList<ObjAttribute>> globalList;
+  private GlobalAttributes globalList;
   private JDialog parent_window;
-  Component window = this;
-  JColorChooser colorChooser;
+  private Component window = this;
+  private JColorChooser colorChooser;
   private JButton TPDelete;
   private JLabel TPLabel;
   private JButton TPNew;
@@ -148,7 +149,8 @@ public class TransPropertiesPanel extends JPanel {
       // setTitle("Edit Loopback Transition Properties");
       TPLabel.setText(locale.getString("trans_editor_text_loopback"));
     }
-    TPTable.setModel(new AttributesTableModel(trans, parent_window, globalList));
+    TPTable
+        .setModel(new AttributesTableModel(trans, parent_window, globalList));
     TPTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
     // use dropdown boxes

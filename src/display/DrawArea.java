@@ -76,7 +76,7 @@ public class DrawArea extends JPanel implements MouseListener,
   private int mYTemp = 0;
   private int mX0, mY0, mX1, mY1;
   private LinkedList<Integer> selectedIndices = new LinkedList<Integer>();
-  //private boolean ctrlDown = false;
+  // private boolean ctrlDown = false;
 
   // Fonts
   private Font currFont = new Font("Arial", Font.PLAIN, 11);
@@ -104,7 +104,7 @@ public class DrawArea extends JPanel implements MouseListener,
   private int LineWidth = 1;
 
   // list of global lists
-  //private LinkedList<LinkedList<ObjAttribute>> globalList;
+  private GlobalAttributes global_attributes;
 
   // parent frame
   private JFrame frame;
@@ -130,9 +130,9 @@ public class DrawArea extends JPanel implements MouseListener,
   // global table, default tab settings
   private int space = 20;
 
-  //private GlobalAttributes global_attributes;
+  // private GlobalAttributes global_attributes;
   public DrawArea(GlobalAttributes globals) {
-    //global_attributes = globals;
+    global_attributes = globals;
 
     // create arrays to store created objects
     objList = new Vector<Object>();
@@ -185,13 +185,13 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public boolean canUndo() {
-    if (currUndoIndex >= 0)
+    if (currUndoIndex >= 0) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
-  @SuppressWarnings("unchecked")
   public void undo() {
     // store current array on undo list if it isn't already there
     if (currUndoIndex + 1 == undoList.size())
@@ -209,36 +209,36 @@ public class DrawArea extends JPanel implements MouseListener,
     objsSelected = false;
 
     // update
-    globals = (GlobalAttributes) objList.get(0);
+    global_attributes = (GlobalAttributes) objList.get(0);
     updateStates();
     updateTrans();
     updateGlobalTable();
     FizzimGui fgui = (FizzimGui) frame;
-    fgui.updateGlobal(globals);
+    fgui.updateGlobal(global_attributes);
     repaint();
 
   }
 
   public boolean canRedo() {
-    if (currUndoIndex < undoList.size() - 2)
+    if (currUndoIndex < undoList.size() - 2) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
-  @SuppressWarnings("unchecked")
   public void redo() {
     // if redo is possible, replace objlist with wanted list
     if (currUndoIndex < undoList.size() - 2) {
       objList = (Vector<Object>) undoList.elementAt(currUndoIndex + 2);
       currUndoIndex++;
     }
-    globalList = (LinkedList<LinkedList<ObjAttribute>>) objList.get(0);
+    global_attributes = (GlobalAttributes) objList.get(0);
     updateStates();
     updateTrans();
     updateGlobalTable();
     FizzimGui fgui = (FizzimGui) frame;
-    fgui.updateGlobal(globalList);
+    fgui.updateGlobal(global_attributes);
     repaint();
   }
 
@@ -256,33 +256,16 @@ public class DrawArea extends JPanel implements MouseListener,
 
   @SuppressWarnings("unchecked")
   // this method is called whenever a global attribute is about to be modified
-  public LinkedList<LinkedList<ObjAttribute>> setUndoPoint() {
+  public GlobalAttributes setUndoPoint() {
     tempList = null;
     tempList = (Vector<Object>) objList.clone();
-    LinkedList<LinkedList<ObjAttribute>> oldGlobal = (LinkedList<LinkedList<ObjAttribute>>) objList
-        .get(0);
-    LinkedList<LinkedList<ObjAttribute>> newGlobal = (LinkedList<LinkedList<ObjAttribute>>) oldGlobal
-        .clone();
+    GlobalAttributes oldGlobal = (GlobalAttributes) objList.get(0);
+    GlobalAttributes newGlobal = oldGlobal.clone();
+
     objList.set(0, newGlobal);
-    globalList = newGlobal;
+    global_attributes = newGlobal;
 
-    for (int i = 0; i < oldGlobal.size(); i++) {
-      LinkedList<ObjAttribute> oldList = (LinkedList<ObjAttribute>) oldGlobal
-          .get(i);
-      LinkedList<ObjAttribute> newList = (LinkedList<ObjAttribute>) oldList
-          .clone();
-      for (int j = 0; j < oldList.size(); j++) {
-        try {
-          newList.set(j, (ObjAttribute) oldList.get(j).clone());
-        } catch (CloneNotSupportedException e) {
-          e.printStackTrace();
-        }
-      }
-      newGlobal.set(i, newList);
-
-    }
-    return (LinkedList<LinkedList<ObjAttribute>>) objList.get(0);
-
+    return newGlobal;
   }
 
   // for multiple select, clone all selected objects
@@ -921,21 +904,25 @@ public class DrawArea extends JPanel implements MouseListener,
       // stateObjs, false, null)
       // .setVisible(true);
     } else if (input == "Quick New State") {
-      GeneralObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp - defaultStatesHeight / 2,
-          rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2, createSCounter, currPage,
+      GeneralObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp
+          - defaultStatesHeight / 2,
+          rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
+          createSCounter, currPage,
           defaultStatesColor, grid, gridS);
       createSCounter++;
       objList.add(state);
-      state.updateAttrib(globalList, 3);
+      state.updateAttrib(global_attributes);
       commitUndo();
 
     } else if (input == "New State") {
-      StateObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp - defaultStatesHeight / 2,
-          rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2, createSCounter, currPage,
+      StateObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp
+          - defaultStatesHeight / 2,
+          rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
+          createSCounter, currPage,
           defaultStatesColor, grid, gridS);
       createSCounter++;
       objList.add(state);
-      state.updateAttrib(globalList, 3);
+      state.updateAttrib(global_attributes);
       new StateEditorWindow(frame, this, state);
     } else if (input == "New State Transition") {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
@@ -952,7 +939,7 @@ public class DrawArea extends JPanel implements MouseListener,
             this, defaultStateTransitionsColor);
         createTCounter++;
         objList.add(trans);
-        trans.updateAttrib(globalList, 4);
+        trans.updateAttrib(global_attributes);
         new TransitionEditorWindow(frame, this, (TransitionObj) trans,
             stateObjs, false, null);
         // new TransProperties(this, frame, true, (TransitionObj) trans,
@@ -979,7 +966,7 @@ public class DrawArea extends JPanel implements MouseListener,
             createTCounter, currPage, defaultTransitionsColor);
         createTCounter++;
         objList.add(trans);
-        trans.updateAttrib(globalList, 4);
+        trans.updateAttrib(global_attributes);
         new TransitionEditorWindow(frame, this, (TransitionObj) trans,
             stateObjs, true, (StateObj) tempObj);
         // new TransProperties(this, frame, true, (TransitionObj) trans,
@@ -1008,7 +995,7 @@ public class DrawArea extends JPanel implements MouseListener,
             createTCounter, currPage, defaultTransitionsColor);
         createTCounter++;
         objList.add(trans);
-        trans.updateAttrib(globalList, 4);
+        trans.updateAttrib(global_attributes);
 
         new TransitionEditorWindow(frame, this, (TransitionObj) trans,
             stateObjs, true, null);
@@ -1035,7 +1022,7 @@ public class DrawArea extends JPanel implements MouseListener,
       StateTransitionObj sTrans = (StateTransitionObj) trans;
       sTrans.initTrans((StateObj) tempObj, getStateObj(input));
 
-      trans.updateAttrib(globalList, 4);
+      trans.updateAttrib(global_attributes);
       commitUndo();
     } else if (getPageIndex(input) > -1) {
 
@@ -1126,15 +1113,16 @@ public class DrawArea extends JPanel implements MouseListener,
   // update state attribute lists when global list is updated
   public void updateStates() {
     String resetName = null;
-    for (int j = 0; j < globalList.get(0).size(); j++) {
-      if (globalList.get(0).get(j).getName().equals("reset_state"))
-        resetName = globalList.get(0).get(j).getValue();
+    for (int j = 0; j < global_attributes.getMachineAttributes().size(); j++) {
+      if (global_attributes.getMachineAttributes().get(j).getName().equals(
+          "reset_state"))
+        resetName = global_attributes.getMachineAttributes().get(j).getValue();
     }
     for (int i = 1; i < objList.size(); i++) {
       GeneralObj o = (GeneralObj) objList.elementAt(i);
       if (o.getType() == GeneralObjType.STATE) {
         StateObj s = (StateObj) o;
-        s.updateAttrib(globalList, 3);
+        s.updateAttrib(global_attributes);
         if (s.getName().equals(resetName))
           s.setReset(true);
         else
@@ -1151,7 +1139,7 @@ public class DrawArea extends JPanel implements MouseListener,
       if (o.getType() == GeneralObjType.TRANSITION
           || o.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
         TransitionObj s = (TransitionObj) o;
-        s.updateAttrib(globalList, 4);
+        s.updateAttrib(global_attributes);
       }
     }
 
@@ -1431,10 +1419,10 @@ public class DrawArea extends JPanel implements MouseListener,
   public void open(GlobalAttributes globals) {
     loading = true;
     currPage = 1;
-    globalList = globals;
+    global_attributes = globals;
     objList.clear();
-    objList.add(globalList);
-    TextObj globalTable = new TextObj(10, 10, globalList, tableFont);
+    objList.add(global_attributes);
+    TextObj globalTable = new TextObj(10, 10, global_attributes, tableFont);
 
     objList.add(globalTable);
     undoList.clear();
@@ -1465,13 +1453,13 @@ public class DrawArea extends JPanel implements MouseListener,
 
   }
 
-  public void updateGlobal(LinkedList<LinkedList<ObjAttribute>> globalList2) {
-    globalList = globalList2;
+  public void updateGlobal(GlobalAttributes globalList2) {
+    global_attributes = globalList2;
 
   }
 
-  public LinkedList<LinkedList<ObjAttribute>> getGlobalList() {
-    return globalList;
+  public GlobalAttributes getGlobalList() {
+    return global_attributes;
   }
 
   public void setFileModifed(boolean b) {
@@ -1557,7 +1545,8 @@ public class DrawArea extends JPanel implements MouseListener,
       if (obj.getType() == GeneralObjType.TEXT) {
         TextObj textObj = (TextObj) obj;
         if (textObj.getGlobalTable())
-          textObj.updateGlobalText(globalList, tableFont, tableVis, space,
+          textObj.updateGlobalText(global_attributes, tableFont, tableVis,
+              space,
               tableColor);
       }
     }
