@@ -122,11 +122,12 @@ public class TextObj extends GeneralObj {
     col4W = 0;
 
     for (int i = 0; i < global_attributes.size(); i++) {
-      if (i >= 3 && global_attributes.getSpecificGlobalAttributes(i).size() < 2)
+      if (i >= 3 && global_attributes.getSpecificGlobalAttributes(i).size() < 2) {
         continue;
-      else if (i < 3
-          && global_attributes.getSpecificGlobalAttributes(i).size() < 1)
+      } else if (i < 3
+          && global_attributes.getSpecificGlobalAttributes(i).size() < 1) {
         continue;
+      }
       switch (i) {
       case 0:
         col1.add("STATE MACHINE");
@@ -152,30 +153,39 @@ public class TextObj extends GeneralObj {
           .getSpecificGlobalAttributes(i)
           .size(); j++) {
         // skip "name" for state and transition
-        if ((i == 3 || i == 4) && j == 0)
+        if ((i == 3 || i == 4) && j == 0) {
           continue;
+        }
         ObjAttribute obj = global_attributes
             .getSpecificGlobalAttributes(i)
             .get(j);
+        
         String name = "   " + obj.getName();
-
-        if (col1W < fm.stringWidth(name))
+        if (col1W < fm.stringWidth(name)) {
           col1W = fm.stringWidth(name);
+        }
         col1.add(name);
+        
         String value = obj.getValue();
-        if (col2W < fm.stringWidth(value))
+        if (col2W < fm.stringWidth(value)) {
           col2W = fm.stringWidth(value);
+        }
         col2.add(value);
+        
         String type = obj.getType();
         // rename "reg" to "statebit" in the attributes table
         if (type.equals("reg"))
           type = "statebit";
-        if (col3W < fm.stringWidth(type))
+        
+        if (col3W < fm.stringWidth(type)) {
           col3W = fm.stringWidth(type);
+        }
         col3.add(type);
+        
         String comm = obj.getComment();
-        if (col4W < fm.stringWidth(comm))
+        if (col4W < fm.stringWidth(comm)) {
           col4W = fm.stringWidth(comm);
+        }
         col4.add(comm);
       }
 

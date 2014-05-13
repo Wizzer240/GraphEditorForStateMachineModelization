@@ -51,7 +51,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
 
 import locale.UTF8Control;
-import attributes.EnumGlobalList;
 import attributes.EnumVisibility;
 import attributes.GlobalAttributes;
 import attributes.ObjAttribute;

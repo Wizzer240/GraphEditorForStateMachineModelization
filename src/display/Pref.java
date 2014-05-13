@@ -40,6 +40,7 @@ import javax.swing.border.LineBorder;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@SuppressWarnings("serial")
 public class Pref extends javax.swing.JDialog {
 
   DrawArea drawArea;

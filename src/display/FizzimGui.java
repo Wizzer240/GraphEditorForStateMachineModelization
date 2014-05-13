@@ -105,16 +105,11 @@ public class FizzimGui extends JFrame {
 
   static String currVer = "14.03.1";
 
+  /*
+   * Global attributes for the machine, the inputs, outputs, states and
+   * transitions
+   */
   private GlobalAttributes global_attributes;
-
-  // pointer to global lists
-  // LinkedList<ObjAttribute> globalMachineAttributes;
-  // LinkedList<ObjAttribute> globalInputsAttributes;
-  // LinkedList<ObjAttribute> globalOutputsAttributes;
-  // LinkedList<ObjAttribute> globalStateAttributes;
-  // LinkedList<ObjAttribute> globalTransAttributes;
-
-  // LinkedList<LinkedList<ObjAttribute>> globalList;
 
   int maxH = 1296;
   int maxW = 936;

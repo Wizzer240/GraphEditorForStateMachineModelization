@@ -162,6 +162,7 @@ public class GlobalAttributes {
   }
 
   @Deprecated
+  @SuppressWarnings("unchecked")
   public GlobalAttributes clone() {
     GlobalAttributes result = new GlobalAttributes();
 

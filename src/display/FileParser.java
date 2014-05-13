@@ -282,7 +282,7 @@ public class FileParser {
           }
         } else if (line.equals("<PageSizeW>")) {
           String line2 = getNextUsefulLine(reader);
-          String line3 = getNextUsefulLine(reader);
+          getNextUsefulLine(reader);
 
           try {
             fizzim.setDASize(Integer.parseInt(line2), fizzim.getMaxH());
@@ -290,7 +290,7 @@ public class FileParser {
           }
         } else if (line.equals("<PageSizeH>")) {
           String line2 = getNextUsefulLine(reader);
-          String line3 = getNextUsefulLine(reader);
+          getNextUsefulLine(reader);
 
           try {
             fizzim.setDASize(fizzim.getMaxW(), Integer.parseInt(line2));
@@ -298,7 +298,7 @@ public class FileParser {
           }
         } else if (line.equals("<StateW>")) {
           String line2 = getNextUsefulLine(reader);
-          String line3 = getNextUsefulLine(reader);
+          getNextUsefulLine(reader);
 
           try {
             drawArea.setStateW(Integer.parseInt(line2));
@@ -306,18 +306,15 @@ public class FileParser {
           }
         } else if (line.equals("<StateH>")) {
           String line2 = getNextUsefulLine(reader);
-          String line3 = getNextUsefulLine(reader);
+          getNextUsefulLine(reader);
 
           try {
             drawArea.setStateH(Integer.parseInt(line2));
           } catch (NumberFormatException nfe) {
           }
-        }
-
-        else if (line.equals("<LineWidth>"))
-        {
+        } else if (line.equals("<LineWidth>")) {
           String line2 = getNextUsefulLine(reader);
-          String line3 = getNextUsefulLine(reader);
+          getNextUsefulLine(reader);
 
           try {
             drawArea.setLineWidth(Integer.parseInt(line2));
@@ -366,7 +363,6 @@ public class FileParser {
     }
 
     drawArea.open(objList);
-
   }
 
   private void openText(ArrayList<String> tempList3) {
@@ -376,13 +372,10 @@ public class FileParser {
     int y = Integer.parseInt(tempList3.get(5));
     int page = Integer.parseInt(tempList3.get(8));
 
-    if (!text.equals("fzm_globalTable"))
-    {
+    if (!text.equals("fzm_globalTable")) {
       TextObj obj = new TextObj(text, x, y, page);
       objList.add(obj);
-    }
-    else
-    {
+    } else {
       TextObj obj = new TextObj(x, y, global_attributes, page);
       objList.add(obj);
     }
@@ -426,8 +419,7 @@ public class FileParser {
     Point pEC = new Point();
     boolean stub1 = false;
 
-    if (!startState.equals(endState))
-    {
+    if (!startState.equals(endState)) {
       pS.setLocation(Double.parseDouble(tempList3.get(i + 41)), Double
           .parseDouble(tempList3.get(i + 44)));
       pSC.setLocation(Double.parseDouble(tempList3.get(i + 47)), Double
@@ -478,10 +470,11 @@ public class FileParser {
     int y1 = Integer.parseInt(tempList3.get(i + 11));
     String reset = tempList3.get(i + 14);
     boolean reset1;
-    if (reset.equals("true"))
+    if (reset.equals("true")) {
       reset1 = true;
-    else
+    } else {
       reset1 = false;
+    }
 
     int page = Integer.parseInt(tempList3.get(i + 17));
     if (compareVersions(ver, "8.03.16") > 0) // ver >= 80316

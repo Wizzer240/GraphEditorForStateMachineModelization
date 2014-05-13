@@ -10,7 +10,6 @@ import java.util.*;
 import javax.swing.*;
 
 import attributes.GlobalAttributes;
-import attributes.ObjAttribute;
 import entities.GeneralObj;
 import entities.GeneralObjType;
 import entities.LoopbackTransitionObj;
@@ -254,8 +253,9 @@ public class DrawArea extends JPanel implements MouseListener,
    * to them, are then cloned, and their clones are pointed to by objlist.
    */
 
-  @SuppressWarnings("unchecked")
+  
   // this method is called whenever a global attribute is about to be modified
+  @SuppressWarnings("unchecked")
   public GlobalAttributes setUndoPoint() {
     tempList = null;
     tempList = (Vector<Object>) objList.clone();
@@ -269,6 +269,7 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   // for multiple select, clone all selected objects
+  @SuppressWarnings("unchecked")
   private void setUndoPointMultiple() {
     tempList = null;
     tempList = (Vector<Object>) objList.clone();
