@@ -202,7 +202,8 @@ public class FileParser {
           openGlobal(tempList);
         } else if (line.equals("<SCounter>")) {
           String line2 = getNextUsefulLine(reader);
-          drawArea.setSCounter(line2);
+          String line3 = reader.readLine();
+          drawArea.setSCounter(Integer.valueOf(line3), line2);
         } else if (line.equals("<TCounter>")) {
           String line2 = getNextUsefulLine(reader);
           drawArea.setTCounter(line2);

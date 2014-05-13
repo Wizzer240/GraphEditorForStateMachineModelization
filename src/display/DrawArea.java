@@ -31,6 +31,7 @@ import java.util.*;
 import javax.swing.*;
 
 import attributes.GlobalAttributes;
+import attributes.ObjAttribute;
 import entities.GeneralObj;
 import entities.GeneralObjType;
 import entities.LoopbackTransitionObj;
@@ -114,7 +115,8 @@ public class DrawArea extends JPanel implements MouseListener,
   private boolean fileModified = false;
 
   // used for auto generation of state and transition names
-  private int createSCounter = 0, createTCounter = 0;
+  private Vector<Integer> createSCounter;
+  private int createTCounter = 0;
 
   // pages
   private int currPage = 1;
@@ -139,6 +141,9 @@ public class DrawArea extends JPanel implements MouseListener,
     objList = new Vector<Object>();
     undoList = new Vector<Vector<Object>>();
     tempList = new Vector<Object>();
+    createSCounter = new Vector<Integer>();
+    createSCounter.add(0, 0);
+    createSCounter.add(1, 0);
     this.setFocusable(true);
     this.requestFocus();
     currUndoIndex = -1;
@@ -756,18 +761,20 @@ public class DrawArea extends JPanel implements MouseListener,
     JPopupMenu popup = new JPopupMenu();
 
     // create submenu for moving pages
-    JMenu pages = new JMenu("Move to Page...");
-    FizzimGui fgui = (FizzimGui) frame;
+    // JMenu pages = new JMenu("Move to Page...");
+    // FizzimGui fgui = (FizzimGui) frame;
 
-    for (int i = 1; i < fgui.getPages(); i++) {
-      if (i != currPage) {
-        menuItem = new JMenuItem(fgui.getPageName(i));
-        menuItem.addActionListener(this);
-        pages.add(menuItem);
-      }
-    }
-    if (obj == null)
-      popup.add(pages);
+    /*
+     * for (int i = 1; i < fgui.getPages(); i++) {
+     * if (i != currPage) {
+     * menuItem = new JMenuItem(fgui.getPageName(i));
+     * menuItem.addActionListener(this);
+     * pages.add(menuItem);
+     * }
+     * }
+     * if (obj == null)
+     * popup.add(pages);
+     */
 
     if (obj != null && obj.getType() == GeneralObjType.STATE) {
       menuItem = new JMenuItem("Add Loopback Transition");
@@ -781,7 +788,8 @@ public class DrawArea extends JPanel implements MouseListener,
       for (int j = 1; j < objList.size(); j++) {
         GeneralObj obj1 = (GeneralObj) objList.get(j);
         if (obj1.getType() == GeneralObjType.STATE
-            && !obj.getName().equals(obj1.getName())) {
+            && !obj.getName().equals(obj1.getName())
+            && obj.getPage() == obj1.getPage()) {
           menuItem = new JMenuItem(obj1.getName());
           menuItem.addActionListener(this);
           states.add(menuItem);
@@ -793,7 +801,7 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-      popup.add(pages);
+      // popup.add(pages);
     }
     if (obj != null && obj.getType() == GeneralObjType.TRANSITION) {
 
@@ -801,19 +809,20 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-      if (obj.getSelectStatus() == SelectOptions.TXT) {
-        JMenu pages2 = new JMenu("Move to Page...");
-        StateTransitionObj sobj = (StateTransitionObj) obj;
-        for (int i = 1; i < fgui.getPages(); i++) {
-          if (i != currPage && (i == sobj.getEPage() || i == sobj.getSPage())) {
-            menuItem = new JMenuItem(fgui.getPageName(i));
-            menuItem.addActionListener(this);
-            pages2.add(menuItem);
-          }
-        }
-        popup.add(pages2);
-      }
-
+      /*
+       * if (obj.getSelectStatus() == SelectOptions.TXT) {
+       * JMenu pages2 = new JMenu("Move to Page...");
+       * StateTransitionObj sobj = (StateTransitionObj) obj;
+       * for (int i = 1; i < fgui.getPages(); i++) {
+       * if (i != currPage && (i == sobj.getEPage() || i == sobj.getSPage())) {
+       * menuItem = new JMenuItem(fgui.getPageName(i));
+       * menuItem.addActionListener(this);
+       * pages2.add(menuItem);
+       * }
+       * }
+       * popup.add(pages2);
+       * }
+       */
     }
     if (obj != null && obj.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
       menuItem = new JMenuItem("Edit Loopback Transition Properties");
@@ -826,7 +835,7 @@ public class DrawArea extends JPanel implements MouseListener,
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-      popup.add(pages);
+      // popup.add(pages);
     }
 
     popup.show(e.getComponent(), e.getX(), e.getY());
@@ -849,15 +858,19 @@ public class DrawArea extends JPanel implements MouseListener,
     menuItem.setMnemonic(KeyEvent.VK_S);
     menuItem.addActionListener(this);
     popup.add(menuItem);
-    menuItem = new JMenuItem("New State Transition");
-    menuItem.setMnemonic(KeyEvent.VK_T);
-    menuItem.setDisplayedMnemonicIndex(10);
-    menuItem.addActionListener(this);
-    popup.add(menuItem);
-    menuItem = new JMenuItem("New Loopback Transition");
-    menuItem.setMnemonic(KeyEvent.VK_L);
-    menuItem.addActionListener(this);
-    popup.add(menuItem);
+    /*
+     * menuItem = new JMenuItem("New State Transition");
+     * menuItem.setMnemonic(KeyEvent.VK_T);
+     * menuItem.setDisplayedMnemonicIndex(10);
+     * menuItem.addActionListener(this);
+     * popup.add(menuItem);
+     */
+    /*
+     * menuItem = new JMenuItem("New Loopback Transition");
+     * menuItem.setMnemonic(KeyEvent.VK_L);
+     * menuItem.addActionListener(this);
+     * popup.add(menuItem);
+     */
     menuItem = new JMenuItem("New Free Text");
     menuItem.setMnemonic(KeyEvent.VK_F);
     menuItem.addActionListener(this);
@@ -897,7 +910,7 @@ public class DrawArea extends JPanel implements MouseListener,
       Vector<StateObj> stateObjs = new Vector<StateObj>();
       for (int i = 1; i < objList.size(); i++) {
         GeneralObj obj = (GeneralObj) objList.get(i);
-        if (obj.getType() == GeneralObjType.STATE)
+        if (obj.getType() == GeneralObjType.STATE && obj.getPage() == currPage)
           stateObjs.add((StateObj) obj);
       }
       new TransitionEditorWindow(frame, this, (StateTransitionObj) tempObj,
@@ -909,9 +922,13 @@ public class DrawArea extends JPanel implements MouseListener,
       GeneralObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp
           - defaultStatesHeight / 2,
           rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
-          createSCounter, currPage,
+          createSCounter
+              .get(currPage), currPage,
           defaultStatesColor, grid, gridS);
-      createSCounter++;
+
+      int temp_value = createSCounter.get(currPage) + 1;
+      createSCounter.set(currPage, temp_value);
+
       objList.add(state);
       state.updateAttrib(global_attributes);
       commitUndo();
@@ -920,9 +937,11 @@ public class DrawArea extends JPanel implements MouseListener,
       StateObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp
           - defaultStatesHeight / 2,
           rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
-          createSCounter, currPage,
+          createSCounter
+              .get(currPage), currPage,
           defaultStatesColor, grid, gridS);
-      createSCounter++;
+      int temp_value = createSCounter.get(currPage) + 1;
+      createSCounter.set(currPage, temp_value);
       objList.add(state);
       state.updateAttrib(global_attributes);
       new StateEditorWindow(frame, this, state);
@@ -1017,6 +1036,10 @@ public class DrawArea extends JPanel implements MouseListener,
       objList.add(text);
       editText((TextObj) text);
     } else if (checkStateName(input)) {
+      /*
+       * Creation of a new transition using the "Add Transition State to..."
+       * menu
+       */
       GeneralObj trans = new StateTransitionObj(createTCounter, currPage, this,
           (StateObj) tempObj, getStateObj(input), defaultStateTransitionsColor);
       createTCounter++;
@@ -1096,7 +1119,8 @@ public class DrawArea extends JPanel implements MouseListener,
   private StateObj getStateObj(String name) {
     for (int j = 1; j < objList.size(); j++) {
       GeneralObj obj1 = (GeneralObj) objList.get(j);
-      if (obj1.getType() == GeneralObjType.STATE && obj1.getName().equals(name))
+      if (obj1.getType() == GeneralObjType.STATE && obj1.getName().equals(name)
+          && obj1.getPage() == currPage)
         return (StateObj) obj1;
     }
     return null;
@@ -1185,7 +1209,7 @@ public class DrawArea extends JPanel implements MouseListener,
     int stateCounter = 0;
     for (int i = 1; i < objList.size(); i++) {
       GeneralObj obj = (GeneralObj) objList.get(i);
-      if (obj.getType() == GeneralObjType.STATE) {
+      if (obj.getType() == GeneralObjType.STATE && obj.getPage() == currPage) {
         stateSet.add(obj.getName());
         stateCounter++;
       }
@@ -1216,7 +1240,12 @@ public class DrawArea extends JPanel implements MouseListener,
 
   public void save(BufferedWriter writer) throws IOException {
     writer.write("## START PREFERENCES\n");
-    writer.write("<SCounter>\n" + createSCounter + "\n</SCounter>\n");
+    int j = 1;
+    do {
+      writer.write("<SCounter>\n" + createSCounter.get(j) + "\n" + j
+          + "\n</SCounter>\n");
+      j++;
+    } while (j < createSCounter.size());
     writer.write("<TCounter>\n" + createTCounter + "\n</TCounter>\n");
     writer.write("<TableVis>\n" + tableVis + "\n</TableVis>\n");
     writer.write("<TableSpace>\n" + space + "\n</TableSpace>\n");
@@ -1436,7 +1465,7 @@ public class DrawArea extends JPanel implements MouseListener,
     tempOld = null;
     tempClone = null;
     fileModified = false;
-    createSCounter = 0;
+    createSCounter.add(0, 0);
     createTCounter = 0;
     updateStates();
     updateTrans(); // Added by pz, but no sure why (initial paint of flags is
@@ -1445,9 +1474,12 @@ public class DrawArea extends JPanel implements MouseListener,
 
   }
 
-  public void setSCounter(String readLine) {
-    createSCounter = Integer.parseInt(readLine);
+  public void setSCounter(int index, String readLine) {
+    createSCounter.add(index, Integer.parseInt(readLine));
+  }
 
+  public void setSCounter(int index, int readLine) {
+    createSCounter.add(index, readLine);
   }
 
   public void setTCounter(String readLine) {
@@ -1539,6 +1571,18 @@ public class DrawArea extends JPanel implements MouseListener,
   public String getPageName(int page) {
     FizzimGui fgui = (FizzimGui) frame;
     return fgui.getPageName(page);
+  }
+
+  /**
+   * Return the number of the page pageName
+   * 
+   * @param pageName
+   *          the name of the page to search
+   * @return the number of the page
+   */
+  public int getPageNumb(String pageName) {
+    FizzimGui fgui = (FizzimGui) frame;
+    return fgui.getPageIndex(pageName);
   }
 
   public void updateGlobalTable() {
@@ -1745,4 +1789,124 @@ public class DrawArea extends JPanel implements MouseListener,
     return Redraw;
   }
 
+  public Vector<Object> getObjList() {
+    return objList;
+  }
+
+  /**
+   * Verify if a state already exists in the current page
+   * 
+   * @param input
+   *          the name of the state to search
+   * @return true if the state exists
+   */
+  public boolean checkStateNameCurrPage(String input) {
+    for (int j = 1; j < objList.size(); j++) {
+      GeneralObj obj1 = (GeneralObj) objList.get(j);
+      if (obj1.getType() == GeneralObjType.STATE
+          && obj1.getName().equals(input) && obj1.getPage() == currPage)
+        return true;
+    }
+    return false;
+  }
+
+  /**
+   * Add a new state in the current page
+   * 
+   * @param stateName
+   *          the name of the state.
+   * @param x0
+   * @param y0
+   * @param x1
+   * @param y1
+   */
+  GeneralObj addNewState(String stateName, int x0, int y0, int x1, int y1) {
+    /*
+     * GeneralObj state = new StateObj(x0, y0, x1, y1,
+     * new LinkedList<ObjAttribute>(globalList
+     * .get(EnumGlobalList.STATES)), stateName, grid, currPage, defSC);
+     */
+    GeneralObj state = new StateObj(x0, y0, x1, y1, stateName, currPage,
+        defaultStateTransitionsColor, grid, gridS);
+
+    // Check if the name of the state is an Integer, if it's the case, set
+    // createSCounter to that Integer + 1.
+    if (stateName.matches("^\\p{Digit}+$")) {
+      if (Integer.valueOf(stateName) >= createSCounter.get(currPage)) {
+        createSCounter.set(currPage, Integer.valueOf(stateName) + 1);
+      }
+    } else {
+      createSCounter.set(currPage, createSCounter.get(currPage) + 1);
+    }
+    objList.add(state);
+    state.updateAttrib(global_attributes);
+
+    // commitUndo();
+    return state;
+  }
+
+  /**
+   * Add a new transition.
+   * 
+   * @param sourceState
+   * @param endState
+   */
+  public GeneralObj addNewTransition(String sourceState, String endState) {
+
+    StateObj source = getStateObj(sourceState);
+    StateObj destination = getStateObj(endState);
+    StateTransitionObj trans = new StateTransitionObj(createTCounter, currPage,
+        this,
+        source, destination, defaultStateTransitionsColor);
+    assert (source != null);
+    assert (destination != null);
+
+    createTCounter++;
+    objList.add(trans);
+
+    trans.initTrans(source, destination);
+
+    trans.updateAttrib(global_attributes);
+
+    // commitUndo();
+    return trans;
+  }
+
+  public GeneralObj addNewLoopbackTransition(String state, int x0, int y0,
+      int x1, int y1) {
+    // GeneralObj trans = new LoopbackTransitionObj(((x0+x1)/2+StateW)*2,
+    // ((y0+y1)/2+StateH)*2,
+    // createTCounter, currPage, defLTC);
+    String name = "trans" + createTCounter;
+    int sIndex = createSCounter.indexOf(state);
+    Point point1 = new Point();
+    Point point2 = new Point();
+    Point point3 = new Point();
+    Point point4 = new Point();
+
+    point1.setLocation(431.0, 216.0);
+    point2.setLocation(480.0, 239.0);
+    point1.setLocation(431.0, 132.0);
+    point1.setLocation(544.0, 185.0);
+
+    LoopbackTransitionObj trans = new LoopbackTransitionObj(
+        point1,
+        point2,
+        point3,
+        point4,
+        new LinkedList<ObjAttribute>(global_attributes.getTransAttributes()),
+        name, state, state, sIndex,
+        sIndex,
+        currPage, defaultStateTransitionsColor);
+    // GeneralObj trans1 = new LoopbackTransitionObj(x0, y0, x1, y1, globalList
+    // , name, state, state, createSCounter.indexOf(state),
+    // createSCounter.indexOf(state), currPage, defaultStateTransitionsColor);
+    // trans.initTrans(getStateObj(state));
+    // trans.adjustShapeOrPosition(x0, y0);
+    createTCounter++;
+    objList.add(trans);
+    trans.updateAttrib(global_attributes);
+    return trans;
+
+  }
 }

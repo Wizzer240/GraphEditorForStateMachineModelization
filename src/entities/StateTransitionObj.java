@@ -143,10 +143,10 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     for (int i = 1; i < objList.size(); i++) {
       GeneralObj obj = (GeneralObj) objList.get(i);
       if (obj.getType() == GeneralObjType.STATE) {
-        if (obj.getName().equals(startS)) {
+        if (obj.getName().equals(startS) && obj.getPage() == myPage) {
           startState = (StateObj) obj;
         }
-        if (obj.getName().equals(endS)) {
+        if (obj.getName().equals(endS) && obj.getPage() == myPage) {
           endState = (StateObj) obj;
         }
       }
@@ -978,7 +978,8 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
         + i(1) + "</startStateIndex>\n");
     writer.write(i(1) + "<endStateIndex>\n" + i(1) + endStateIndex + "\n"
         + i(1) + "</endStateIndex>\n");
-    writer.write(i(1) + "<page>\n" + i(1) + myPage + "\n" + i(1) + "</page>\n");
+    writer.write(i(1) + "<page>\n" + i(1) + startState.getPage() + "\n" + i(1)
+        + "</page>\n");
     writer.write(i(1) + "<color>\n" + i(1) + color.getRGB() + "\n" + i(1)
         + "</color>\n");
     writer.write(i(1) + "<pageSX>\n" + i(1) + pageS.getX() + "\n" + i(1)

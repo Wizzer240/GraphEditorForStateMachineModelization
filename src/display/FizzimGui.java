@@ -65,6 +65,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -97,6 +98,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+import entities.GeneralObj;
+import entities.LoopbackTransitionObj;
+import entities.StateObj;
+import entities.TransitionObj;
 import attributes.EnumVisibility;
 import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
@@ -108,6 +113,10 @@ import attributes.ObjAttribute;
 public class FizzimGui extends JFrame {
 
   static String currVer = "14.03.1";
+
+  public static final String action_field = "Action";
+  public static final String condition_field = "Garde";
+  public static final String event_field = "Evènements";
 
   /*
    * Global attributes for the machine, the inputs, outputs, states and
@@ -156,7 +165,7 @@ public class FizzimGui extends JFrame {
    * @details Every state and transition have a name. Transitions have also an
    *          "equation" field.
    */
-  private void initGlobal() {
+  public void initGlobal() {
     int[] editable = { ObjAttribute.ABS, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
@@ -175,11 +184,22 @@ public class FizzimGui extends JFrame {
             "def_type", "", Color.black, "", "", editable));
 
     global_attributes.addTransitionAttribute(
-        new ObjAttribute("name", "def_name", EnumVisibility.NO,
+        new ObjAttribute("name", "def_name", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
 
+    /* User defined properties */
+    // globalList.get(EnumGlobalList.STATES).add(
+    // new ObjAttribute("Ind. vrais", "", EnumVisibility.YES,
+    // "def_type", "", Color.black, "", "", editable));
+
     global_attributes.addTransitionAttribute(
-        new ObjAttribute("equation", "1", EnumVisibility.YES,
+        new ObjAttribute(event_field, "", EnumVisibility.NO,
+            "def_type", "", Color.black, "", "", editable));
+    global_attributes.addTransitionAttribute(
+        new ObjAttribute(condition_field, "", EnumVisibility.NO,
+            "def_type", "", Color.black, "", "", editable));
+    global_attributes.addTransitionAttribute(
+        new ObjAttribute(action_field, "", EnumVisibility.NO,
             "def_type", "", Color.black, "", "", editable));
   }
 
@@ -197,14 +217,18 @@ public class FizzimGui extends JFrame {
   private JMenuItem FileItemPrint;
   private JMenuItem FileItemSave;
   private JMenuItem FileItemSaveAs;
+  private JMenuItem FileItemSaveAs6Lines;
+  private JMenuItem FileItemOpen6Lines;
   private JMenu FileExport;
   private JMenuItem FileExportClipboard;
   private JMenuItem FileExportPNG;
   private JMenuItem FileExportJPEG;
   private JMenu FileMenu;
   private JFileChooser FileOpenAction;
+  private JFileChooser FileOpen6LinesAction;
   private JFileChooser FileSaveAction;
   private JFileChooser ExportChooser;
+  private JFileChooser FileSave6LinesAction;
   private JMenuItem GlobalItemInputs;
   private JMenuItem GlobalItemMachine;
   private JMenuItem GlobalItemOutputs;
@@ -241,13 +265,19 @@ public class FizzimGui extends JFrame {
         new FileNameExtensionFilter("Fizzim Files (*.fzm)", "fzm");
     FileNameExtensionFilter PNGfilter =
         new FileNameExtensionFilter("PNG", "png");
+    FileNameExtensionFilter TXTfilter =
+        new FileNameExtensionFilter("TXT", "txt");
 
     FileOpenAction = new JFileChooser();
     FileOpenAction.setFileFilter(filter);
+    FileOpen6LinesAction = new JFileChooser();
+    FileOpen6LinesAction.setFileFilter(TXTfilter);
     FileSaveAction = new JFileChooser();
     FileSaveAction.setFileFilter(filter);
     ExportChooser = new JFileChooser();
     ExportChooser.setFileFilter(PNGfilter);
+    FileSave6LinesAction = new JFileChooser();
+    FileSave6LinesAction.setFileFilter(TXTfilter);
 
     jPanel3 = new JPanel();
     pages_tabbedPane = new MyJTabbedPane();
@@ -259,6 +289,8 @@ public class FizzimGui extends JFrame {
     FileItemOpen = new JMenuItem();
     FileItemSave = new JMenuItem();
     FileItemSaveAs = new JMenuItem();
+    FileItemOpen6Lines = new JMenuItem();
+    FileItemSaveAs6Lines = new JMenuItem();
     FileExport = new JMenu("Export to...");
     FileExportClipboard = new JMenuItem();
     FileExportPNG = new JMenuItem();
@@ -424,6 +456,29 @@ public class FizzimGui extends JFrame {
     });
 
     FileMenu.add(FileItemSaveAs);
+
+    /* Open as 6 lines file */
+    FileItemOpen6Lines.setText("Open As 6 lines");
+    FileItemOpen6Lines.setMnemonic(java.awt.event.KeyEvent.VK_L);
+    FileItemOpen6Lines.setDisplayedMnemonicIndex(11);
+    FileItemOpen6Lines.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        FileItemOpen6linesActionPerformed(evt);
+      }
+    });
+    FileMenu.add(FileItemOpen6Lines);
+
+    /* Save as 6 lines file */
+    FileItemSaveAs6Lines.setText("Save As 6 lines");
+    FileItemSaveAs6Lines.setMnemonic(java.awt.event.KeyEvent.VK_L);
+    FileItemSaveAs6Lines.setDisplayedMnemonicIndex(11);
+    FileItemSaveAs6Lines.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        FileItemSaveAs6LinesActionPerformed(evt);
+      }
+    });
+
+    FileMenu.add(FileItemSaveAs6Lines);
 
     // export
 
@@ -851,9 +906,8 @@ public class FizzimGui extends JFrame {
         pages_tabbedPane.addTab("Page " + String.valueOf(index), jScrollPane1);
         pages_tabbedPane.setSelectedIndex(index);
         drawArea1.setCurrPage(index);
-      }
-      else
-      {
+        drawArea1.setSCounter(index, 0);
+      } else {
         // set current tab
         drawArea1.setCurrPage(sel);
         pages_tabbedPane.setComponentAt(sel, jScrollPane1);
@@ -963,6 +1017,66 @@ public class FizzimGui extends JFrame {
     }
     else
       exportFile(file, type);
+    return true;
+  }
+
+  /**
+   * Do the basic checking before saving in the 6 lines format text
+   * 
+   * @param file
+   * @param type
+   * @param overrideCheck
+   * @return
+   */
+  public boolean tryToSave6lines(File file, String type, boolean overrideCheck)
+  {
+    currFile = file;
+    // checks file for correct pathname
+    String temp = file.getName().toLowerCase();
+
+    if (!temp.endsWith("." + type))
+      file = new File(file.getAbsolutePath() + "." + type);
+
+    // checks permission to write
+    if (file.isDirectory())
+    {
+      JOptionPane.showMessageDialog(this,
+          "Must be a file, not directory", "Error",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+    else if (file.exists() && !file.canWrite())
+    {
+      JOptionPane.showMessageDialog(this,
+          "Cannot write to file, permission denied.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+    else if (overrideCheck)
+    {
+      if (file.exists()) {
+        int choice = JOptionPane.showConfirmDialog(this,
+            "Overwrite file?", "Save As",
+            JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.NO_OPTION)
+          return false;
+      }
+    }
+    else if (!file.exists())
+    {
+      try {
+        file.createNewFile();
+      } catch (IOException e) {
+        JOptionPane.showMessageDialog(this,
+            "Cannot write to file, permission denied.", "Error",
+            JOptionPane.ERROR_MESSAGE);
+        return false;
+      }
+    }
+
+    if (!saveFile6lines(file)) {
+      return false;
+    }
     return true;
   }
 
@@ -1113,7 +1227,6 @@ public class FizzimGui extends JFrame {
 
   public void addNewTab(String line) {
     pages_tabbedPane.addTab(line, new JPanel());
-
   }
 
   private void GlobalItemMachineActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemMachineActionPerformed
@@ -1181,7 +1294,34 @@ public class FizzimGui extends JFrame {
 
   }
 
+  /**
+   * Allows to save the file in a 6 lines format
+   * 
+   * @param evt
+   */
+  private void FileItemSaveAs6LinesActionPerformed(
+      java.awt.event.ActionEvent evt) {
+    if (currFile == null)
+    {
+      // Default to cwd
+      FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
+          .getProperty("user.dir")).getAbsoluteFile());
+    }
+    else
+      FileSave6LinesAction.setSelectedFile(currFile);
+
+    FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
+        .getProperty("user.dir")).getAbsoluteFile());
+    int returnVal = FileSave6LinesAction.showSaveDialog(this);
+
+    if (returnVal == JFileChooser.APPROVE_OPTION)
+      if (tryToSave6lines(FileSave6LinesAction.getSelectedFile(), "txt", true))
+        setTitle("Graphe 6 lignes - " + currFile.getName());
+
+  }
+
   private void FileItemOpenActionPerformed(ActionEvent evt) {// GEN-FIRST:event_FileItemOpenActionPerformed
+
     boolean open = true;
     if (drawArea1.getFileModifed()) {
       Object[] options = { "Yes", "No", "Cancel" };
@@ -1242,6 +1382,81 @@ public class FizzimGui extends JFrame {
 
   }
 
+  private void FileItemOpen6linesActionPerformed(ActionEvent evt) {// GEN-FIRST:event_FileItemOpenActionPerformed
+
+    boolean open = true;
+    if (drawArea1.getFileModifed()) {
+      Object[] options = { "Yes", "No", "Cancel" };
+
+      int n = JOptionPane
+          .showOptionDialog(this, "Save file before opening file?",
+              "Fizzim", JOptionPane.YES_NO_CANCEL_OPTION,
+              JOptionPane.QUESTION_MESSAGE, null, options,
+              options[0]);
+      if (n == JOptionPane.YES_OPTION) {
+        FileSave6LinesAction.setCurrentDirectory(currFile);
+        int returnVal = FileSave6LinesAction.showSaveDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+          if (!tryToSave(FileSave6LinesAction.getSelectedFile(), "txt", true))
+            open = false;
+        }
+      }
+      else if (n == JOptionPane.CANCEL_OPTION || n == -1)
+        open = false;
+    }
+    if (open) {
+
+      if (currFile == null) {
+        // Default to cwd
+        // FileOpenAction.setCurrentDirectory(new
+        // java.io.File("").getAbsoluteFile());
+        FileOpen6LinesAction.setCurrentDirectory(new File(System
+            .getProperty("user.dir")).getAbsoluteFile());
+      } else {
+        FileOpen6LinesAction.setCurrentDirectory(currFile);
+      }
+      int returnVal = FileOpen6LinesAction.showOpenDialog(null);
+
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File tempFile = FileOpen6LinesAction.getSelectedFile();
+        String fileName = tempFile.getName().toLowerCase();
+        if (!tempFile.isDirectory() && fileName.endsWith(".txt")) {
+          try {
+            openFile6lines(tempFile);
+          } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error when loading: "
+                + e.getMessage(),
+                "error", JOptionPane.ERROR_MESSAGE);
+          }
+          setTitle("Fizzim - " + currFile.getName());
+        } else {
+          JOptionPane.showMessageDialog(this, "File must end with .txt",
+              "error", JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    }
+
+  }// GEN-LAST:event_FileItemOpenActionPerformed
+
+  /**
+   * Open a 6 lines file and charge it into the graph editor
+   * 
+   * @param selectedFile
+   *          The file to open
+   * @throws IOException
+   */
+  private void openFile6lines(File selectedFile) throws IOException {
+    loading = true;
+    currFile = selectedFile;
+    FileParser6lines fileParser = new FileParser6lines(currFile, this,
+        drawArea1);
+    pages_tabbedPane.setComponentAt(1, jScrollPane1);
+    pages_tabbedPane.setSelectedIndex(1);
+    drawArea1.setCurrPage(1);
+    loading = false;
+  }
+
   private Dimension getScrollPaneSize() {
     return new Dimension(jPanel3.getWidth() - 10, jPanel3.getHeight() - 10);
   }
@@ -1255,6 +1470,118 @@ public class FizzimGui extends JFrame {
       ind = ind + "   ";
     }
     return ind;
+  }
+
+  /**
+   * Function that save the graph into a 6lines format text
+   * each page contains an independant graph and the name of the page will be
+   * the name of the graph in the file.
+   * 
+   * @param selectedFile
+   *          the targeted file to save in
+   * @return
+   */
+
+  private boolean saveFile6lines(File selectedFile) {
+    currFile = selectedFile;
+    try {
+
+      int j = 1;
+      BufferedWriter writer = new BufferedWriter(new FileWriter(currFile));
+      // Put all the objects of the graph in object
+      Vector<Object> object = drawArea1.getObjList();
+      for (int i = 1; i < object.size(); i++) {
+        GeneralObj temp = (GeneralObj) object.get(i);
+        // verify that the object is a transition.
+        if (temp instanceof TransitionObj) {
+          if (j != 1) {
+            writer.write("\r\n");
+          }
+          j++;
+          TransitionObj transition = (TransitionObj) temp;
+          // writer.write(selectedFile.getName().substring(0,
+          // selectedFile.getName().length() - 4));
+          // writer.write("\r\n");
+
+          StateObj initial_state = transition.getStartState();
+          writer.write(pages_tabbedPane.getTitleAt(initial_state.getPage()));
+          writer.write("\r\n");
+          int page_init_state = initial_state.getPage();
+          // write the number of the initial state in the file.
+          writer.write(initial_state.getName());
+          writer.write("\r\n");
+          StateObj final_state = transition.getEndState();
+          int page_final_state = final_state.getPage();
+          if (page_final_state != page_init_state) {
+            String final_page = String.valueOf(page_final_state);
+            String init_page = Integer.toString(page_init_state);
+            JOptionPane
+                .showMessageDialog(
+                    this,
+                    "Two states are not of the same page in a transition.\n The transition between the state "
+                        + initial_state.getName()
+                        + " page " + init_page + " and the state "
+                        + final_state.getName() + " page " + final_page,
+                    "Transition overflow",
+                    JOptionPane.ERROR_MESSAGE);
+            writer.close();
+            return false;
+          }
+          /*
+           * Verify if the transition is a loopback and
+           * write the number of the final state in the file (it will be
+           * the same as the initial state if it's a loop).
+           */
+          if (temp instanceof LoopbackTransitionObj) {
+            writer.write(initial_state.getName());
+            writer.write("\r\n");
+          } else {
+            writer.write(final_state.getName());
+            writer.write("\r\n");
+          }
+          LinkedList<ObjAttribute> attributes = transition.getAttributeList();
+          String event = null, condition = null, actions = null;
+          for (ObjAttribute attribute : attributes) {
+            String name = (String) attribute.get(0);
+            String value = (String) attribute.get(1);
+            if (name.equals(event_field)) {
+              event = value;
+            } else if (name.equals(condition_field)) {
+              condition = value;
+            } else if (name.equals(action_field)) {
+              actions = value;
+            }
+
+          }
+          if (event == null || condition == null || actions == null) {
+            writer.close();
+            throw new IOException(
+                "One of the variable event, condition and actions are null");
+          }
+          String text;
+          text = event + " " + "Evenement";
+          writer.write(text.trim());
+          writer.write("\r\n");
+          text = condition + " " + "Condition";
+          writer.write(text.trim());
+          writer.write("\r\n");
+          text = actions + " " + "Action";
+          writer.write(text.trim());
+
+        }
+      }
+      writer.close();
+      return true;
+
+    } catch (IOException ex) {
+      // ex.printStackTrace();
+      JOptionPane.showMessageDialog(this,
+          "Error saving file",
+          "error",
+          JOptionPane.ERROR_MESSAGE);
+      return false;
+    }
+
   }
 
   private boolean saveFile(File selectedFile) {
@@ -1844,6 +2171,27 @@ public class FizzimGui extends JFrame {
     }
   }
 
+  /**
+   * Add a new page with the name pageName
+   * 
+   * @param pageName
+   *          the name of the new page.
+   */
+  public void addNewPage(String pageName) {
+
+    int index = pages_tabbedPane.getTabCount();
+    this.addNewTab(pageName);
+    pages_tabbedPane.setSelectedIndex(index);
+    drawArea1.setCurrPage(index);
+    drawArea1.setSCounter(index, 0);
+  }
+
+  /**
+   * @return the number of pages
+   */
+  public int getPageCount() {
+    return pages_tabbedPane.getTabCount();
+  }
   /*
    * public String getIndent(int i)
    * {
