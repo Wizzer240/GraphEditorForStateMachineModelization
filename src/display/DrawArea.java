@@ -9,6 +9,7 @@ import java.util.*;
 
 import javax.swing.*;
 
+import attributes.EnumGlobalList;
 import attributes.ObjAttribute;
 import entities.GeneralObj;
 import entities.GeneralObjType;
@@ -870,15 +871,19 @@ public class DrawArea extends JPanel implements MouseListener,
     menuItem.setMnemonic(KeyEvent.VK_S);
     menuItem.addActionListener(this);
     popup.add(menuItem);
-    menuItem = new JMenuItem("New State Transition");
-    menuItem.setMnemonic(KeyEvent.VK_T);
-    menuItem.setDisplayedMnemonicIndex(10);
-    menuItem.addActionListener(this);
-    popup.add(menuItem);
-    menuItem = new JMenuItem("New Loopback Transition");
-    menuItem.setMnemonic(KeyEvent.VK_L);
-    menuItem.addActionListener(this);
-    popup.add(menuItem);
+    /*
+     * menuItem = new JMenuItem("New State Transition");
+     * menuItem.setMnemonic(KeyEvent.VK_T);
+     * menuItem.setDisplayedMnemonicIndex(10);
+     * menuItem.addActionListener(this);
+     * popup.add(menuItem);
+     */
+    /*
+     * menuItem = new JMenuItem("New Loopback Transition");
+     * menuItem.setMnemonic(KeyEvent.VK_L);
+     * menuItem.addActionListener(this);
+     * popup.add(menuItem);
+     */
     menuItem = new JMenuItem("New Free Text");
     menuItem.setMnemonic(KeyEvent.VK_F);
     menuItem.addActionListener(this);
@@ -918,7 +923,7 @@ public class DrawArea extends JPanel implements MouseListener,
       Vector<StateObj> stateObjs = new Vector<StateObj>();
       for (int i = 1; i < objList.size(); i++) {
         GeneralObj obj = (GeneralObj) objList.get(i);
-        if (obj.getType() == GeneralObjType.STATE)
+        if (obj.getType() == GeneralObjType.STATE && obj.getPage() == currPage)
           stateObjs.add((StateObj) obj);
       }
       new TransitionEditorWindow(frame, this, (StateTransitionObj) tempObj,
@@ -1122,7 +1127,8 @@ public class DrawArea extends JPanel implements MouseListener,
   private StateObj getStateObj(String name) {
     for (int j = 1; j < objList.size(); j++) {
       GeneralObj obj1 = (GeneralObj) objList.get(j);
-      if (obj1.getType() == GeneralObjType.STATE && obj1.getName().equals(name) && obj1.getPage() == currPage )
+      if (obj1.getType() == GeneralObjType.STATE && obj1.getName().equals(name)
+          && obj1.getPage() == currPage)
         return (StateObj) obj1;
     }
     return null;
@@ -1242,7 +1248,7 @@ public class DrawArea extends JPanel implements MouseListener,
   public void save(BufferedWriter writer) throws IOException {
     writer.write("## START PREFERENCES\n");
     int j = 1;
-    do  {
+    do {
       writer.write("<SCounter>\n" + createSCounter.get(j) + "\n" + j
           + "\n</SCounter>\n");
       j++;
@@ -1477,7 +1483,10 @@ public class DrawArea extends JPanel implements MouseListener,
 
   public void setSCounter(int index, String readLine) {
     createSCounter.add(index, Integer.parseInt(readLine));
+  }
 
+  public void setSCounter(int index, int readLine) {
+    createSCounter.add(index, readLine);
   }
 
   public void setTCounter(String readLine) {
@@ -1569,6 +1578,18 @@ public class DrawArea extends JPanel implements MouseListener,
   public String getPageName(int page) {
     FizzimGui fgui = (FizzimGui) frame;
     return fgui.getPageName(page);
+  }
+
+  /**
+   * Return the number of the page pageName
+   * 
+   * @param pageName
+   *          the name of the page to search
+   * @return the number of the page
+   */
+  public int getPageNumb(String pageName) {
+    FizzimGui fgui = (FizzimGui) frame;
+    return fgui.getPageIndex(pageName);
   }
 
   public void updateGlobalTable() {
@@ -1776,6 +1797,110 @@ public class DrawArea extends JPanel implements MouseListener,
 
   public Vector<Object> getObjList() {
     return objList;
+  }
+
+  /**
+   * Verify if a state already exists in the current page
+   * 
+   * @param input
+   *          the name of the state to search
+   * @return true if the state exists
+   */
+  public boolean checkStateNameCurrPage(String input) {
+    for (int j = 1; j < objList.size(); j++) {
+      GeneralObj obj1 = (GeneralObj) objList.get(j);
+      if (obj1.getType() == GeneralObjType.STATE
+          && obj1.getName().equals(input) && obj1.getPage() == currPage)
+        return true;
+    }
+    return false;
+  }
+
+  /**
+   * Add a new state in the current page
+   * 
+   * @param stateName
+   *          the name of the state.
+   * @param x0
+   * @param y0
+   * @param x1
+   * @param y1
+   */
+  GeneralObj addNewState(String stateName, int x0, int y0, int x1, int y1) {
+/*    GeneralObj state = new StateObj(x0, y0, x1, y1,
+        new LinkedList<ObjAttribute>(globalList
+            .get(EnumGlobalList.STATES)), stateName, grid, currPage, defSC); */
+    GeneralObj state = new StateObj(x0, y0, x1, y1, stateName, currPage, defSTC, grid, gridS);
+    createSCounter.set(currPage, createSCounter.get(currPage) + 1);
+    objList.add(state);
+    state.updateAttrib(globalList, EnumGlobalList.STATES);
+
+   // commitUndo();
+    return state;
+  }
+
+  /**
+   * Add a new transition.
+   * 
+   * @param sourceState
+   * @param endState
+   */
+  public GeneralObj addNewTransition(String sourceState, String endState) {
+
+    StateObj source = getStateObj(sourceState);
+    StateObj destination = getStateObj(endState);
+    StateTransitionObj trans = new StateTransitionObj(createTCounter, currPage,
+        this,
+        source, destination, defSTC);
+    assert (source != null);
+    assert (destination != null);
+
+    createTCounter++;
+    objList.add(trans);
+
+    trans.initTrans(source, destination);
+
+    trans.updateAttrib(globalList, EnumGlobalList.TRANSITIONS);
+
+    // commitUndo();
+    return trans;
+  }
+
+  public GeneralObj addNewLoopbackTransition(String state, int x0, int y0,
+      int x1, int y1) {
+    // GeneralObj trans = new LoopbackTransitionObj(((x0+x1)/2+StateW)*2,
+    // ((y0+y1)/2+StateH)*2,
+    // createTCounter, currPage, defLTC);
+    String name = "trans" + createTCounter;
+    int sIndex = createSCounter.indexOf(state);
+    Point point1 = new Point();
+    Point point2 = new Point();
+    Point point3 = new Point();
+    Point point4 = new Point();
+
+    point1.setLocation(431.0, 216.0);
+    point2.setLocation(480.0, 239.0);
+    point1.setLocation(431.0, 132.0);
+    point1.setLocation(544.0, 185.0);
+
+    LoopbackTransitionObj trans = new LoopbackTransitionObj(
+         point1,
+         point2,
+         point3,
+         point4,
+        new LinkedList<ObjAttribute>(globalList.get(EnumGlobalList.TRANSITIONS)),
+        name, state, state, sIndex,
+        sIndex,
+        currPage, defSTC);
+    // GeneralObj trans1 = new LoopbackTransitionObj(x0, y0, x1, y1, globalList
+    // , name, state, state, createSCounter.indexOf(state),
+    // createSCounter.indexOf(state), currPage, defSTC);
+//    trans.initTrans(getStateObj(state));
+//    trans.adjustShapeOrPosition(x0, y0);
+    createTCounter++;
+    objList.add(trans);
+    trans.updateAttrib(globalList, EnumGlobalList.TRANSITIONS);
+    return trans;
   }
 
 }

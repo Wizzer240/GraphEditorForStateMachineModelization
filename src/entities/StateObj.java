@@ -42,6 +42,10 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   private Color color = Color.black;
 
+  public String toString() {
+    return "State " + getName() + "(page " + getPage() + ")";
+  }
+
   // AttributeList mylist = new AttributeList();
 
   /**
@@ -77,6 +81,24 @@ public class StateObj extends GeneralObj implements Cloneable {
     color = border_color;
 
     objName = String.valueOf(numb);
+    myPage = page;
+
+    grid = b;
+    gridS = i;
+
+  }
+  
+  public StateObj(int _x0, int _y0, int _x1, int _y1, String name, int page,
+      Color border_color, boolean b, int i) {
+
+    x0 = _x0;
+    y0 = _y0;
+    x1 = _x1;
+    y1 = _y1;
+    selectStatus = SelectOptions.NONE;
+    color = border_color;
+
+    objName = name;
     myPage = page;
 
     grid = b;

@@ -108,10 +108,10 @@ import attributes.ObjAttribute;
 @SuppressWarnings("serial")
 public class FizzimGui extends JFrame {
 
-  static String currVer = "14.02.28";
-  static String action_field = "Action";
-  static String condition_field = "Garde";
-  static String event_field = "Evènements";
+  public static final String currVer = "14.02.28";
+  public static final String action_field = "Action";
+  public static final String condition_field = "Garde";
+  public static final String event_field = "Evènements";
 
   // pointer to global lists
   LinkedList<ObjAttribute> globalMachineAttributes;
@@ -165,7 +165,7 @@ public class FizzimGui extends JFrame {
 
   }
 
-  private void initGlobal() {
+  public void initGlobal() {
     // set up required global attributes
     // 0=machine, 1=inputs, 2=outputs, 3=states, 4=trans
     int[] editable = { ObjAttribute.ABS, ObjAttribute.GLOBAL_VAR,
@@ -185,7 +185,7 @@ public class FizzimGui extends JFrame {
             "def_type", "", Color.black, "", "", editable));
 
     globalList.get(EnumGlobalList.TRANSITIONS).add(
-        new ObjAttribute("name", "def_name", EnumVisibility.NO,
+        new ObjAttribute("name", "def_name", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
 
     /* User defined properties */
@@ -194,13 +194,13 @@ public class FizzimGui extends JFrame {
     // "def_type", "", Color.black, "", "", editable));
 
     globalList.get(EnumGlobalList.TRANSITIONS).add(
-        new ObjAttribute(event_field, "", EnumVisibility.YES,
+        new ObjAttribute(event_field, "", EnumVisibility.NO,
             "def_type", "", Color.black, "", "", editable));
     globalList.get(EnumGlobalList.TRANSITIONS).add(
-        new ObjAttribute(condition_field, "", EnumVisibility.YES,
+        new ObjAttribute(condition_field, "", EnumVisibility.NO,
             "def_type", "", Color.black, "", "", editable));
     globalList.get(EnumGlobalList.TRANSITIONS).add(
-        new ObjAttribute(action_field, "", EnumVisibility.YES,
+        new ObjAttribute(action_field, "", EnumVisibility.NO,
             "def_type", "", Color.black, "", "", editable));
   }
 
@@ -219,12 +219,14 @@ public class FizzimGui extends JFrame {
   private JMenuItem FileItemSave;
   private JMenuItem FileItemSaveAs;
   private JMenuItem FileItemSaveAs6Lines;
+  private JMenuItem FileItemOpen6Lines;
   private JMenu FileExport;
   private JMenuItem FileExportClipboard;
   private JMenuItem FileExportPNG;
   private JMenuItem FileExportJPEG;
   private JMenu FileMenu;
   private JFileChooser FileOpenAction;
+  private JFileChooser FileOpen6LinesAction;
   private JFileChooser FileSaveAction;
   private JFileChooser ExportChooser;
   private JFileChooser FileSave6LinesAction;
@@ -269,6 +271,8 @@ public class FizzimGui extends JFrame {
 
     FileOpenAction = new JFileChooser();
     FileOpenAction.setFileFilter(filter);
+    FileOpen6LinesAction = new JFileChooser();
+    FileOpen6LinesAction.setFileFilter(TXTfilter);
     FileSaveAction = new JFileChooser();
     FileSaveAction.setFileFilter(filter);
     ExportChooser = new JFileChooser();
@@ -286,6 +290,7 @@ public class FizzimGui extends JFrame {
     FileItemOpen = new JMenuItem();
     FileItemSave = new JMenuItem();
     FileItemSaveAs = new JMenuItem();
+    FileItemOpen6Lines = new JMenuItem();
     FileItemSaveAs6Lines = new JMenuItem();
     FileExport = new JMenu("Export to...");
     FileExportClipboard = new JMenuItem();
@@ -452,6 +457,17 @@ public class FizzimGui extends JFrame {
     });
 
     FileMenu.add(FileItemSaveAs);
+
+    /* Open as 6 lines file */
+    FileItemOpen6Lines.setText("Open As 6 lines");
+    FileItemOpen6Lines.setMnemonic(java.awt.event.KeyEvent.VK_L);
+    FileItemOpen6Lines.setDisplayedMnemonicIndex(11);
+    FileItemOpen6Lines.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        FileItemOpen6linesActionPerformed(evt);
+      }
+    });
+    FileMenu.add(FileItemOpen6Lines);
 
     /* Save as 6 lines file */
     FileItemSaveAs6Lines.setText("Save As 6 lines");
@@ -891,7 +907,7 @@ public class FizzimGui extends JFrame {
         pages_tabbedPane.addTab("Page " + String.valueOf(index), jScrollPane1);
         pages_tabbedPane.setSelectedIndex(index);
         drawArea1.setCurrPage(index);
-        drawArea1.setSCounter(index, "0");
+        drawArea1.setSCounter(index, 0);
       } else {
         // set current tab
         drawArea1.setCurrPage(sel);
@@ -1214,7 +1230,6 @@ public class FizzimGui extends JFrame {
 
   public void addNewTab(String line) {
     pages_tabbedPane.addTab(line, new JPanel());
-
   }
 
   private void GlobalItemMachineActionPerformed(ActionEvent evt) {// GEN-FIRST:event_GlobalItemMachineActionPerformed
@@ -1363,6 +1378,81 @@ public class FizzimGui extends JFrame {
     drawArea1.setCurrPage(1);
     loading = false;
 
+  }
+
+  private void FileItemOpen6linesActionPerformed(ActionEvent evt) {// GEN-FIRST:event_FileItemOpenActionPerformed
+
+    boolean open = true;
+    if (drawArea1.getFileModifed()) {
+      Object[] options = { "Yes", "No", "Cancel" };
+
+      int n = JOptionPane
+          .showOptionDialog(this, "Save file before opening file?",
+              "Fizzim", JOptionPane.YES_NO_CANCEL_OPTION,
+              JOptionPane.QUESTION_MESSAGE, null, options,
+              options[0]);
+      if (n == JOptionPane.YES_OPTION) {
+        FileSave6LinesAction.setCurrentDirectory(currFile);
+        int returnVal = FileSave6LinesAction.showSaveDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+          if (!tryToSave(FileSave6LinesAction.getSelectedFile(), "txt", true))
+            open = false;
+        }
+      }
+      else if (n == JOptionPane.CANCEL_OPTION || n == -1)
+        open = false;
+    }
+    if (open) {
+
+      if (currFile == null) {
+        // Default to cwd
+        // FileOpenAction.setCurrentDirectory(new
+        // java.io.File("").getAbsoluteFile());
+        FileOpen6LinesAction.setCurrentDirectory(new File(System
+            .getProperty("user.dir")).getAbsoluteFile());
+      } else {
+        FileOpen6LinesAction.setCurrentDirectory(currFile);
+      }
+      int returnVal = FileOpen6LinesAction.showOpenDialog(null);
+
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File tempFile = FileOpen6LinesAction.getSelectedFile();
+        String fileName = tempFile.getName().toLowerCase();
+        if (!tempFile.isDirectory() && fileName.endsWith(".txt")) {
+          try {
+            openFile6lines(tempFile);
+          } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error when loading: "
+                + e.getMessage(),
+                "error", JOptionPane.ERROR_MESSAGE);
+          }
+          setTitle("Fizzim - " + currFile.getName());
+        } else {
+          JOptionPane.showMessageDialog(this, "File must end with .txt",
+              "error", JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    }
+
+  }// GEN-LAST:event_FileItemOpenActionPerformed
+
+  /**
+   * Open a 6 lines file and charge it into the graph editor
+   * 
+   * @param selectedFile
+   *          The file to open
+   * @throws IOException
+   */
+  private void openFile6lines(File selectedFile) throws IOException {
+    loading = true;
+    currFile = selectedFile;
+    FileParser6lines fileParser = new FileParser6lines(currFile, this,
+        drawArea1);
+    pages_tabbedPane.setComponentAt(1, jScrollPane1);
+    pages_tabbedPane.setSelectedIndex(1);
+    drawArea1.setCurrPage(1);
+    loading = false;
   }
 
   private Dimension getScrollPaneSize() {
@@ -2083,6 +2173,27 @@ public class FizzimGui extends JFrame {
     }
   }
 
+  /**
+   * Add a new page with the name pageName
+   * 
+   * @param pageName
+   *          the name of the new page.
+   */
+  public void addNewPage(String pageName) {
+
+    int index = pages_tabbedPane.getTabCount();
+    this.addNewTab(pageName);
+    pages_tabbedPane.setSelectedIndex(index);
+    drawArea1.setCurrPage(index);
+    drawArea1.setSCounter(index, 0);
+  }
+
+  /**
+   * @return the number of pages
+   */
+  public int getPageCount() {
+    return pages_tabbedPane.getTabCount();
+  }
   /*
    * public String getIndent(int i)
    * {
