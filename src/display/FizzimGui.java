@@ -1,7 +1,8 @@
 package display;
 
 /*
- Copyright 2007-2011 Zimmer Design Services mike@zimmerdesignservices.com
+ Copyright 2007 Zimmer Design Services.
+ Written by Michael Zimmer - mike@zimmerdesignservices.com
  Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
 
  This file is part of Fizzim.

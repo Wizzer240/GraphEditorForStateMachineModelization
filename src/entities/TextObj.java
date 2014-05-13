@@ -1,22 +1,9 @@
 package entities;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.LinkedList;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import attributes.GlobalAttributes;
-import attributes.ObjAttribute;
-
-//Written by: Michael Zimmer - mike@zimmerdesignservices.com
-
 /*
- Copyright 2007 Zimmer Design Services
+ Copyright 2007 Zimmer Design Services.
+ Written by Michael Zimmer - mike@zimmerdesignservices.com
+ Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
 
  This file is part of Fizzim.
 
@@ -33,6 +20,19 @@ import attributes.ObjAttribute;
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.LinkedList;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import attributes.GlobalAttributes;
+import attributes.ObjAttribute;
 
 public class TextObj extends GeneralObj {
 
@@ -159,29 +159,29 @@ public class TextObj extends GeneralObj {
         ObjAttribute obj = global_attributes
             .getSpecificGlobalAttributes(i)
             .get(j);
-        
+
         String name = "   " + obj.getName();
         if (col1W < fm.stringWidth(name)) {
           col1W = fm.stringWidth(name);
         }
         col1.add(name);
-        
+
         String value = obj.getValue();
         if (col2W < fm.stringWidth(value)) {
           col2W = fm.stringWidth(value);
         }
         col2.add(value);
-        
+
         String type = obj.getType();
         // rename "reg" to "statebit" in the attributes table
         if (type.equals("reg"))
           type = "statebit";
-        
+
         if (col3W < fm.stringWidth(type)) {
           col3W = fm.stringWidth(type);
         }
         col3.add(type);
-        
+
         String comm = obj.getComment();
         if (col4W < fm.stringWidth(comm)) {
           col4W = fm.stringWidth(comm);

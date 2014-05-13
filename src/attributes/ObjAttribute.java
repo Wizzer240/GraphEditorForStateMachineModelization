@@ -1,19 +1,9 @@
 package attributes;
 
-import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.Arrays;
-
-import entities.SelectOptions;
-
-//Written by: Michael Zimmer - mike@zimmerdesignservices.com
-
 /*
- Copyright 2007 Zimmer Design Services
+ Copyright 2007 Zimmer Design Services.
+ Written by Michael Zimmer - mike@zimmerdesignservices.com
+ Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
 
  This file is part of Fizzim.
 
@@ -30,6 +20,16 @@ import entities.SelectOptions;
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.Arrays;
+
+import entities.SelectOptions;
 
 /**
  * Describe a single attribute for the machine, the inputs/outputs or for a

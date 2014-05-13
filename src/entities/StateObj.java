@@ -1,18 +1,9 @@
 package entities;
 
-import java.awt.*;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Vector;
-
-import attributes.GlobalAttributes;
-import attributes.ObjAttribute;
-
-//Written by: Michael Zimmer - mike@zimmerdesignservices.com
-
 /*
- Copyright 2007 Zimmer Design Services
+ Copyright 2007 Zimmer Design Services.
+ Written by Michael Zimmer - mike@zimmerdesignservices.com
+ Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
 
  This file is part of Fizzim.
 
@@ -21,7 +12,7 @@ import attributes.ObjAttribute;
  the Free Software Foundation; either version 3 of the License, or
  (at your option) any later version.
 
- Fizzim is distributed in the hope that it will pabe useful,
+ Fizzim is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
@@ -29,6 +20,15 @@ import attributes.ObjAttribute;
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Vector;
+
+import attributes.GlobalAttributes;
+import attributes.ObjAttribute;
 
 public class StateObj extends GeneralObj implements Cloneable {
 

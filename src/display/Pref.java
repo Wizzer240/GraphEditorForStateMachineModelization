@@ -1,28 +1,9 @@
 package display;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.text.NumberFormat;
-
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JColorChooser;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.LineBorder;
-
-//Written by: Michael Zimmer - mike@zimmerdesignservices.com
-
 /*
- Copyright 2007 Zimmer Design Services
+ Copyright 2007 Zimmer Design Services.
+ Written by Michael Zimmer - mike@zimmerdesignservices.com
+ Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
 
  This file is part of Fizzim.
 
@@ -40,8 +21,38 @@ import javax.swing.border.LineBorder;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.NumberFormat;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.WindowConstants;
+import javax.swing.border.LineBorder;
+
 @SuppressWarnings("serial")
-public class Pref extends javax.swing.JDialog {
+public class Pref extends JDialog {
 
   DrawArea drawArea;
   JColorChooser colorChooser;
@@ -52,7 +63,7 @@ public class Pref extends javax.swing.JDialog {
   Color tempLTC;
 
   /** Creates new form Pref */
-  public Pref(java.awt.Frame parent, boolean modal, DrawArea da) {
+  public Pref(Frame parent, boolean modal, DrawArea da) {
     super(parent, modal);
     drawArea = da;
     tempSC = drawArea.getDefSC();
@@ -63,30 +74,29 @@ public class Pref extends javax.swing.JDialog {
     initComponents();
   }
 
-  private Color getColor(String type)
-  {
-    if (type.equals("SC"))
+  private Color getColor(String type) {
+    if (type.equals("SC")) {
       return tempSC;
-    else if (type.equals("STC"))
+    } else if (type.equals("STC")) {
       return tempSTC;
-    else if (type.equals("LTC"))
+    } else if (type.equals("LTC")) {
       return tempLTC;
-    else
+    } else {
       return Color.black;
+    }
   }
 
-  private void setColor(String type, Color c)
-  {
-    if (type.equals("SC"))
+  private void setColor(String type, Color c) {
+    if (type.equals("SC")) {
       tempSC = c;
-    if (type.equals("STC"))
+    } else if (type.equals("STC")) {
       tempSTC = c;
-    if (type.equals("LTC"))
+    } else if (type.equals("LTC")) {
       tempLTC = c;
+    }
   }
 
-  private void setUpColorBox(JLabel jLabel, String type)
-  {
+  private void setUpColorBox(JLabel jLabel, String type) {
     jLabel.setPreferredSize(new Dimension(50, 20));
     jLabel.setMinimumSize(new Dimension(50, 20));
     jLabel.setOpaque(true);
@@ -94,6 +104,45 @@ public class Pref extends javax.swing.JDialog {
     jLabel.setBackground(getColor(type));
     jLabel.setBorder(new LineBorder(Color.black, 1));
   }
+
+  // GEN-BEGIN:variables
+  // Variables declaration - do not modify
+  private JComboBox font2ComboBox;
+  private JComboBox font2SizeComboBox;
+  private JButton fontColorButton;
+  private JComboBox fontComboBox;
+  private JComboBox fontSizeComboBox;
+  private JPanel globalTablePanel;
+  private JCheckBox gridCheckbox;
+  private JTextField gridSTextField;
+  private JTextField lineWidthTextField;
+  private JButton jButton1;
+  private JButton jButton2;
+  private JLabel jLabel1; // "space between columns"
+  private JLabel jLabel2; // space between columns "pixels"
+  private JLabel jLabel3; // "Table Font"
+  private JLabel jLabel5; // "Font" in Draw Area box
+  private JLabel jLabel7; // ?
+  private JLabel jLabel8; // grid size "pixels"
+  private JLabel jLabel9; // default state width "pixels"
+  private JLabel jLabel10; // default state height "pixels"
+  private JLabel jLabel11; // "Line Width"
+  private JLabel jLabel12; // lineWidth "pixels"
+  private JPanel jPanel2;
+  private JTextField spaceTextField;
+  private JCheckBox tableVisCheckbox;
+  private JLabel SC1;
+  private JLabel SC2;
+  private JLabel STC1;
+  private JLabel STC2;
+  private JLabel LTC1;
+  private JLabel LTC2;
+  private JFormattedTextField SPHField;
+  private JLabel SPW;
+  private JLabel SPH;
+  private JFormattedTextField SPWField;
+
+  // End of variables declaration//GEN-END:variables
 
   /**
    * This method is called from within the constructor to
@@ -104,51 +153,51 @@ public class Pref extends javax.swing.JDialog {
   // GEN-BEGIN:initComponents
   // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
   private void initComponents() {
-    globalTablePanel = new javax.swing.JPanel();
-    tableVisCheckbox = new javax.swing.JCheckBox();
-    jLabel1 = new javax.swing.JLabel();
-    spaceTextField = new javax.swing.JTextField();
-    jLabel2 = new javax.swing.JLabel();
-    jLabel3 = new javax.swing.JLabel();
-    fontComboBox = new javax.swing.JComboBox();
-    fontSizeComboBox = new javax.swing.JComboBox();
-    fontColorButton = new javax.swing.JButton();
-    jPanel2 = new javax.swing.JPanel();
-    jLabel5 = new javax.swing.JLabel();
-    font2ComboBox = new javax.swing.JComboBox();
-    font2SizeComboBox = new javax.swing.JComboBox();
-    gridCheckbox = new javax.swing.JCheckBox();
-    jLabel7 = new javax.swing.JLabel();
-    gridSTextField = new javax.swing.JTextField();
-    lineWidthTextField = new javax.swing.JTextField();
-    jLabel11 = new javax.swing.JLabel();
-    jLabel12 = new javax.swing.JLabel();
-    jLabel8 = new javax.swing.JLabel();
-    jLabel9 = new javax.swing.JLabel();
-    jLabel10 = new javax.swing.JLabel();
-    jButton1 = new javax.swing.JButton();
-    jButton2 = new javax.swing.JButton();
-    SC1 = new javax.swing.JLabel();
-    SC2 = new javax.swing.JLabel();
-    STC1 = new javax.swing.JLabel();
-    STC2 = new javax.swing.JLabel();
-    LTC1 = new javax.swing.JLabel();
-    LTC2 = new javax.swing.JLabel();
-    SPW = new javax.swing.JLabel();
-    SPH = new javax.swing.JLabel();
-    SPWField = new javax.swing.JFormattedTextField(NumberFormat
+    globalTablePanel = new JPanel();
+    tableVisCheckbox = new JCheckBox();
+    jLabel1 = new JLabel();
+    spaceTextField = new JTextField();
+    jLabel2 = new JLabel();
+    jLabel3 = new JLabel();
+    fontComboBox = new JComboBox();
+    fontSizeComboBox = new JComboBox();
+    fontColorButton = new JButton();
+    jPanel2 = new JPanel();
+    jLabel5 = new JLabel();
+    font2ComboBox = new JComboBox();
+    font2SizeComboBox = new JComboBox();
+    gridCheckbox = new JCheckBox();
+    jLabel7 = new JLabel();
+    gridSTextField = new JTextField();
+    lineWidthTextField = new JTextField();
+    jLabel11 = new JLabel();
+    jLabel12 = new JLabel();
+    jLabel8 = new JLabel();
+    jLabel9 = new JLabel();
+    jLabel10 = new JLabel();
+    jButton1 = new JButton();
+    jButton2 = new JButton();
+    SC1 = new JLabel();
+    SC2 = new JLabel();
+    STC1 = new JLabel();
+    STC2 = new JLabel();
+    LTC1 = new JLabel();
+    LTC2 = new JLabel();
+    SPW = new JLabel();
+    SPH = new JLabel();
+    SPWField = new JFormattedTextField(NumberFormat
         .getIntegerInstance());
-    SPHField = new javax.swing.JFormattedTextField(NumberFormat
+    SPHField = new JFormattedTextField(NumberFormat
         .getIntegerInstance());
 
-    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-    globalTablePanel.setBorder(javax.swing.BorderFactory
+    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    globalTablePanel.setBorder(BorderFactory
         .createTitledBorder("Global Table"));
     tableVisCheckbox.setSelected(drawArea.getTableVis());
     tableVisCheckbox.setText("Table Visible");
-    tableVisCheckbox.setBorder(javax.swing.BorderFactory.createEmptyBorder(
+    tableVisCheckbox.setBorder(BorderFactory.createEmptyBorder(
         0, 0, 0, 0));
-    tableVisCheckbox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    tableVisCheckbox.setMargin(new Insets(0, 0, 0, 0));
 
     jLabel1.setText("Space between columns:");
 
@@ -272,10 +321,10 @@ public class Pref extends javax.swing.JDialog {
     GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
     String[] fontNames = env.getAvailableFontFamilyNames();
 
-    fontComboBox.setModel(new javax.swing.DefaultComboBoxModel(fontNames));
+    fontComboBox.setModel(new DefaultComboBoxModel(fontNames));
     fontComboBox.setSelectedItem(drawArea.getTableFont().getFontName());
 
-    fontSizeComboBox.setModel(new javax.swing.DefaultComboBoxModel(
+    fontSizeComboBox.setModel(new DefaultComboBoxModel(
         new String[] { "8", "9", "10", "11", "12", "14", "16", "18", "20",
             "22", "24", "30", "36", "42", "48", "72" }));
     fontSizeComboBox.setSelectedItem(String.valueOf(drawArea
@@ -285,10 +334,10 @@ public class Pref extends javax.swing.JDialog {
     fontColorButton.setBackground(drawArea.getTableColor());
     // fontColorButton.setAlignmentX(0.5F);
     // fontColorButton.setOpaque(true);
-    fontColorButton.setPreferredSize(new java.awt.Dimension(20, 20));
+    fontColorButton.setPreferredSize(new Dimension(20, 20));
     fontColorButton.setBorder(new LineBorder(Color.black, 1));
-    fontColorButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    fontColorButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         fontColorButtonActionPerformed(evt);
       }
     });
@@ -368,13 +417,13 @@ public class Pref extends javax.swing.JDialog {
                     GroupLayout.PREFERRED_SIZE))
             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-    jPanel2.setBorder(javax.swing.BorderFactory
+    jPanel2.setBorder(BorderFactory
         .createTitledBorder("Draw Area"));
     jLabel5.setText("Font:");
 
-    font2ComboBox.setModel(new javax.swing.DefaultComboBoxModel(fontNames));
+    font2ComboBox.setModel(new DefaultComboBoxModel(fontNames));
     font2ComboBox.setSelectedItem(drawArea.getFont().getFontName());
-    font2SizeComboBox.setModel(new javax.swing.DefaultComboBoxModel(
+    font2SizeComboBox.setModel(new DefaultComboBoxModel(
         new String[] { "8", "9", "10", "11", "12", "14", "16", "18", "20",
             "22", "24", "30", "36", "42", "48", "72" }));
     font2SizeComboBox.setSelectedItem(String.valueOf(drawArea
@@ -383,9 +432,9 @@ public class Pref extends javax.swing.JDialog {
 
     gridCheckbox.setSelected(drawArea.getGrid());
     gridCheckbox.setText("Grid");
-    gridCheckbox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,
+    gridCheckbox.setBorder(BorderFactory.createEmptyBorder(0,
         0, 0, 0));
-    gridCheckbox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    gridCheckbox.setMargin(new Insets(0, 0, 0, 0));
 
     jLabel7.setText("Grid Size:");
 
@@ -550,15 +599,15 @@ public class Pref extends javax.swing.JDialog {
                 .addContainerGap()));
 
     jButton1.setText("Cancel");
-    jButton1.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    jButton1.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         jButton1ActionPerformed(evt);
       }
     });
 
     jButton2.setText("OK");
-    jButton2.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    jButton2.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         jButton2ActionPerformed(evt);
       }
     });
@@ -635,12 +684,12 @@ public class Pref extends javax.swing.JDialog {
   }
 
   // GEN-FIRST:event_jButton1ActionPerformed
-  private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+  private void jButton1ActionPerformed(ActionEvent evt) {
     dispose();
   }// GEN-LAST:event_jButton1ActionPerformed
 
   // GEN-FIRST:event_jButton2ActionPerformed
-  private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+  private void jButton2ActionPerformed(ActionEvent evt) {
 
     drawArea.setTableVis(tableVisCheckbox.isSelected());
     try {
@@ -680,43 +729,5 @@ public class Pref extends javax.swing.JDialog {
    * @param args
    *          the command line arguments
    */
-
-  // GEN-BEGIN:variables
-  // Variables declaration - do not modify
-  private javax.swing.JComboBox font2ComboBox;
-  private javax.swing.JComboBox font2SizeComboBox;
-  private javax.swing.JButton fontColorButton;
-  private javax.swing.JComboBox fontComboBox;
-  private javax.swing.JComboBox fontSizeComboBox;
-  private javax.swing.JPanel globalTablePanel;
-  private javax.swing.JCheckBox gridCheckbox;
-  private javax.swing.JTextField gridSTextField;
-  private javax.swing.JTextField lineWidthTextField;
-  private javax.swing.JButton jButton1;
-  private javax.swing.JButton jButton2;
-  private javax.swing.JLabel jLabel1; // "space between columns"
-  private javax.swing.JLabel jLabel2; // space between columns "pixels"
-  private javax.swing.JLabel jLabel3; // "Table Font"
-  private javax.swing.JLabel jLabel5; // "Font" in Draw Area box
-  private javax.swing.JLabel jLabel7; // ?
-  private javax.swing.JLabel jLabel8; // grid size "pixels"
-  private javax.swing.JLabel jLabel9; // default state width "pixels"
-  private javax.swing.JLabel jLabel10; // default state height "pixels"
-  private javax.swing.JLabel jLabel11; // "Line Width"
-  private javax.swing.JLabel jLabel12; // lineWidth "pixels"
-  private javax.swing.JPanel jPanel2;
-  private javax.swing.JTextField spaceTextField;
-  private javax.swing.JCheckBox tableVisCheckbox;
-  private javax.swing.JLabel SC1;
-  private javax.swing.JLabel SC2;
-  private javax.swing.JLabel STC1;
-  private javax.swing.JLabel STC2;
-  private javax.swing.JLabel LTC1;
-  private javax.swing.JLabel LTC2;
-  private javax.swing.JFormattedTextField SPHField;
-  private javax.swing.JLabel SPW;
-  private javax.swing.JLabel SPH;
-  private javax.swing.JFormattedTextField SPWField;
-  // End of variables declaration//GEN-END:variables
 
 }

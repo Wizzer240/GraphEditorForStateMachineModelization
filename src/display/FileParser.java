@@ -1,31 +1,9 @@
 package display;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Vector;
-
-import attributes.EnumVisibility;
-import attributes.GlobalAttributes;
-import attributes.ObjAttribute;
-import entities.LoopbackTransitionObj;
-import entities.StateObj;
-import entities.StateTransitionObj;
-import entities.TextObj;
-import entities.TransitionObj;
-
-//Written by: Michael Zimmer - mike@zimmerdesignservices.com
-
 /*
- Copyright 2007 Zimmer Design Services
+ Copyright 2007 Zimmer Design Services.
+ Written by Michael Zimmer - mike@zimmerdesignservices.com
+ Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
 
  This file is part of Fizzim.
 
@@ -47,6 +25,28 @@ import entities.TransitionObj;
  * not being changed.  Comments can be added to the saved file with ##
  * This file could be modified to make file opening much more robust.
  */
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Vector;
+
+import attributes.EnumVisibility;
+import attributes.GlobalAttributes;
+import attributes.ObjAttribute;
+import entities.LoopbackTransitionObj;
+import entities.StateObj;
+import entities.StateTransitionObj;
+import entities.TextObj;
+import entities.TransitionObj;
 
 public class FileParser {
 

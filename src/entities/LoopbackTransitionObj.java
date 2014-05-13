@@ -1,18 +1,8 @@
 package entities;
 
-import java.awt.*;
-import java.awt.geom.CubicCurve2D;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Vector;
-
-import attributes.ObjAttribute;
-
-//Written by: Michael Zimmer - mike@zimmerdesignservices.com
-
 /*
- Copyright 2007 Zimmer Design Services
+ Copyright 2007 Zimmer Design Services.
+ Written by Michael Zimmer - mike@zimmerdesignservices.com
  Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
 
  This file is part of Fizzim.
@@ -30,6 +20,15 @@ import attributes.ObjAttribute;
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import java.awt.*;
+import java.awt.geom.CubicCurve2D;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Vector;
+
+import attributes.ObjAttribute;
 
 public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 

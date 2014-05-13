@@ -1,5 +1,26 @@
 package display;
 
+/*
+ Copyright 2007 Zimmer Design Services.
+ Written by Michael Zimmer - mike@zimmerdesignservices.com
+ Copyright 2014 Jean-Baptiste Lespiau jeanbaptiste.lespiau@gmail.com
+
+ This file is part of Fizzim.
+
+ Fizzim is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ Fizzim is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.*;
@@ -22,25 +43,6 @@ import gui.TransitionEditorWindow;
 import gui.StateEditorWindow;
 
 // Written by: Michael Zimmer - mike@zimmerdesignservices.com
-
-/*
- Copyright 2007 Zimmer Design Services
-
- This file is part of Fizzim.
-
- Fizzim is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- Fizzim is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 @SuppressWarnings("serial")
 public class DrawArea extends JPanel implements MouseListener,
@@ -253,7 +255,6 @@ public class DrawArea extends JPanel implements MouseListener,
    * to them, are then cloned, and their clones are pointed to by objlist.
    */
 
-  
   // this method is called whenever a global attribute is about to be modified
   @SuppressWarnings("unchecked")
   public GlobalAttributes setUndoPoint() {

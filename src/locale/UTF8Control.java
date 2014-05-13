@@ -3,7 +3,7 @@ package locale;
 /* From jgloss (Under GNU GPL 2 licence):
  * http://jgloss.sourceforge.net/xref/jgloss/util/UTF8ResourceBundleControl.html
  * See also : http://stackoverflow.com/a/4660195/1330640
- s*/
+ */
 
 import java.io.IOException;
 import java.io.InputStream;
