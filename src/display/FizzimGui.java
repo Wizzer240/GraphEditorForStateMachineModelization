@@ -112,7 +112,7 @@ import attributes.ObjAttribute;
 @SuppressWarnings("serial")
 public class FizzimGui extends JFrame {
 
-  static String currVer = "14.03.1";
+  static final String currVer = "14.03.2";
 
   public static final String action_field = "Action";
   public static final String condition_field = "Garde";
@@ -848,7 +848,7 @@ public class FizzimGui extends JFrame {
           - tY + 3);
     }
 
- //   ImageToClip imageToClip = new ImageToClip(bufferedImage);
+    // ImageToClip imageToClip = new ImageToClip(bufferedImage);
 
   }
 
