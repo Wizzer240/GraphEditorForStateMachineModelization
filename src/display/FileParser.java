@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -52,27 +53,89 @@ public class FileParser {
   private File file;
   private FizzimGui fizzim;
   private ArrayList<String> tempList;
-  private ArrayList<String> tempList2;
-  // LinkedList<ObjAttribute> globalMachineAttributes;
-  // LinkedList<ObjAttribute> globalStateAttributes;
-  // LinkedList<ObjAttribute> globalTransAttributes;
-  // LinkedList<ObjAttribute> globalInputsAttributes;
-  // LinkedList<ObjAttribute> globalOutputsAttributes;
 
-  // LinkedList<LinkedList<ObjAttribute>> globalList;
   private GlobalAttributes global_attributes;
   private DrawArea drawArea;
   private Vector<Object> objList;;
-  private int ver = 0;
+  private String ver;
 
-  public FileParser(File _file, FizzimGui _fizzim, DrawArea _drawArea)
-  {
+  public FileParser(File _file, FizzimGui _fizzim, DrawArea _drawArea) {
     file = _file;
     fizzim = _fizzim;
     drawArea = _drawArea;
     tempList = new ArrayList<String>();
     objList = new Vector<Object>();
     parse();
+  }
+
+  private static int[] convertStringArrayToIntArray(String[] stringArray)
+      throws NumberFormatException
+  {
+    if (stringArray != null)
+    {
+      int intArray[] = new int[stringArray.length];
+      for (int i = 0; i < stringArray.length; i++)
+      {
+        intArray[i] = Integer.parseInt(stringArray[i]);
+      }
+      return intArray;
+    }
+    return null;
+  }
+
+  /**
+   * Compare two Versions numbers.
+   * 
+   * Use :
+   * 
+   * a < b <=> compareVersions(a, b) < 0
+   * a > b <=> compareVersions(a, b) > 0
+   * a == b <=> compareVersions(a, b) == 0
+   * 
+   * @param current
+   * @return 0 if both versions are the same, 1 if current < reference, -1 if
+   *         current > reference
+   */
+  private int compareVersions(String current, String reference) {
+
+    if (current == null ||
+        reference == null ||
+        current.trim().equals("") ||
+        reference.trim().equals("")) {
+      throw new InvalidParameterException(
+          "One of the two parameter is null or empty");
+    }
+
+    boolean valid1 = current.matches("\\d+\\.\\d+\\.\\d+");
+    boolean valid2 = reference.matches("\\d+\\.\\d+\\.\\d+");
+
+    if (!(valid1 && valid2)) {
+      throw new InvalidParameterException(
+          "One parameter does not match a version number.");
+    }
+
+    if (current.equals(reference)) {
+      return 0;
+    }
+
+    int[] nums1 = convertStringArrayToIntArray(current.split("\\."));
+    int[] nums2 = convertStringArrayToIntArray(reference.split("\\."));
+
+    if (!(nums1.length == 3 && nums2.length == 3)) {
+      throw new InvalidParameterException(
+          "One parameter does not match a version number.");
+    }
+
+    for (int i = 0; i < 3; i++) {
+      if (nums1[i] < nums2[i]) {
+        return -1;
+      }
+
+      if (nums1[i] > nums2[i]) {
+        return 1;
+      }
+    }
+    return 0;
   }
 
   /**
@@ -119,16 +182,12 @@ public class FileParser {
       String line = null;
       while ((line = reader.readLine()) != null) {
         // ignore comments
-        if (line.startsWith("##"))
+        if (line.startsWith("##")) {
           continue;
 
-        else if (line.equals("<version>"))
-        {
+        } else if (line.equals("<version>")) {
           String line2 = getNextUsefulLine(reader);
-
-          String temp = line2;
-          temp = temp.replaceAll("\\.", "");
-          ver = Integer.parseInt(temp);
+          ver = line2.trim();
         }
 
         // templist holds related chunks of lines
@@ -142,40 +201,30 @@ public class FileParser {
           }
           openGlobal(tempList);
         } else if (line.equals("<SCounter>")) {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
+          String line2 = getNextUsefulLine(reader);
           drawArea.setSCounter(line2);
         } else if (line.equals("<TCounter>")) {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##"))
-            line2 = reader.readLine();
+          String line2 = getNextUsefulLine(reader);
           drawArea.setTCounter(line2);
         } else if (line.equals("<TableVis>")) {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##")) {
-            line2 = reader.readLine();
-          }
+          String line2 = getNextUsefulLine(reader);
+
           if (line2.equals("false")) {
             drawArea.setTableVis(false);
           } else {
             drawArea.setTableVis(true);
           }
         } else if (line.equals("<TableSpace>")) {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##")) {
-            line2 = reader.readLine();
-          }
+          String line2 = getNextUsefulLine(reader);
+
           try {
             drawArea.setSpace(Integer.parseInt(line2));
           } catch (NumberFormatException nfe) {
             drawArea.setSpace(20);
           }
         } else if (line.equals("<TableFont>")) {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##")) {
-            line2 = reader.readLine();
-          }
+          String line2 = getNextUsefulLine(reader);
+
           String line3 = getNextUsefulLine(reader);
 
           // get available fonts
@@ -193,10 +242,8 @@ public class FileParser {
             }
           }
         } else if (line.equals("<TableColor>")) {
-          String line2 = reader.readLine();
-          while (line2.startsWith("##")) {
-            line2 = reader.readLine();
-          }
+          String line2 = getNextUsefulLine(reader);
+
           try {
             drawArea.setTableColor(new Color(Integer.parseInt(line2)));
           } catch (NumberFormatException nfe) {
@@ -368,8 +415,7 @@ public class FileParser {
     int eStateIndex = Integer.parseInt(tempList3.get(i + 35));
     int page = Integer.parseInt(tempList3.get(i + 38));
 
-    if (ver >= 80316)
-    {
+    if (compareVersions(ver, "8.03.16") > 0) {// ver >= 80316
       currColor = new Color(Integer.parseInt(tempList3.get(i + 41)));
       i += 3;
     }
@@ -438,7 +484,7 @@ public class FileParser {
       reset1 = false;
 
     int page = Integer.parseInt(tempList3.get(i + 17));
-    if (ver >= 80316)
+    if (compareVersions(ver, "8.03.16") > 0) // ver >= 80316
       currColor = new Color(Integer.parseInt(tempList3.get(i + 20)));
     String name = newList.get(0).getValue();
     StateObj state = new StateObj(x0, y0, x1, y1, newList, name, reset1, page,
@@ -558,7 +604,7 @@ public class FileParser {
       String resetval = "";
       String resetvalStatus = "GLOBAL_VAR";
 
-      if (ver >= 70925){
+      if (compareVersions(ver, "7.09.25") > 0) { // ver >= 70925
         pointer += 1; // go to value
         comm = list.get(pointer);
         pointer += 2; // go to status
@@ -572,7 +618,7 @@ public class FileParser {
         pointer += 3; // skip over end
       }
 
-      if (ver >= 110222){
+      if (compareVersions(ver, "11.02.22") > 0) { // ver >= 110222
         pointer += 1; // go to value
         useratts = list.get(pointer); // includes the offset from ver changes
                                       // above (while will always be there)
@@ -581,8 +627,7 @@ public class FileParser {
         pointer += 3; // skip over end
       }
 
-      if (ver >= 110302)
-      {
+      if (compareVersions(ver, "11.03.02") > 0) { // ver >= 110302)
         pointer += 1; // go to value
         resetval = list.get(pointer); // includes the offset from ver changes
                                       // above (while will always be there)
@@ -591,12 +636,7 @@ public class FileParser {
         pointer += 3; // skip over end
       }
 
-      System.out.println("Starting point : " + start + "; Ending point:" +end);
-      System.out.println("before x stuff, pointer is " + pointer);
-      System.out.println("String: " + list.get(pointer) + " ;pointer: " + pointer);
       pointer += 1; // go to value
-      System.out.println(list);
-      System.out.println("String: " + list.get(pointer) + " ;pointer: " + pointer);
       int x2Obj = Integer.parseInt(list.get(pointer));
       pointer += 2; // skip over end
 
