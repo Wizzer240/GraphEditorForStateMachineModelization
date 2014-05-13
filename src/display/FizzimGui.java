@@ -21,14 +21,17 @@ package display;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -116,7 +119,7 @@ public class FizzimGui extends JFrame {
   int maxW = 936;
   boolean loading = false;
 
-  File currFile = null;
+  private File currFile = null;
   /* The DrawArea is the central editing window */
   private DrawArea drawArea1;
 
@@ -125,42 +128,35 @@ public class FizzimGui extends JFrame {
 
     ImageIcon icon = new ImageIcon("icon.png");
     this.setIconImage(icon.getImage());
-    // create global lists
-    // globalList = new LinkedList<LinkedList<ObjAttribute>>();
-    // globalMachineAttributes = new LinkedList<ObjAttribute>();
-    // globalInputsAttributes = new LinkedList<ObjAttribute>();
-    // globalOutputsAttributes = new LinkedList<ObjAttribute>();
-    // globalStateAttributes = new LinkedList<ObjAttribute>();
-    // globalTransAttributes = new LinkedList<ObjAttribute>();
 
-    // globalList.add(globalInputsAttributes);
-    // globalList.add(globalOutputsAttributes);
-    // globalList.add(globalMachineAttributes);
-    // globalList.add(globalStateAttributes);
-    // globalList.add(globalTransAttributes);
-
+    /* Create an empty set of global attributes */
     global_attributes = new GlobalAttributes();
+    /* Initialize the global attributes */
+    initGlobal();
 
     drawArea1 = new DrawArea(global_attributes);
-
     drawArea1.setPreferredSize(new Dimension(maxW, maxH));
 
+    // custom initComponents
     initComponents();
     setTitle("Fizzim: State Machine GUI editor");
+    /* Set the window at the middle of the screen */
     setLocationRelativeTo(null);
-    // custom initComponents
 
     drawArea1.setJFrame(this);
-    initGlobal();
 
     drawArea1.updateStates();
     drawArea1.updateTrans();
 
   }
 
+  /**
+   * Configure the default global attributes.
+   * 
+   * @details Every state and transition have a name. Transitions have also an
+   *          "equation" field.
+   */
   private void initGlobal() {
-    // set up required global attributes
-    // 0=machine, 1=inputs, 2=outputs, 3=states, 4=trans
     int[] editable = { ObjAttribute.ABS, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
         ObjAttribute.GLOBAL_VAR, ObjAttribute.GLOBAL_VAR,
@@ -308,9 +304,9 @@ public class FizzimGui extends JFrame {
       }
     });
 
-    jPanel3.setLayout(new java.awt.GridBagLayout());
+    jPanel3.setLayout(new GridBagLayout());
 
-    jPanel3.setMinimumSize(new java.awt.Dimension(100, 100));
+    jPanel3.setMinimumSize(new Dimension(100, 100));
     pages_tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
     jPanel1 = drawArea1;
@@ -359,12 +355,12 @@ public class FizzimGui extends JFrame {
 
     });
 
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
     jPanel3.add(pages_tabbedPane, gridBagConstraints);
 
-    getContentPane().add(jPanel3, java.awt.BorderLayout.CENTER);
+    getContentPane().add(jPanel3, BorderLayout.CENTER);
 
     Dimension coord = getScrollPaneSize();
     if (coord.height > maxH)
@@ -1394,7 +1390,7 @@ public class FizzimGui extends JFrame {
         clbatch_rewrite = true;
       }
     }
-    java.awt.EventQueue.invokeLater(new Runnable() {
+    EventQueue.invokeLater(new Runnable() {
       public void run() {
 
         // sets error file to write to
@@ -1405,22 +1401,19 @@ public class FizzimGui extends JFrame {
         try {
           fout = new FileOutputStream(file, true) {
 
-            public void write(byte[] b, int off, int len) throws IOException
-            {
+            public void write(byte[] b, int off, int len) throws IOException {
               if (file.length() < 20000)
                 super.write(b, off, len);
               System.out.write(b, off, len);
             }
 
-            public void write(byte[] b) throws IOException
-            {
+            public void write(byte[] b) throws IOException {
               if (file.length() < 20000)
                 super.write(b);
               System.out.write(b);
             }
 
-            public void write(int b) throws IOException
-            {
+            public void write(int b) throws IOException {
               if (file.length() < 20000)
                 super.write(b);
               System.out.write(b);
@@ -1433,7 +1426,7 @@ public class FizzimGui extends JFrame {
 
         FizzimGui fzim = new FizzimGui();
         fzim.setVisible(true);
-        fzim.setSize(new java.awt.Dimension(1000, 685));
+        fzim.setSize(new Dimension(1000, 685));
         // new HelpItemAboutActionPerformed();
         // If command line filename is not null, open
         // this file.
@@ -1482,9 +1475,9 @@ public class FizzimGui extends JFrame {
     maxW = w;
     maxH = h;
 
-    drawArea1.setPreferredSize(new java.awt.Dimension(maxW, maxH));
-    drawArea1.setMaximumSize(new java.awt.Dimension(maxW, maxH));
-    drawArea1.setMinimumSize(new java.awt.Dimension(maxW, maxH));
+    drawArea1.setPreferredSize(new Dimension(maxW, maxH));
+    drawArea1.setMaximumSize(new Dimension(maxW, maxH));
+    drawArea1.setMinimumSize(new Dimension(maxW, maxH));
     drawArea1.setSize(maxW, maxH);
 
     // try to clean up resized page

@@ -253,7 +253,7 @@ public abstract class GeneralObj implements Cloneable {
   }
 
   public String toString() {
-    return objName;
+    return getName();
   }
 
   public String getName() {
