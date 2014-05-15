@@ -1489,7 +1489,6 @@ public class DrawArea extends JPanel implements MouseListener,
 
   public void updateGlobal(GlobalAttributes globalList2) {
     global_attributes = globalList2;
-
   }
 
   public GlobalAttributes getGlobalList() {
