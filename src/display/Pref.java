@@ -51,16 +51,19 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
+/**
+ * The Properties JDialog to be able to edit the configurations.
+ */
 @SuppressWarnings("serial")
 public class Pref extends JDialog {
 
-  DrawArea drawArea;
-  JColorChooser colorChooser;
-  Component window = this;
+  private DrawArea drawArea;
+  private JColorChooser colorChooser;
+  private Component window = this;
 
-  Color tempSC;
-  Color tempSTC;
-  Color tempLTC;
+  private Color tempSC;
+  private Color tempSTC;
+  private Color tempLTC;
 
   /** Creates new form Pref */
   public Pref(Frame parent, DrawArea da) {
@@ -107,11 +110,11 @@ public class Pref extends JDialog {
 
   // GEN-BEGIN:variables
   // Variables declaration - do not modify
-  private JComboBox font2ComboBox;
-  private JComboBox font2SizeComboBox;
+  private JComboBox<String> drawAreaFontComboBox;
+  private JComboBox<String> drawAreaFontSizeComboBox;
   private JButton fontColorButton;
-  private JComboBox fontComboBox;
-  private JComboBox fontSizeComboBox;
+  private JComboBox<String> tableFontComboBox;
+  private JComboBox<String> tableFontSizeComboBox;
   private JPanel globalTablePanel;
   private JCheckBox gridCheckbox;
   private JTextField gridSTextField;
@@ -122,12 +125,12 @@ public class Pref extends JDialog {
   private JLabel jLabel2; // space between columns "pixels"
   private JLabel jLabel3; // "Table Font"
   private JLabel jLabel5; // "Font" in Draw Area box
-  private JLabel jLabel7; // ?
+  private JLabel gridSize; // ?
   private JLabel jLabel8; // grid size "pixels"
   private JLabel jLabel9; // default state width "pixels"
   private JLabel jLabel10; // default state height "pixels"
-  private JLabel jLabel11; // "Line Width"
-  private JLabel jLabel12; // lineWidth "pixels"
+  private JLabel lineWidth; // "Line Width"
+  private JLabel pixels; // lineWidth "pixels"
   private JPanel jPanel2;
   private JTextField spaceTextField;
   private JCheckBox tableVisCheckbox;
@@ -159,19 +162,19 @@ public class Pref extends JDialog {
     spaceTextField = new JTextField();
     jLabel2 = new JLabel();
     jLabel3 = new JLabel();
-    fontComboBox = new JComboBox();
-    fontSizeComboBox = new JComboBox();
+    tableFontComboBox = new JComboBox<String>();
+    tableFontSizeComboBox = new JComboBox<String>();
     fontColorButton = new JButton();
     jPanel2 = new JPanel();
     jLabel5 = new JLabel();
-    font2ComboBox = new JComboBox();
-    font2SizeComboBox = new JComboBox();
+    drawAreaFontComboBox = new JComboBox<String>();
+    drawAreaFontSizeComboBox = new JComboBox<String>();
     gridCheckbox = new JCheckBox();
-    jLabel7 = new JLabel();
+    gridSize = new JLabel();
     gridSTextField = new JTextField();
     lineWidthTextField = new JTextField();
-    jLabel11 = new JLabel();
-    jLabel12 = new JLabel();
+    lineWidth = new JLabel();
+    pixels = new JLabel();
     jLabel8 = new JLabel();
     jLabel9 = new JLabel();
     jLabel10 = new JLabel();
@@ -191,12 +194,11 @@ public class Pref extends JDialog {
         .getIntegerInstance());
 
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    globalTablePanel.setBorder(BorderFactory
-        .createTitledBorder("Global Table"));
+    globalTablePanel
+        .setBorder(BorderFactory.createTitledBorder("Global Table"));
     tableVisCheckbox.setSelected(drawArea.getTableVis());
     tableVisCheckbox.setText("Table Visible");
-    tableVisCheckbox.setBorder(BorderFactory.createEmptyBorder(
-        0, 0, 0, 0));
+    tableVisCheckbox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     tableVisCheckbox.setMargin(new Insets(0, 0, 0, 0));
 
     jLabel1.setText("Space between columns:");
@@ -321,13 +323,13 @@ public class Pref extends JDialog {
     GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
     String[] fontNames = env.getAvailableFontFamilyNames();
 
-    fontComboBox.setModel(new DefaultComboBoxModel(fontNames));
-    fontComboBox.setSelectedItem(drawArea.getTableFont().getFontName());
+    tableFontComboBox.setModel(new DefaultComboBoxModel<String>(fontNames));
+    tableFontComboBox.setSelectedItem(drawArea.getTableFont().getFontName());
 
-    fontSizeComboBox.setModel(new DefaultComboBoxModel(
+    tableFontSizeComboBox.setModel(new DefaultComboBoxModel<String>(
         new String[] { "8", "9", "10", "11", "12", "14", "16", "18", "20",
             "22", "24", "30", "36", "42", "48", "72" }));
-    fontSizeComboBox.setSelectedItem(String.valueOf(drawArea
+    tableFontSizeComboBox.setSelectedItem(String.valueOf(drawArea
         .getTableFont()
         .getSize()));
 
@@ -368,12 +370,12 @@ public class Pref extends JDialog {
                         .addComponent(jLabel3)
                         .addPreferredGap(
                             ComponentPlacement.RELATED)
-                        .addComponent(fontComboBox,
+                        .addComponent(tableFontComboBox,
                             GroupLayout.PREFERRED_SIZE,
                             GroupLayout.DEFAULT_SIZE,
                             GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(fontSizeComboBox,
+                        .addComponent(tableFontSizeComboBox,
                             GroupLayout.PREFERRED_SIZE,
                             GroupLayout.DEFAULT_SIZE,
                             GroupLayout.PREFERRED_SIZE)
@@ -403,11 +405,11 @@ public class Pref extends JDialog {
             .addGroup(globalTablePanelLayout
                 .createParallelGroup(Alignment.BASELINE)
                 .addComponent(jLabel3)
-                .addComponent(fontComboBox,
+                .addComponent(tableFontComboBox,
                     GroupLayout.PREFERRED_SIZE,
                     GroupLayout.DEFAULT_SIZE,
                     GroupLayout.PREFERRED_SIZE)
-                .addComponent(fontSizeComboBox,
+                .addComponent(tableFontSizeComboBox,
                     GroupLayout.PREFERRED_SIZE,
                     GroupLayout.DEFAULT_SIZE,
                     GroupLayout.PREFERRED_SIZE)
@@ -421,12 +423,12 @@ public class Pref extends JDialog {
         .createTitledBorder("Draw Area"));
     jLabel5.setText("Font:");
 
-    font2ComboBox.setModel(new DefaultComboBoxModel(fontNames));
-    font2ComboBox.setSelectedItem(drawArea.getFont().getFontName());
-    font2SizeComboBox.setModel(new DefaultComboBoxModel(
+    drawAreaFontComboBox.setModel(new DefaultComboBoxModel<String>(fontNames));
+    drawAreaFontComboBox.setSelectedItem(drawArea.getFont().getFontName());
+    drawAreaFontSizeComboBox.setModel(new DefaultComboBoxModel<String>(
         new String[] { "8", "9", "10", "11", "12", "14", "16", "18", "20",
             "22", "24", "30", "36", "42", "48", "72" }));
-    font2SizeComboBox.setSelectedItem(String.valueOf(drawArea
+    drawAreaFontSizeComboBox.setSelectedItem(String.valueOf(drawArea
         .getFont()
         .getSize()));
 
@@ -436,12 +438,12 @@ public class Pref extends JDialog {
         0, 0, 0));
     gridCheckbox.setMargin(new Insets(0, 0, 0, 0));
 
-    jLabel7.setText("Grid Size:");
+    gridSize.setText("Grid Size:");
 
     gridSTextField.setText(String.valueOf(drawArea.getGridSpace()));
 
-    jLabel11.setText("Line Width:");
-    jLabel12.setText("pixels");
+    lineWidth.setText("Line Width:");
+    pixels.setText("pixels");
 
     lineWidthTextField.setText(String.valueOf(drawArea.getLineWidth()));
     lineWidthTextField.setColumns(2);
@@ -464,18 +466,18 @@ public class Pref extends JDialog {
                     .createSequentialGroup()
                     .addComponent(jLabel5)
                     .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(font2ComboBox,
+                    .addComponent(drawAreaFontComboBox,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(font2SizeComboBox,
+                    .addComponent(drawAreaFontSizeComboBox,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE))
                 .addComponent(gridCheckbox)
                 .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addComponent(jLabel7)
+                    .addComponent(gridSize)
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(gridSTextField,
                         GroupLayout.PREFERRED_SIZE,
@@ -485,14 +487,14 @@ public class Pref extends JDialog {
                     .addComponent(jLabel8))
                 .addGroup(jPanel2Layout
                     .createSequentialGroup()
-                    .addComponent(jLabel11)
+                    .addComponent(lineWidth)
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(lineWidthTextField,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(jLabel12))
+                    .addComponent(pixels))
                 .addGroup(jPanel2Layout
                     .createSequentialGroup()
                     .addComponent(SPW)
@@ -537,11 +539,11 @@ public class Pref extends JDialog {
                 .createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(font2ComboBox,
+                    .addComponent(drawAreaFontComboBox,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
-                    .addComponent(font2SizeComboBox,
+                    .addComponent(drawAreaFontSizeComboBox,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE))
@@ -550,19 +552,19 @@ public class Pref extends JDialog {
                 .addPreferredGap(ComponentPlacement.RELATED,
                     GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
-                    .addComponent(jLabel7)
+                    .addComponent(gridSize)
                     .addComponent(gridSTextField,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
                 .addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
-                    .addComponent(jLabel11)
+                    .addComponent(lineWidth)
                     .addComponent(lineWidthTextField,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12))
+                    .addComponent(pixels))
                 .addPreferredGap(ComponentPlacement.RELATED,
                     GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
@@ -697,14 +699,15 @@ public class Pref extends JDialog {
     } catch (NumberFormatException nfe) {
       drawArea.setSpace(20);
     }
-    drawArea.setTableFont(new Font((String) fontComboBox.getSelectedItem(),
-        Font.PLAIN, Integer.parseInt((String) fontSizeComboBox
+    drawArea.setTableFont(new Font(
+        (String) tableFontComboBox.getSelectedItem(),
+        Font.PLAIN, Integer.parseInt((String) tableFontSizeComboBox
             .getSelectedItem())));
 
     drawArea.setTableColor(fontColorButton.getBackground());
 
-    drawArea.setFont(new Font((String) font2ComboBox.getSelectedItem(),
-        Font.PLAIN, Integer.parseInt((String) font2SizeComboBox
+    drawArea.setFont(new Font((String) drawAreaFontComboBox.getSelectedItem(),
+        Font.PLAIN, Integer.parseInt((String) drawAreaFontSizeComboBox
             .getSelectedItem())));
 
     drawArea.setLineWidth(Integer.parseInt(lineWidthTextField.getText()));
@@ -724,10 +727,5 @@ public class Pref extends JDialog {
 
     dispose();
   }// GEN-LAST:event_jButton2ActionPerformed
-
-  /**
-   * @param args
-   *          the command line arguments
-   */
 
 }
