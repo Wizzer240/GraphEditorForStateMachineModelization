@@ -63,8 +63,8 @@ public class Pref extends JDialog {
   Color tempLTC;
 
   /** Creates new form Pref */
-  public Pref(Frame parent, boolean modal, DrawArea da) {
-    super(parent, modal);
+  public Pref(Frame parent, DrawArea da) {
+    super(parent, true);
     drawArea = da;
     tempSC = drawArea.getDefSC();
     tempSTC = drawArea.getDefSTC();

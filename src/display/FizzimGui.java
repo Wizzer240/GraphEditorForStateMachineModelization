@@ -66,6 +66,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Vector;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -102,6 +103,9 @@ import entities.GeneralObj;
 import entities.LoopbackTransitionObj;
 import entities.StateObj;
 import entities.TransitionObj;
+
+import locale.UTF8Control;
+
 import attributes.EnumVisibility;
 import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
@@ -111,6 +115,9 @@ import attributes.ObjAttribute;
  */
 @SuppressWarnings("serial")
 public class FizzimGui extends JFrame {
+
+  private static final ResourceBundle locale =
+      ResourceBundle.getBundle("locale.Menus", new UTF8Control());
 
   static final String currVer = "14.03.2";
 
@@ -291,7 +298,7 @@ public class FizzimGui extends JFrame {
     FileItemSaveAs = new JMenuItem();
     FileItemOpen6Lines = new JMenuItem();
     FileItemSaveAs6Lines = new JMenuItem();
-    FileExport = new JMenu("Export to...");
+    FileExport = new JMenu(locale.getString("menu_exportTo"));
     FileExportClipboard = new JMenuItem();
     FileExportPNG = new JMenuItem();
     FileExportJPEG = new JMenuItem();
@@ -351,7 +358,8 @@ public class FizzimGui extends JFrame {
     jScrollPane1.setViewportView(jPanel1);
 
     // pages
-    pages_tabbedPane.addBlankTab("Create New Page", new JPanel());
+    pages_tabbedPane.addBlankTab(locale.getString("menu_createTab"),
+        new JPanel());
     pages_tabbedPane.addTab("Page 1", jScrollPane1);
     pages_tabbedPane.setSelectedIndex(1);
     pages_tabbedPane.setBackgroundAt(0, new Color(200, 200, 200));
@@ -362,10 +370,9 @@ public class FizzimGui extends JFrame {
     });
 
     pages_tabbedPane.addMouseListener(new MouseListener() {
-
       public void mouseClicked(MouseEvent arg0) {
-        if (arg0.getButton() == MouseEvent.BUTTON3 || arg0.getModifiers() == 20)
-        {
+        if (arg0.getButton() == MouseEvent.BUTTON3 ||
+            arg0.getModifiers() == 20) {
           JTabbedPane tabbedPane = (JTabbedPane) arg0.getSource();
           int tab = tabbedPane.indexAtLocation(arg0.getX(), arg0.getY());
           if (tab > 0)
@@ -405,13 +412,14 @@ public class FizzimGui extends JFrame {
     jPanel3.doLayout();
     jPanel3.repaint();
 
-    FileMenu.setText("File");
+    FileMenu.setText(locale.getString("menu_file"));
     FileMenu.setMnemonic(KeyEvent.VK_F);
+
     FileItemNew.setAccelerator(KeyStroke.getKeyStroke(
         KeyEvent.VK_N,
         InputEvent.CTRL_MASK));
     FileItemNew.setMnemonic(KeyEvent.VK_N);
-    FileItemNew.setText("New");
+    FileItemNew.setText(locale.getString("menu_new"));
     FileItemNew.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         FileItemNewActionPerformed(evt);
@@ -420,11 +428,10 @@ public class FizzimGui extends JFrame {
 
     FileMenu.add(FileItemNew);
 
-    FileItemOpen.setAccelerator(KeyStroke.getKeyStroke(
-        KeyEvent.VK_O,
-        InputEvent.CTRL_MASK));
+    FileItemOpen.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
     FileItemOpen.setMnemonic(KeyEvent.VK_O);
-    FileItemOpen.setText("Open");
+    FileItemOpen.setText(locale.getString("menu_open"));
     FileItemOpen.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         FileItemOpenActionPerformed(evt);
@@ -433,11 +440,10 @@ public class FizzimGui extends JFrame {
 
     FileMenu.add(FileItemOpen);
 
-    FileItemSave.setAccelerator(KeyStroke.getKeyStroke(
-        KeyEvent.VK_S,
-        InputEvent.CTRL_MASK));
+    FileItemSave.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
     FileItemSave.setMnemonic(KeyEvent.VK_S);
-    FileItemSave.setText("Save");
+    FileItemSave.setText(locale.getString("menu_save"));
     FileItemSave.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         FileItemSaveActionPerformed(evt);
@@ -446,9 +452,9 @@ public class FizzimGui extends JFrame {
 
     FileMenu.add(FileItemSave);
 
-    FileItemSaveAs.setText("Save As");
+    FileItemSaveAs.setText(locale.getString("menu_saveAs"));
     FileItemSaveAs.setMnemonic(KeyEvent.VK_A);
-    FileItemSaveAs.setDisplayedMnemonicIndex(5);
+    // FileItemSaveAs.setDisplayedMnemonicIndex(5);
     FileItemSaveAs.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         FileItemSaveAsActionPerformed(evt);
@@ -509,6 +515,7 @@ public class FizzimGui extends JFrame {
         FileExportJPEGActionPerformed(evt);
       }
     });
+
     FileExport.add(FileExportJPEG);
     FileExport.setMnemonic(KeyEvent.VK_E);
 
@@ -516,7 +523,7 @@ public class FizzimGui extends JFrame {
 
     FileMenu.add(jSeparator1);
 
-    FilePref.setText("Preferences");
+    FilePref.setText(locale.getString("menu_preferences"));
     FilePref.setMnemonic(KeyEvent.VK_R);
     FilePref.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -526,7 +533,7 @@ public class FizzimGui extends JFrame {
 
     FileMenu.add(FilePref);
 
-    FileItemPageSetup.setText("Page Setup");
+    FileItemPageSetup.setText(locale.getString("menu_pageSetup"));
     FileItemPageSetup.setMnemonic(KeyEvent.VK_U);
     FileItemPageSetup
         .addActionListener(new ActionListener() {
@@ -541,7 +548,7 @@ public class FizzimGui extends JFrame {
         KeyEvent.VK_P,
         InputEvent.CTRL_MASK));
     FileItemPrint.setMnemonic(KeyEvent.VK_P);
-    FileItemPrint.setText("Print");
+    FileItemPrint.setText(locale.getString("menu_print"));
     FileItemPrint.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         FileItemPrintActionPerformed(evt);
@@ -552,7 +559,7 @@ public class FizzimGui extends JFrame {
 
     FileMenu.add(jSeparator2);
 
-    FileItemExit.setText("Exit");
+    FileItemExit.setText(locale.getString("menu_exit"));
     FileItemExit.setMnemonic(KeyEvent.VK_X);
     FileItemExit.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -564,13 +571,13 @@ public class FizzimGui extends JFrame {
 
     MenuBar.add(FileMenu);
 
-    EditMenu.setText("Edit");
+    EditMenu.setText(locale.getString("menu_edit"));
     EditMenu.setMnemonic(KeyEvent.VK_E);
     EditItemUndo.setMnemonic(KeyEvent.VK_U);
     EditItemUndo.setAccelerator(KeyStroke.getKeyStroke(
         KeyEvent.VK_Z,
         InputEvent.CTRL_MASK));
-    EditItemUndo.setText("Undo");
+    EditItemUndo.setText(locale.getString("menu_undo"));
     EditItemUndo.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         EditItemUndoActionPerformed(evt);
@@ -582,7 +589,7 @@ public class FizzimGui extends JFrame {
     EditItemRedo.setAccelerator(KeyStroke.getKeyStroke(
         KeyEvent.VK_Y,
         InputEvent.CTRL_MASK));
-    EditItemRedo.setText("Redo");
+    EditItemRedo.setText(locale.getString("menu_redo"));
     EditItemRedo.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         EditItemRedoActionPerformed(evt);
@@ -593,7 +600,7 @@ public class FizzimGui extends JFrame {
     EditItemDelete.setMnemonic(KeyEvent.VK_D);
     EditItemDelete.setAccelerator(KeyStroke.getKeyStroke(
         KeyEvent.VK_DELETE, 0));
-    EditItemDelete.setText("Delete");
+    EditItemDelete.setText(locale.getString("menu_delete"));
     // EditItemDelete.setVisible(false);
     EditItemDelete.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -605,10 +612,10 @@ public class FizzimGui extends JFrame {
 
     MenuBar.add(EditMenu);
 
-    GlobalMenu.setText("Global Attributes");
+    GlobalMenu.setText(locale.getString("menu_globalAttributes"));
     GlobalMenu.setMnemonic(KeyEvent.VK_G);
 
-    GlobalItemMachine.setText("State Machine");
+    GlobalItemMachine.setText(locale.getString("menu_stateMachine"));
     GlobalItemMachine.setMnemonic(KeyEvent.VK_M);
     GlobalItemMachine
         .addActionListener(new ActionListener() {
@@ -620,7 +627,7 @@ public class FizzimGui extends JFrame {
     GlobalMenu.add(GlobalItemMachine);
 
     GlobalItemInputs.setMnemonic(KeyEvent.VK_I);
-    GlobalItemInputs.setText("Inputs");
+    GlobalItemInputs.setText(locale.getString("menu_inputs"));
     GlobalItemInputs.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         GlobalItemInputsActionPerformed(evt);
@@ -630,7 +637,7 @@ public class FizzimGui extends JFrame {
     GlobalMenu.add(GlobalItemInputs);
 
     GlobalItemOutputs.setMnemonic(KeyEvent.VK_O);
-    GlobalItemOutputs.setText("Outputs");
+    GlobalItemOutputs.setText(locale.getString("menu_outputs"));
     GlobalItemOutputs
         .addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent evt) {
@@ -642,7 +649,7 @@ public class FizzimGui extends JFrame {
 
     GlobalMenu.add(jSeparator3);
 
-    GlobalItemStates.setText("States");
+    GlobalItemStates.setText(locale.getString("menu_states"));
     GlobalItemStates.setMnemonic(KeyEvent.VK_S);
     GlobalItemStates.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -652,7 +659,7 @@ public class FizzimGui extends JFrame {
 
     GlobalMenu.add(GlobalItemStates);
 
-    GlobalItemTransitions.setText("Transitions");
+    GlobalItemTransitions.setText(locale.getString("menu_transitions"));
     GlobalItemTransitions.setMnemonic(KeyEvent.VK_T);
     GlobalItemTransitions
         .addActionListener(new ActionListener() {
@@ -666,11 +673,11 @@ public class FizzimGui extends JFrame {
     MenuBar.add(GlobalMenu);
 
     HelpMenu.setMnemonic(KeyEvent.VK_H);
-    HelpMenu.setText("Help");
+    HelpMenu.setText(locale.getString("menu_help"));
     HelpItemHelp.setMnemonic(KeyEvent.VK_H);
     HelpItemHelp.setAccelerator(KeyStroke.getKeyStroke(
         KeyEvent.VK_F1, 0));
-    HelpItemHelp.setText("Help");
+    HelpItemHelp.setText(locale.getString("menu_helpItem"));
     HelpItemHelp.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         HelpItemHelpActionPerformed(evt);
@@ -682,7 +689,7 @@ public class FizzimGui extends JFrame {
     HelpMenu.add(jSeparator4);
 
     HelpItemAbout.setMnemonic(KeyEvent.VK_A);
-    HelpItemAbout.setText("About");
+    HelpItemAbout.setText(locale.getString("menu_about"));
 
     HelpItemAbout.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -705,21 +712,17 @@ public class FizzimGui extends JFrame {
   /**
    * This is used to display the Help image
    */
-
-  static class HelpItemAboutActionPerformed extends JWindow
-  {
+  static private class HelpItemAboutActionPerformed extends JWindow {
     HelpItemAboutActionPerformed() {
       /* Display the help */
       JLabel label = null;
       URL url = getClass().getResource("splash.png");
-      if (url != null)
-      {
+      if (url != null) {
         ImageIcon imgIcon = new ImageIcon(url);
         label = new JLabel(imgIcon);
-      } else
-        System.err.println("Couldn't find the file : "
-            + getClass().getResource("splash.png"));
-
+      } else {
+        System.err.println("Couldn't find the file : " + url);
+      }
       Dimension labelSize = label.getPreferredSize();
       label.setBounds(0, 0, (int) labelSize.getWidth(), (int) labelSize
           .getHeight());
@@ -745,10 +748,8 @@ public class FizzimGui extends JFrame {
       setLocation(screenSize.width / 2 - (labelSize.width / 2),
           screenSize.height / 2 - (labelSize.height / 2));
       setVisible(true);
-      addMouseListener(new MouseAdapter()
-      {
-        public void mousePressed(MouseEvent e)
-        {
+      addMouseListener(new MouseAdapter() {
+        public void mousePressed(MouseEvent e) {
           setVisible(false);
           dispose();
         }
@@ -766,23 +767,19 @@ public class FizzimGui extends JFrame {
   }
 
   protected void FilePrefActionPerformed(ActionEvent evt) {
-    new Pref(this, true, drawArea1).setVisible(true);
-
+    new Pref(this, drawArea1).setVisible(true);
   }
 
   protected void FileExportPNGActionPerformed(ActionEvent evt) {
-
     ExportChooser.setCurrentDirectory(currFile);
     int returnVal = ExportChooser.showSaveDialog(this);
 
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       tryToSave(ExportChooser.getSelectedFile(), "png", true);
     }
-
   }
 
-  private void exportFile(File file, String type)
-  {
+  protected void exportFile(File file, String type) {
     try {
       ImageIO.write(getImage(), type, file);
     } catch (IOException e) {
@@ -790,7 +787,6 @@ public class FizzimGui extends JFrame {
   }
 
   protected void FileExportJPEGActionPerformed(ActionEvent evt) {
-
     ExportChooser.setCurrentDirectory(currFile);
     int returnVal = ExportChooser.showSaveDialog(this);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -838,22 +834,16 @@ public class FizzimGui extends JFrame {
           lX = x;
 
     // if it worked correctly, make a cropped bufferedimage
-    if (lX != -1 && rX != -1 && tY != -1 && bY != -1)
-    {
-      // System.out.println(lX +" "+rX+" "+tY+" "+bY);
-      // if(lX-1<0)
-      // lX=1;
-      // if(tY-1<0)
-      bufferedImage = bufferedImage.getSubimage(lX - 1, tY - 1, rX - lX + 3, bY
-          - tY + 3);
+    if (lX != -1 && rX != -1 && tY != -1 && bY != -1) {
+
+      bufferedImage = bufferedImage.getSubimage(lX - 1, tY - 1, rX - lX + 3,
+          bY - tY + 3);
     }
 
-    // ImageToClip imageToClip = new ImageToClip(bufferedImage);
-
+    ImageToClip imageToClip = new ImageToClip(bufferedImage);
   }
 
-  private RenderedImage getImage()
-  {
+  private RenderedImage getImage() {
     BufferedImage bufferedImage = new BufferedImage(maxW, maxH,
         BufferedImage.TYPE_INT_RGB);
     Graphics2D tempG = bufferedImage.createGraphics();
@@ -873,15 +863,15 @@ public class FizzimGui extends JFrame {
         null,
         pages_tabbedPane.getTitleAt(tab));
 
-    if (s != null)
-    {
-      if (getPageIndex(s) == -1)
+    if (s != null) {
+      if (getPageIndex(s) == -1) {
         pages_tabbedPane.setTitleAt(tab, s);
-      else
+      } else {
         JOptionPane.showMessageDialog(this,
             "Page must have unique name",
-            "error",
+            "Error",
             JOptionPane.ERROR_MESSAGE);
+      }
     }
   }
 
@@ -2129,23 +2119,19 @@ public class FizzimGui extends JFrame {
     // End of variables declaration//GEN-END:variables
   }
 
-  class ImageToClip implements ClipboardOwner
-  {
+  class ImageToClip implements ClipboardOwner {
     private Clipboard clip;
 
-    public ImageToClip(BufferedImage bi)
-    {
+    public ImageToClip(BufferedImage bi) {
       clip = Toolkit.getDefaultToolkit().getSystemClipboard();
 
       BiToClip clipIm = new BiToClip(bi);
       clip.setContents(clipIm, this);
-
     }
 
     public void lostOwnership(Clipboard arg0, Transferable arg1) {
 
     }
-
   }
 
   class BiToClip implements Transferable
