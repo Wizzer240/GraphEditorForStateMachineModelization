@@ -1445,7 +1445,7 @@ public class DrawArea extends JPanel implements MouseListener,
 
   }
 
-  public void setSCounter(String readLine) {
+  public void setStateCounter(String readLine) {
     createSCounter = Integer.parseInt(readLine);
 
   }
@@ -1457,7 +1457,6 @@ public class DrawArea extends JPanel implements MouseListener,
 
   public void updateGlobal(GlobalAttributes globalList2) {
     global_attributes = globalList2;
-
   }
 
   public GlobalAttributes getGlobalList() {
