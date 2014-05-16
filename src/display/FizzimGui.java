@@ -103,9 +103,8 @@ import entities.GeneralObj;
 import entities.LoopbackTransitionObj;
 import entities.StateObj;
 import entities.TransitionObj;
-
+import gui.toolkit.ListOfIdentifiers;
 import locale.UTF8Control;
-
 import attributes.EnumVisibility;
 import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
@@ -164,6 +163,7 @@ public class FizzimGui extends JFrame {
     drawArea1.updateStates();
     drawArea1.updateTrans();
 
+    ListOfIdentifiers.createAndShowGUI(this);
   }
 
   /**
@@ -246,8 +246,8 @@ public class FizzimGui extends JFrame {
   private JMenuItem HelpItemHelp;
   private JMenu HelpMenu;
   private JMenuBar MenuBar;
-  private JPanel jPanel1;
-  private JPanel jPanel3;
+  private JPanel central_panel;
+  private JPanel bottom_panel;
   private JScrollPane jScrollPane1;
   private JSeparator jSeparator1;
   private JSeparator jSeparator2;
@@ -286,10 +286,10 @@ public class FizzimGui extends JFrame {
     FileSave6LinesAction = new JFileChooser();
     FileSave6LinesAction.setFileFilter(TXTfilter);
 
-    jPanel3 = new JPanel();
+    bottom_panel = new JPanel();
     pages_tabbedPane = new MyJTabbedPane();
     jScrollPane1 = new JScrollPane();
-    jPanel1 = new JPanel();
+    central_panel = new JPanel();
     MenuBar = new JMenuBar();
     FileMenu = new JMenu();
     FileItemNew = new JMenuItem();
@@ -343,19 +343,19 @@ public class FizzimGui extends JFrame {
       }
     });
 
-    jPanel3.setLayout(new GridBagLayout());
+    bottom_panel.setLayout(new GridBagLayout());
 
-    jPanel3.setMinimumSize(new Dimension(100, 100));
+    bottom_panel.setMinimumSize(new Dimension(100, 100));
     pages_tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
-    jPanel1 = drawArea1;
-    GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
-    jPanel1.setLayout(jPanel1Layout);
+    central_panel = drawArea1;
+    GroupLayout jPanel1Layout = new GroupLayout(central_panel);
+    central_panel.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(
         Alignment.LEADING).addGap(0, 1294, Short.MAX_VALUE));
     jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
         Alignment.LEADING).addGap(0, 1277, Short.MAX_VALUE));
-    jScrollPane1.setViewportView(jPanel1);
+    jScrollPane1.setViewportView(central_panel);
 
     // pages
     pages_tabbedPane.addBlankTab(locale.getString("menu_createTab"),
@@ -397,9 +397,9 @@ public class FizzimGui extends JFrame {
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
-    jPanel3.add(pages_tabbedPane, gridBagConstraints);
+    bottom_panel.add(pages_tabbedPane, gridBagConstraints);
 
-    getContentPane().add(jPanel3, BorderLayout.CENTER);
+    getContentPane().add(bottom_panel, BorderLayout.CENTER);
 
     Dimension coord = getScrollPaneSize();
     if (coord.height > maxH)
@@ -409,8 +409,8 @@ public class FizzimGui extends JFrame {
 
     pages_tabbedPane.setMinimumSize(coord);
     pages_tabbedPane.setSize(coord);
-    jPanel3.doLayout();
-    jPanel3.repaint();
+    bottom_panel.doLayout();
+    bottom_panel.repaint();
 
     FileMenu.setText(locale.getString("menu_file"));
     FileMenu.setMnemonic(KeyEvent.VK_F);
@@ -928,8 +928,8 @@ public class FizzimGui extends JFrame {
     drawArea1.setSize(maxW, maxH);
     pages_tabbedPane.setMinimumSize(coord);
     pages_tabbedPane.setSize(coord);
-    jPanel3.doLayout();
-    jPanel3.repaint();
+    bottom_panel.doLayout();
+    bottom_panel.repaint();
 
   }// GEN-LAST:event_formComponentResized
 
@@ -1451,7 +1451,7 @@ public class FizzimGui extends JFrame {
   }
 
   private Dimension getScrollPaneSize() {
-    return new Dimension(jPanel3.getWidth() - 10, jPanel3.getHeight() - 10);
+    return new Dimension(bottom_panel.getWidth() - 10, bottom_panel.getHeight() - 10);
   }
 
   // set indentation (also exists in ObjAttribute.java and GeneralObj.java
@@ -1814,7 +1814,7 @@ public class FizzimGui extends JFrame {
     pages_tabbedPane.setMinimumSize(coord);
     pages_tabbedPane.setSize(coord);
     pages_tabbedPane.doLayout();
-    jPanel3.doLayout();
+    bottom_panel.doLayout();
     repaint();
 
   }
