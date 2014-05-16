@@ -13,8 +13,7 @@ Development
 
 Using Semantic Versioning 2.0.0 (See http://semver.org/)
 
-A large part of the application was refactored, and a general panel to modify
-the values of attributes have been added to the transition and state editor.
+Dependency to https://github.com/Gueust/StateMachineModelization 
 
 
 Localization
