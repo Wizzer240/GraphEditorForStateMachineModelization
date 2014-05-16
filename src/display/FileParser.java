@@ -230,7 +230,6 @@ public class FileParser {
         String line2 = getNextUsefulLine(reader);
         String line3 = reader.readLine();
         if (!line3.equals("<SCounter>")) {
-
         }
         drawArea.setSCounter(Integer.valueOf(line3), line2);
       } else if (line.equals("<TCounter>")) {

@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/locale/Editors.properties=UTF-8
 encoding//src/locale/Editors_fr.properties=UTF-8
+encoding//src/locale/Menus.properties=UTF-8
+encoding//src/locale/Menus_fr.properties=UTF-8
 encoding/<project>=UTF-8

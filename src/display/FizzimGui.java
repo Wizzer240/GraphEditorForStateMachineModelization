@@ -159,7 +159,7 @@ public class FizzimGui extends JFrame {
     /* Set the window at the middle of the screen */
     setLocationRelativeTo(null);
 
-    drawArea1.setJFrame(this);
+    drawArea1.setParent(this);
 
     drawArea1.updateStates();
     drawArea1.updateTrans();
@@ -1475,7 +1475,7 @@ public class FizzimGui extends JFrame {
    * @return
    */
 
-  private boolean saveFile6lines(File selectedFile) {
+  public boolean saveFile6lines(File selectedFile) {
     currFile = selectedFile;
     try {
 
