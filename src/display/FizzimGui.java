@@ -705,7 +705,7 @@ public class FizzimGui extends JFrame {
   /**
    * This is used to display the Help image
    */
-  @SuppressWarnings("serial")
+
   static class HelpItemAboutActionPerformed extends JWindow
   {
     HelpItemAboutActionPerformed() {
@@ -848,7 +848,7 @@ public class FizzimGui extends JFrame {
           - tY + 3);
     }
 
-    ImageToClip imageToClip = new ImageToClip(bufferedImage);
+ //   ImageToClip imageToClip = new ImageToClip(bufferedImage);
 
   }
 
@@ -1157,6 +1157,7 @@ public class FizzimGui extends JFrame {
   }// GEN-LAST:event_FileItemExitActionPerformed
 
   // GEN-FIRST:event_FileItemNewActionPerformed
+  @SuppressWarnings("deprecation")
   private void FileItemNewActionPerformed(ActionEvent evt) {
 
     boolean createNew = true;
@@ -1374,6 +1375,7 @@ public class FizzimGui extends JFrame {
   private void openFile(File selectedFile) {
     loading = true;
     currFile = selectedFile;
+    @SuppressWarnings("unused")
     FileParser fileParser = new FileParser(currFile, this, drawArea1);
     pages_tabbedPane.setComponentAt(1, jScrollPane1);
     pages_tabbedPane.setSelectedIndex(1);
@@ -1449,6 +1451,7 @@ public class FizzimGui extends JFrame {
   private void openFile6lines(File selectedFile) throws IOException {
     loading = true;
     currFile = selectedFile;
+    @SuppressWarnings("unused")
     FileParser6lines fileParser = new FileParser6lines(currFile, this,
         drawArea1);
     pages_tabbedPane.setComponentAt(1, jScrollPane1);
@@ -1684,6 +1687,7 @@ public class FizzimGui extends JFrame {
     return pages_tabbedPane.getTabCount();
   }
 
+  @SuppressWarnings("unused")
   private void removePage(int i)
   {
     // TODO

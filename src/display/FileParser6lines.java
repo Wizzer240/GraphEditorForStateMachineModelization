@@ -27,7 +27,6 @@ public class FileParser6lines {
   int x1 = 496;
   int y0 = 216;
   int y1 = 346;
-  private Vector<Object> objList;
 
   public FileParser6lines(File file, FizzimGui fizzim, DrawArea drawArea)
       throws IOException {
@@ -38,7 +37,6 @@ public class FileParser6lines {
     // states = new HashMap<String, String>();
     graphs = new Vector<String>();
     parser = new File6lines(this.file);
-    objList = new Vector<Object>();
     fizzim.resetTabs();
     resetGlobalList();
     parse();

@@ -1858,9 +1858,6 @@ public class DrawArea extends JPanel implements MouseListener,
     StateTransitionObj trans = new StateTransitionObj(createTCounter, currPage,
         this,
         source, destination, defaultStateTransitionsColor);
-    assert (source != null);
-    assert (destination != null);
-
     createTCounter++;
     objList.add(trans);
 

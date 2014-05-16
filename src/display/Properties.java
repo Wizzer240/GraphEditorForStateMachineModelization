@@ -124,6 +124,7 @@ class MyJColorEditor extends AbstractCellEditor implements ActionListener,
 
 @SuppressWarnings("serial")
 class MyJComboBoxEditor extends DefaultCellEditor {
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public MyJComboBoxEditor(Object[] items) {
     super(new JComboBox(items));
   }
@@ -571,6 +572,7 @@ class GlobalProperties extends JDialog {
   }
 
   // GEN-FIRST:event_GPNewActionPerformed
+  @SuppressWarnings("deprecation")
   private void GPOption1ActionPerformed(ActionEvent evt) {
 
     int[] rows = currTable.getSelectedRows();
@@ -631,6 +633,7 @@ class GlobalProperties extends JDialog {
   }// GEN-LAST:event_GPNewActionPerformed
 
   // GEN-FIRST:event_GPDeleteActionPerformed
+  @SuppressWarnings("deprecation")
   private void GPOption2ActionPerformed(java.awt.event.ActionEvent evt) {
 
     ObjAttribute newObj = new ObjAttribute("", "", EnumVisibility.NO, "", "",
@@ -699,6 +702,7 @@ class GlobalProperties extends JDialog {
 
   }
 
+  @SuppressWarnings("deprecation")
   private void removeAttribute(int tab, String name) {
     for (int i = 0; i < global_attributes
         .getSpecificGlobalAttributes(tab)
@@ -786,6 +790,7 @@ class GlobalProperties extends JDialog {
   }
 
   // GEN-FIRST:event_GPOKActionPerformed
+  @SuppressWarnings("deprecation")
   private void GPOKActionPerformed(java.awt.event.ActionEvent evt) {
     GPTableMachine.editCellAt(0, 0);
     GPTableState.editCellAt(0, 0);
