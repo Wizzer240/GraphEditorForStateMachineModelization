@@ -148,7 +148,7 @@ public class FizzimGui extends JFrame {
     /* Set the window at the middle of the screen */
     setLocationRelativeTo(null);
 
-    drawArea1.setJFrame(this);
+    drawArea1.setParent(this);
 
     drawArea1.updateStates();
     drawArea1.updateTrans();
