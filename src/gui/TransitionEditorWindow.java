@@ -20,6 +20,7 @@ package gui;
  */
 
 import java.awt.Component;
+import java.awt.Window;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -39,7 +40,7 @@ public class TransitionEditorWindow extends GeneralEditorWindow {
   private static final ResourceBundle locale =
       ResourceBundle.getBundle("locale.Editors", new UTF8Control());
 
-  public TransitionEditorWindow(Component parent, String name,
+  public TransitionEditorWindow(Window parent, String name,
       DrawArea draw_area, TransitionObj transition, Vector<StateObj> states,
       boolean is_loopback, StateObj state) {
     super(parent, name, new JPanel());
@@ -49,7 +50,7 @@ public class TransitionEditorWindow extends GeneralEditorWindow {
     display();
   }
 
-  public TransitionEditorWindow(Component parent, DrawArea draw_area,
+  public TransitionEditorWindow(Window parent, DrawArea draw_area,
       TransitionObj transition, Vector<StateObj> states,
       boolean is_loopback, StateObj state) {
     this(parent, locale.getString("trans_editor_title"), draw_area, transition,
