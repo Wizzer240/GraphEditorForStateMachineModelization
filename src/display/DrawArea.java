@@ -92,7 +92,7 @@ public class DrawArea extends JPanel implements MouseListener,
   private boolean Redraw = false;
 
   // Default settings for global table
-  private boolean tableVis = true;
+  private boolean tableVis = false;
   private Color tableColor = Color.black;
   private Color defaultStatesColor = Color.black;
   private Color defaultStateTransitionsColor = Color.black;
@@ -151,7 +151,7 @@ public class DrawArea extends JPanel implements MouseListener,
     // global attributes stored at index 0 of object array
     objList.add(globals);
 
-    TextObj globalTable = new TextObj(10, 10, globals, tableFont);
+    TextObj globalTable = new TextObj(10, 10, globals, tableFont, tableVis);
 
     objList.add(globalTable);
     undoList.add(objList);
@@ -1566,7 +1566,6 @@ public class DrawArea extends JPanel implements MouseListener,
       }
     }
     repaint();
-
   }
 
   public void setFont(Font font) {

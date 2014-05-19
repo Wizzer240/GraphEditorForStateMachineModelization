@@ -62,8 +62,7 @@ public class TextObj extends GeneralObj {
   private LinkedList<String> col4 = new LinkedList<String>();
   private int col1W = 0, col2W = 0, col3W = 0, col4W = 0;
 
-  public TextObj(int x, int y, GlobalAttributes globals,
-      Font font) {
+  public TextObj(int x, int y, GlobalAttributes globals, Font font) {
     selectStatus = SelectOptions.NONE;
     tX = x;
     tY = y;
@@ -71,18 +70,27 @@ public class TextObj extends GeneralObj {
     globalTable = true;
     tableFont = font;
     global_attributes = globals;
-
   }
 
-  public TextObj(int x, int y, GlobalAttributes globals,
-      int p) {
+  public TextObj(int x, int y, GlobalAttributes globals, Font font,
+      boolean visibility) {
+    this(x, y, globals, font);
+    tableVis = visibility;
+  }
+
+  public TextObj(int x, int y, GlobalAttributes globals, int page) {
     selectStatus = SelectOptions.NONE;
     tX = x;
     tY = y;
-    myPage = p;
+    myPage = page;
     global_attributes = globals;
     globalTable = true;
+  }
 
+  public TextObj(int x, int y, GlobalAttributes globals,
+      int page, boolean visibility) {
+    this(x, y, globals, page);
+    tableVis = visibility;
   }
 
   public TextObj(String s, int x, int y, int page) {
@@ -161,13 +169,14 @@ public class TextObj extends GeneralObj {
             .get(j);
 
         String name = "   " + obj.getName();
-        if (col1W < fm.stringWidth(name)) {
+        
+        if (fm != null && col1W < fm.stringWidth(name)) {
           col1W = fm.stringWidth(name);
         }
         col1.add(name);
 
         String value = obj.getValue();
-        if (col2W < fm.stringWidth(value)) {
+        if (fm != null && col2W < fm.stringWidth(value)) {
           col2W = fm.stringWidth(value);
         }
         col2.add(value);
@@ -177,13 +186,13 @@ public class TextObj extends GeneralObj {
         if (type.equals("reg"))
           type = "statebit";
 
-        if (col3W < fm.stringWidth(type)) {
+        if (fm != null && col3W < fm.stringWidth(type)) {
           col3W = fm.stringWidth(type);
         }
         col3.add(type);
 
         String comm = obj.getComment();
-        if (col4W < fm.stringWidth(comm)) {
+        if (fm != null && col4W < fm.stringWidth(comm)) {
           col4W = fm.stringWidth(comm);
         }
         col4.add(comm);
@@ -247,7 +256,6 @@ public class TextObj extends GeneralObj {
   }
 
   public void paintComponent(Graphics g) {
-
     // need to set font metrics, regardless of whether the text list is on
     // current page
     if (globalTable && tableVis) {

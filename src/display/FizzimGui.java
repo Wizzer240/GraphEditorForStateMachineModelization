@@ -28,10 +28,12 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -103,7 +105,7 @@ import entities.GeneralObj;
 import entities.LoopbackTransitionObj;
 import entities.StateObj;
 import entities.TransitionObj;
-import gui.toolkit.ListOfIdentifiers;
+import gui.toolkit.IdentifiersToolKit;
 import locale.UTF8Control;
 import attributes.EnumVisibility;
 import attributes.GlobalAttributes;
@@ -138,6 +140,8 @@ public class FizzimGui extends JFrame {
   /* The DrawArea is the central editing window */
   private DrawArea drawArea1;
 
+  private IdentifiersToolKit toolkit;
+
   /** Creates new form FizzimGui */
   public FizzimGui() {
 
@@ -152,6 +156,7 @@ public class FizzimGui extends JFrame {
     drawArea1 = new DrawArea(global_attributes);
     drawArea1.setPreferredSize(new Dimension(maxW, maxH));
 
+    toolkit = new IdentifiersToolKit(this);
     // custom initComponents
     initComponents();
     setTitle("Fizzim: State Machine GUI editor");
@@ -248,7 +253,7 @@ public class FizzimGui extends JFrame {
   private JMenuItem HelpItemHelp;
   private JMenu HelpMenu;
   private JMenuBar MenuBar;
-  private JPanel inner_central_panel;
+  private JPanel draw_area_panel;
   private JPanel bottom_panel;
   private JScrollPane central_scrolling_panel;
   private JSeparator jSeparator1;
@@ -284,7 +289,7 @@ public class FizzimGui extends JFrame {
     bottom_panel = new JPanel();
     pages_tabbedPane = new MyJTabbedPane();
     central_scrolling_panel = new JScrollPane();
-    inner_central_panel = new JPanel();
+    draw_area_panel = new JPanel();
 
     MenuBar = new JMenuBar();
     FileMenu = new JMenu();
@@ -334,22 +339,24 @@ public class FizzimGui extends JFrame {
       }
     });
 
-    /* Central panel */
+    /* Initialization of the panels */
     pages_tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
-    inner_central_panel = drawArea1;
-    GroupLayout central_panel_layout = new GroupLayout(inner_central_panel);
-    inner_central_panel.setLayout(central_panel_layout);
+    draw_area_panel = drawArea1;
+    // GroupLayout central_panel_layout = new GroupLayout(draw_area_panel);
+    // draw_area_panel.setLayout(central_panel_layout);
     // inner_central_panel.setPreferredSize(new Dimension(1294, 1277));
-    central_panel_layout.setHorizontalGroup(central_panel_layout
-        .createParallelGroup(
-            Alignment.LEADING)
-        .addGap(0, 1294, Short.MAX_VALUE));
-    central_panel_layout.setVerticalGroup(central_panel_layout
-        .createParallelGroup(
-            Alignment.LEADING)
-        .addGap(0, 1277, Short.MAX_VALUE));
-    central_scrolling_panel.setViewportView(inner_central_panel);
+    /*
+     * central_panel_layout.setHorizontalGroup(central_panel_layout
+     * .createParallelGroup(
+     * Alignment.LEADING)
+     * .addGap(0, 1294, Short.MAX_VALUE));
+     * central_panel_layout.setVerticalGroup(central_panel_layout
+     * .createParallelGroup(
+     * Alignment.LEADING)
+     * .addGap(0, 1277, Short.MAX_VALUE));
+     */
+    central_scrolling_panel.setViewportView(draw_area_panel);
 
     // pages
     pages_tabbedPane.addBlankTab(locale.getString("menu_createTab"),
@@ -397,6 +404,36 @@ public class FizzimGui extends JFrame {
     pages_tabbedPane.setSize(coord);
     bottom_panel.doLayout();
     bottom_panel.repaint();
+
+    GridBagLayout gridBagLayout = new GridBagLayout();
+    gridBagLayout.columnWidths = new int[] { 0, 0 };
+    gridBagLayout.rowHeights = new int[] { 0 };
+    gridBagLayout.columnWeights = new double[] { 2.0, 1.0 };
+    gridBagLayout.rowWeights = new double[] { 1.0 };
+    getContentPane().setLayout(gridBagLayout);
+
+    JPanel left = bottom_panel;
+    GridBagConstraints gbc_left = new GridBagConstraints();
+    gbc_left.gridwidth = 2;
+    gbc_left.insets = new Insets(0, 0, 5, 5);
+    gbc_left.gridx = 0;
+    gbc_left.gridy = 0;
+    gbc_left.fill = GridBagConstraints.BOTH;
+    gbc_left.weightx = 1;
+    gbc_left.weighty = 1;
+
+    getContentPane().add(left, gbc_left);
+
+    JPanel right = toolkit;
+    GridBagConstraints gbc_right = new GridBagConstraints();
+    gbc_right.insets = new Insets(0, 0, 5, 0);
+    gbc_right.gridx = 2;
+    gbc_right.gridy = 0;
+    gbc_right.fill = GridBagConstraints.BOTH;
+    gbc_right.weightx = 1;
+    gbc_right.weighty = 1;
+
+    getContentPane().add(right, gbc_right);
 
     /* What is it used for ? */
     FileOpenAction.addActionListener(new ActionListener() {
@@ -1743,7 +1780,8 @@ public class FizzimGui extends JFrame {
 
         FizzimGui fzim = new FizzimGui();
         fzim.setVisible(true);
-        fzim.setSize(new Dimension(1000, 685));
+        // fzim.setSize(new Dimension(1000, 685));
+        fzim.setExtendedState(Frame.MAXIMIZED_BOTH);
         // new HelpItemAboutActionPerformed();
         // If command line filename is not null, open
         // this file.

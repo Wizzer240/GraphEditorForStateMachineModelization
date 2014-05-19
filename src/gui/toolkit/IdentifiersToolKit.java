@@ -77,13 +77,13 @@ import display.FizzimGui;
  * 
  */
 @SuppressWarnings("serial")
-public class ListOfIdentifiers extends JPanel {
+public class IdentifiersToolKit extends JPanel {
   ListTransferHandler lh;
 
   FizzimGui fizzim;
   JList<String> list1, list2, list3;
 
-  public ListOfIdentifiers(FizzimGui fizzim) {
+  public IdentifiersToolKit(FizzimGui fizzim) {
     super(new BorderLayout());
     this.fizzim = fizzim;
 
@@ -198,7 +198,7 @@ public class ListOfIdentifiers extends JPanel {
     JFrame frame = new JFrame("Toolkit");
 
     // Create and set up the menu bar and content pane.
-    ListOfIdentifiers demo = new ListOfIdentifiers(fizzim);
+    IdentifiersToolKit demo = new IdentifiersToolKit(fizzim);
     frame.setJMenuBar(demo.createMenuBar());
     demo.setOpaque(true); // content panes must be opaque
     frame.setContentPane(demo);
