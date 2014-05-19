@@ -26,13 +26,18 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellEditor;
@@ -41,13 +46,10 @@ import attributes.ObjAttribute;
 import display.DrawArea;
 import display.StatePropertiesPanel;
 import entities.StateObj;
-
-import javax.swing.JTextField;
-
 import locale.UTF8Control;
 
 /**
- * The edge editor pannel is composed of two tabs:
+ * The edge editor panel is composed of two tabs:
  * - the first one allows to modify the value of attributes
  * - the second one allows to modify all the fields of all attributes and the
  * color of the edge
@@ -56,9 +58,11 @@ import locale.UTF8Control;
 public class StateEditorPanel extends JPanel {
   private static final ResourceBundle locale =
       ResourceBundle.getBundle("locale.Editors", new UTF8Control());
+
   private JTabbedPane tabbedPane;
-  private JTextField textField;
+  private JTextArea[] fields;
   private StatePropertiesPanel second_tab;
+  private StateObj state;
 
   /**
    * Create the panel that is used in the editor of the states
@@ -73,39 +77,93 @@ public class StateEditorPanel extends JPanel {
    */
   public StateEditorPanel(GeneralEditorWindow window, DrawArea draw_area,
       StateObj state) {
+    this.state = state;
+
     setBorder(new EmptyBorder(7, 7, 7, 7));
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     add(tabbedPane);
 
-    final JComponent first_tab = new JPanel();
-    second_tab = new StatePropertiesPanel(window,
-        draw_area, state);
+    JComponent first_tab = new JPanel();
+    GridBagLayout gridBagLayout = new GridBagLayout();
+    gridBagLayout.columnWidths = new int[] { 47, 334 };
+    gridBagLayout.rowHeights = new int[] { 19, 0 };
+    gridBagLayout.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+    gridBagLayout.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+    first_tab.setLayout(gridBagLayout);
 
     LinkedList<ObjAttribute> attributes = state.getAttributeList();
-    ObjAttribute name_attribute = attributes.get(0);
+    int nb_attributes = attributes.size();
+    fields = new JTextArea[nb_attributes];
+    int y_index = 0;
+    for (ObjAttribute one_attribute : attributes) {
+      String name = (String) one_attribute.get(0);
+      String value = (String) one_attribute.get(1);
 
-    String name = (String) name_attribute.get(0);
+      JLabel lblEvents = new JLabel(name + ":");
+      GridBagConstraints gbc_lblEvents = new GridBagConstraints();
+      gbc_lblEvents.anchor = GridBagConstraints.NORTHWEST;
+      gbc_lblEvents.insets = new Insets(0, 0, 5, 0);
+      gbc_lblEvents.gridx = 0;
+      gbc_lblEvents.gridy = y_index;
+      first_tab.add(lblEvents, gbc_lblEvents);
 
-    if (name.equals("name")) {
-      /* For the name, we do put a simple textField */
-      first_tab.add(new JLabel(locale.getString("state_editor_name")));
-      textField = new JTextField((String) name_attribute.get(1), 10);
-      first_tab.add(textField);
-      tabbedPane.addChangeListener(new ChangeListener() {
+      /* Text Area */
+      JTextArea events_textArea = new JTextArea(value);
+      events_textArea.setLineWrap(true);
+      events_textArea
+          .setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+      /*
+       * Unlike TransitionEditorPanel, we have a different case for the name
+       * attribute
+       */
+      if (name.equals("name")) {
+        events_textArea.setRows(1);
+        events_textArea.setColumns(30);
+        GridBagConstraints gbc_events_textArea = new GridBagConstraints();
+        gbc_events_textArea.anchor = GridBagConstraints.NORTHWEST;
+        gbc_events_textArea.insets = new Insets(0, 0, 5, 0);
+        gbc_events_textArea.gridx = 1;
+        gbc_events_textArea.gridy = y_index;
+        gbc_events_textArea.fill = GridBagConstraints.NONE;
+        gbc_events_textArea.weightx = 0;
+        gbc_events_textArea.weighty = 0;
 
-        @Override
-        public void stateChanged(ChangeEvent e) {
-          updateData(tabbedPane.getSelectedIndex());
-        }
-      });
+        first_tab.add(events_textArea, gbc_events_textArea);
+      } else {
+        events_textArea.setRows(3);
+        events_textArea.setColumns(30);
+        GridBagConstraints gbc_events_textArea = new GridBagConstraints();
+        gbc_events_textArea.anchor = GridBagConstraints.NORTHWEST;
+        gbc_events_textArea.insets = new Insets(0, 0, 5, 0);
+        gbc_events_textArea.gridx = 1;
+        gbc_events_textArea.gridy = y_index;
+        gbc_events_textArea.fill = GridBagConstraints.BOTH;
+        gbc_events_textArea.weightx = 1;
+        gbc_events_textArea.weighty = 1;
+
+        first_tab.add(events_textArea, gbc_events_textArea);
+      }
+
+      fields[y_index] = events_textArea;
+      y_index++;
     }
 
     tabbedPane.addTab(locale.getString("general_tab"), null, first_tab,
         locale.getString("general_tab_description"));
 
+    second_tab = new StatePropertiesPanel(window,
+        draw_area, state);
+
     tabbedPane.addTab(locale.getString("details_tab"), null, second_tab,
         locale.getString("details_tab_description"));
+
+    tabbedPane.addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent e) {
+        updateData(tabbedPane.getSelectedIndex());
+      }
+    });
 
     /*
      * We add the update and cancel actions to the OK and Cancel button of the
@@ -137,14 +195,29 @@ public class StateEditorPanel extends JPanel {
       TableCellEditor cell_editor = second_tab.getTable().getCellEditor();
       if (cell_editor != null)
         cell_editor.stopCellEditing();
-      /* We get the value of the name field */
-      String name =
-          (String) second_tab.getTable().getModel().getValueAt(0, 1);
-      textField.setText(name);
+      /* We get the value of the fields and update the first tab */
+      LinkedList<ObjAttribute> attributes = state.getAttributeList();
+      int y_index = 0;
+      for (ObjAttribute one_attribute : attributes) {
+        String value = (String) one_attribute.get(1);
+        fields[y_index].setText(value);
+
+        y_index++;
+      }
+
     } else if (tab_selected == 1) { // We select the details tab
       /* We update the value of the name in the JTable */
-      String general_name = textField.getText();
-      second_tab.getTable().getModel().setValueAt(general_name, 0, 1);
+      LinkedList<ObjAttribute> attributes = state.getAttributeList();
+      int y_index = 0;
+      for (ObjAttribute one_attribute : attributes) {
+        String value = fields[y_index].getText();
+        one_attribute.set(1, value);
+        /* This line is necessary to consider the new value added as local. */
+        one_attribute.setEditable(1, ObjAttribute.LOCAL);
+
+        y_index++;
+      }
+      // second_tab.getTable().getModel().setValueAt(value, y_index, 1);
     }
   }
 }
