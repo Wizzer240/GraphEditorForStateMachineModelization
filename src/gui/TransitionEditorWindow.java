@@ -19,7 +19,6 @@ package gui;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.Component;
 import java.awt.Window;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -44,7 +43,8 @@ public class TransitionEditorWindow extends GeneralEditorWindow {
       DrawArea draw_area, TransitionObj transition, Vector<StateObj> states,
       boolean is_loopback, StateObj state) {
     super(parent, name, new JPanel());
-    JPanel content = new TransitionEditorPanel(this, draw_area, transition, states,
+    JPanel content = new TransitionEditorPanel(this, draw_area, transition,
+        states,
         is_loopback, state);
     setPanel(content);
     display();

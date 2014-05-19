@@ -100,9 +100,6 @@ public class TransitionEditorPanel extends JPanel {
       String name = (String) one_attribute.get(0);
       String value = (String) one_attribute.get(1);
 
-      // JPanel panel = new EditOneValuePanel(name + ": ", value);
-      // first_tab.add(panel);
-
       JLabel lblEvents = new JLabel(name + ":");
       GridBagConstraints gbc_lblEvents = new GridBagConstraints();
       gbc_lblEvents.anchor = GridBagConstraints.NORTHWEST;
