@@ -193,6 +193,10 @@ public class FizzimGui extends JFrame {
     global_attributes.addTransitionAttribute(
         new ObjAttribute("name", "def_name", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
+    
+    global_attributes.addStateAttribute(
+        new ObjAttribute("Descr","", EnumVisibility.YES,
+            "def_type", "", Color.black, "", "", editable));
 
     /* User defined properties */
     // globalList.get(EnumGlobalList.STATES).add(

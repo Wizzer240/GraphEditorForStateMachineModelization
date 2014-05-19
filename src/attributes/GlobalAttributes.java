@@ -35,6 +35,8 @@ public class GlobalAttributes {
   public static final int OUTPUTS = 2;
   public static final int STATES = 3;
   public static final int TRANSITIONS = 4;
+  public static final int DESCRIPTION = 5;
+  
 
   private LinkedList<ObjAttribute> machineAttributes;
   private LinkedList<ObjAttribute> inputsAttributes;
@@ -162,6 +164,7 @@ public class GlobalAttributes {
   public LinkedList<ObjAttribute> getTransAttributes() {
     return transAttributes;
   }
+  
 
   @Deprecated
   private void set(int i, LinkedList<ObjAttribute> newList) {
