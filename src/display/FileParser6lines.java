@@ -91,6 +91,7 @@ public class FileParser6lines {
         } else if (name.equals(FizzimGui.action_field)) {
           attribute.set(1, action);
         }
+        attribute.setEditable(1, ObjAttribute.LOCAL);
 
         // TODO create a transition and fill the event condition action field
 
