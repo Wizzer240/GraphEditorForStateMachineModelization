@@ -101,6 +101,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+import utils.TeeOutputStream;
 import entities.GeneralObj;
 import entities.LoopbackTransitionObj;
 import entities.StateObj;
@@ -1695,25 +1696,54 @@ public class FizzimGui extends JFrame {
 
   }
 
-  public int getMaxH()
-  {
+  public int getMaxH() {
     return maxH;
   }
 
-  public int getMaxW()
-  {
+  public int getMaxW() {
     return maxW;
   }
 
-  public int getPages()
-  {
+  public int getPages() {
     return pages_tabbedPane.getTabCount();
   }
 
   @SuppressWarnings("unused")
-  private void removePage(int i)
-  {
+  private void removePage(int i) {
     // TODO
+  }
+
+  public static TeeOutputStream out_stream;
+  public static TeeOutputStream err_stream;
+
+  /**
+   * Duplicate the standard output into the given file. If its size is greater
+   * than 10Mo, it will empty the file. It will write at the end of the file
+   * otherwise.
+   * 
+   * @param logfile_name
+   */
+  private static void launchLogging(String logfile_name) {
+    File file = new File(logfile_name);
+    try {
+      /* We make sure than we have no more than 10Mo */
+      FileOutputStream fos;
+      if (file.length() > 10000000) {
+        fos = new FileOutputStream(file);
+      } else {
+        fos = new FileOutputStream(file, true);
+      }
+
+      /* We want to print in the standard "System.out" and in "file" */
+      out_stream = new TeeOutputStream(System.out, fos);
+      err_stream = new TeeOutputStream(System.err, fos);
+      PrintStream ps_out = new PrintStream(out_stream);
+      System.setOut(ps_out);
+      PrintStream ps_err = new PrintStream(err_stream);
+      System.setErr(ps_err);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -1725,6 +1755,10 @@ public class FizzimGui extends JFrame {
   static boolean clbatch_rewrite = false; // command-line -batch_rewrite switch
 
   public static void main(String args[]) {
+
+    /* Launching logging */
+    launchLogging("fizzim_tools_logfile.txt");
+
     /*
      * For the spash screen, the simplest way is to put :
      * SplashScreen-Image: splash.png
@@ -1776,12 +1810,13 @@ public class FizzimGui extends JFrame {
         } catch (FileNotFoundException e) {
         }
         // sets std err to be written to file
-        System.setErr(new PrintStream(fout));
+        // System.setErr(new PrintStream(fout));
 
         FizzimGui fzim = new FizzimGui();
         fzim.setVisible(true);
         // fzim.setSize(new Dimension(1000, 685));
         fzim.setExtendedState(Frame.MAXIMIZED_BOTH);
+
         // new HelpItemAboutActionPerformed();
         // If command line filename is not null, open
         // this file.
