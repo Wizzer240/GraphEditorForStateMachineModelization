@@ -170,6 +170,7 @@ public class FizzimGui extends JFrame {
 
     setLocationRelativeTo(null);
 
+    setLocationRelativeTo(null);
   }
 
   /**

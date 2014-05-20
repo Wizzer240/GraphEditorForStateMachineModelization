@@ -636,6 +636,11 @@ public class FileParser {
           userattsStatus, resetval, resetvalStatus, x2Obj, y2Obj, page);
 
       newList.add(obj);
+
+      /* The next line IS required for this to work. */
+      pointer += 1; // Closing of the attribute tag (e.g. </name>)
+
+      start = pointer;
     }
   }
 }
