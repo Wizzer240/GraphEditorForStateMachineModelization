@@ -56,6 +56,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
@@ -66,6 +67,9 @@ import display.FizzimGui;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import javax.swing.JTextArea;
+
+import org.antlr.v4.codegen.model.AddToLabelList;
+import java.awt.FlowLayout;
 
 /**
  * The ListCutPaste example illustrates cut, copy, paste
@@ -80,37 +84,63 @@ import javax.swing.JTextArea;
  * 
  */
 @SuppressWarnings("serial")
-public class IdentifiersToolKit extends JPanel {
+public class IdentifiersToolKit extends JSplitPane {
   ListTransferHandler lh;
 
   public IdentifiersToolKit(FizzimGui fizzim) {
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-    JButton btnNewButton = new JButton("Mettre à jour");
-
-    add(btnNewButton);
+    super(JSplitPane.VERTICAL_SPLIT);
+    // setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    /* The upper part gets all the extra space */
+    setResizeWeight(1);
 
     UpperPart upper_part = new UpperPart(fizzim);// new JPanel();
-    add(upper_part);
+    setTopComponent(upper_part);
 
-    btnNewButton.addActionListener(new UpdateLists(upper_part));
-
-    JPanel middle_part = new JPanel();
-    add(middle_part);
-
-    JScrollPane lower_part = new JScrollPane();
-    add(lower_part);
-
-    JTextArea textArea = new JTextArea();
+    /*
+     * Bottom component contains buttons and a text area. The latter needs to be
+     * initialized first
+     */
+    final JTextArea textArea = new JTextArea();
     textArea.setEditable(false);
-    textArea.setRows(10);
-    lower_part.setViewportView(textArea);
+    textArea.setRows(8);
 
     TextAreaOutputStream textOut = new TextAreaOutputStream(textArea);
     PrintStream outStream = new PrintStream(textOut, true);
 
     FizzimGui.out_stream.add(outStream);
     FizzimGui.err_stream.add(outStream);
+
+    JPanel bottom_panel = new JPanel();
+    // bottom_panel.setLayout(new BoxLayout(bottom_panel, BoxLayout.Y_AXIS));
+    bottom_panel.setLayout(new BorderLayout());
+    // bottom_panel.setPreferredSize(new Dimension(100, 30));
+    // bottom_panel.setMaximumSize(new Dimension(200, 30));
+
+    JPanel buttons_panel = new JPanel();
+    bottom_panel.add(buttons_panel, BorderLayout.NORTH);
+    buttons_panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+    JButton btnNewButton = new JButton("Rafraichir");
+    buttons_panel.add(btnNewButton);
+
+    JButton clear_button = new JButton("Clear");
+    buttons_panel.add(clear_button);
+    clear_button.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        textArea.setText(null);
+      }
+    });
+
+    btnNewButton.addActionListener(new UpdateLists(upper_part));
+
+    JScrollPane errors_panel = new JScrollPane();
+    errors_panel.setViewportView(textArea);
+    bottom_panel.add(errors_panel, BorderLayout.CENTER);
+
+    setBottomComponent(bottom_panel);
+
   }
 
   class UpperPart extends JPanel {
@@ -169,7 +199,7 @@ public class IdentifiersToolKit extends JPanel {
       pan3.setBorder(BorderFactory.createTitledBorder("????"));
       panel.add(pan3);
 
-      setPreferredSize(new Dimension(100, 300));
+      setPreferredSize(new Dimension(100, 200));
       add(panel, BorderLayout.CENTER);
     }
 

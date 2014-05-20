@@ -90,6 +90,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
@@ -344,19 +345,7 @@ public class FizzimGui extends JFrame {
     pages_tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
     draw_area_panel = drawArea1;
-    // GroupLayout central_panel_layout = new GroupLayout(draw_area_panel);
-    // draw_area_panel.setLayout(central_panel_layout);
-    // inner_central_panel.setPreferredSize(new Dimension(1294, 1277));
-    /*
-     * central_panel_layout.setHorizontalGroup(central_panel_layout
-     * .createParallelGroup(
-     * Alignment.LEADING)
-     * .addGap(0, 1294, Short.MAX_VALUE));
-     * central_panel_layout.setVerticalGroup(central_panel_layout
-     * .createParallelGroup(
-     * Alignment.LEADING)
-     * .addGap(0, 1277, Short.MAX_VALUE));
-     */
+
     central_scrolling_panel.setViewportView(draw_area_panel);
 
     // pages
@@ -391,8 +380,6 @@ public class FizzimGui extends JFrame {
     gridBagConstraints.gridy = 0;
     bottom_panel.add(pages_tabbedPane, gridBagConstraints);
 
-    getContentPane().add(bottom_panel, BorderLayout.CENTER);
-
     Dimension coord = getScrollPaneSize();
     if (coord.height > maxH) {
       coord.setSize(coord.width, maxH);
@@ -407,7 +394,7 @@ public class FizzimGui extends JFrame {
     bottom_panel.repaint();
 
     GridBagLayout gridBagLayout = new GridBagLayout();
-    gridBagLayout.columnWidths = new int[] { 0, 0 };
+    gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
     gridBagLayout.rowHeights = new int[] { 0 };
     gridBagLayout.columnWeights = new double[] { 2.0, 1.0 };
     gridBagLayout.rowWeights = new double[] { 1.0 };
@@ -425,13 +412,13 @@ public class FizzimGui extends JFrame {
 
     getContentPane().add(left, gbc_left);
 
-    JPanel right = toolkit;
+    IdentifiersToolKit right = toolkit;
     GridBagConstraints gbc_right = new GridBagConstraints();
     gbc_right.insets = new Insets(0, 0, 5, 0);
     gbc_right.gridx = 2;
     gbc_right.gridy = 0;
     gbc_right.fill = GridBagConstraints.BOTH;
-    gbc_right.weightx = 1;
+    gbc_right.weightx = 0.8;
     gbc_right.weighty = 1;
 
     getContentPane().add(right, gbc_right);
