@@ -102,6 +102,7 @@ public class IdentifiersToolKit extends JPanel {
     add(lower_part);
 
     JTextArea textArea = new JTextArea();
+    textArea.setEditable(false);
     textArea.setRows(10);
     lower_part.setViewportView(textArea);
 

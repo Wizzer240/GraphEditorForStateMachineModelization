@@ -37,7 +37,8 @@ public class TextAreaOutputStream extends OutputStream {
       flush = buffer;
     }
 
-    target.append(new String(flush));
+   // target.append(new String(flush));
+    target.insert(new String(flush), 0);
     pos = 0;
   }
 }
