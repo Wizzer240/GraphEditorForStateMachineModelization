@@ -1,6 +1,8 @@
 package display;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -43,8 +45,12 @@ public class File6lines {
    * @throws IOException
    *           In case of error, call the IOException
    */
-  public File6lines(String file_location) throws IOException {
+  private File6lines(String file_location) throws IOException {
     buff = new BufferedReader(new FileReader(file_location));
+  }
+
+  public File6lines(File file) throws FileNotFoundException {
+    buff = new BufferedReader(new FileReader(file));
   }
 
   /**

@@ -1,9 +1,12 @@
 package display;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
 
 import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
@@ -14,7 +17,6 @@ public class FileParser6lines {
   private File6lines parser;
   // private HashMap<String, String> states;
   private Vector<String> graphs;
-  private String file;
   private FizzimGui fizzim;
   private DrawArea drawArea;
   private String graph_name;
@@ -28,18 +30,28 @@ public class FileParser6lines {
   int y0 = 216;
   int y1 = 346;
 
-  public FileParser6lines(File file, FizzimGui fizzim, DrawArea drawArea)
-      throws IOException {
-    this.file = file.getName();
+  public FileParser6lines(File file, FizzimGui fizzim, DrawArea drawArea) {
     this.fizzim = fizzim;
     this.drawArea = drawArea;
     drawArea.setCurrPage(1);
     // states = new HashMap<String, String>();
     graphs = new Vector<String>();
-    parser = new File6lines(this.file);
+    try {
+      parser = new File6lines(file);
+    } catch (FileNotFoundException e1) {
+      JOptionPane.showMessageDialog(fizzim, "Error when loading: "
+          + e1.getMessage(),
+          "Error", JOptionPane.ERROR_MESSAGE);
+    }
     fizzim.resetTabs();
     resetGlobalList();
-    parse();
+    try {
+      parse();
+    } catch (IOException e) {
+      JOptionPane.showMessageDialog(fizzim, "Error when loading: "
+          + e.getMessage(),
+          "Error", JOptionPane.ERROR_MESSAGE);
+    }
     // drawArea.open(objList);
   }
 

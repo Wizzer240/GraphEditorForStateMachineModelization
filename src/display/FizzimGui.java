@@ -975,8 +975,7 @@ public class FizzimGui extends JFrame {
     }
   }// GEN-LAST:event_FileItemSaveActionPerformed
 
-  public boolean tryToSave(File file, String type, boolean overrideCheck)
-  {
+  public boolean tryToSave(File file, String type, boolean overrideCheck) {
     // checks file for correct pathname
     String temp = file.getName().toLowerCase();
 
@@ -1042,19 +1041,19 @@ public class FizzimGui extends JFrame {
     // checks file for correct pathname
     String temp = file.getName().toLowerCase();
 
+    System.out.println("Temporary file name " + temp);
+    System.out.println("Type : " + type);
+
     if (!temp.endsWith("." + type))
       file = new File(file.getAbsolutePath() + "." + type);
 
     // checks permission to write
-    if (file.isDirectory())
-    {
+    if (file.isDirectory()) {
       JOptionPane.showMessageDialog(this,
           "Must be a file, not directory", "Error",
           JOptionPane.ERROR_MESSAGE);
       return false;
-    }
-    else if (file.exists() && !file.canWrite())
-    {
+    } else if (file.exists() && !file.canWrite()) {
       JOptionPane.showMessageDialog(this,
           "Cannot write to file, permission denied.", "Error",
           JOptionPane.ERROR_MESSAGE);
@@ -1311,16 +1310,14 @@ public class FizzimGui extends JFrame {
    * 
    * @param evt
    */
-  private void FileItemSaveAs6LinesActionPerformed(
-      java.awt.event.ActionEvent evt) {
-    if (currFile == null)
-    {
+  private void FileItemSaveAs6LinesActionPerformed(ActionEvent evt) {
+    if (currFile == null) {
       // Default to cwd
       FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
           .getProperty("user.dir")).getAbsoluteFile());
-    }
-    else
+    } else {
       FileSave6LinesAction.setSelectedFile(currFile);
+    }
 
     FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
         .getProperty("user.dir")).getAbsoluteFile());
@@ -1392,7 +1389,6 @@ public class FizzimGui extends JFrame {
     pages_tabbedPane.setSelectedIndex(1);
     drawArea1.setCurrPage(1);
     loading = false;
-
   }
 
   private void FileItemOpen6linesActionPerformed(ActionEvent evt) {// GEN-FIRST:event_FileItemOpenActionPerformed
@@ -1435,13 +1431,8 @@ public class FizzimGui extends JFrame {
         File tempFile = FileOpen6LinesAction.getSelectedFile();
         String fileName = tempFile.getName().toLowerCase();
         if (!tempFile.isDirectory() && fileName.endsWith(".txt")) {
-          try {
-            openFile6lines(tempFile);
-          } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error when loading: "
-                + e.getMessage(),
-                "error", JOptionPane.ERROR_MESSAGE);
-          }
+
+          openFile6lines(tempFile);
           setTitle("Fizzim - " + currFile.getName());
         } else {
           JOptionPane.showMessageDialog(this, "File must end with .txt",
@@ -1459,7 +1450,7 @@ public class FizzimGui extends JFrame {
    *          The file to open
    * @throws IOException
    */
-  private void openFile6lines(File selectedFile) throws IOException {
+  private void openFile6lines(File selectedFile) {
     loading = true;
     currFile = selectedFile;
     @SuppressWarnings("unused")
@@ -1499,6 +1490,7 @@ public class FizzimGui extends JFrame {
 
   public boolean saveFile6lines(File selectedFile) {
     currFile = selectedFile;
+    System.out.println("Current file " + currFile);
     try {
 
       int j = 1;
