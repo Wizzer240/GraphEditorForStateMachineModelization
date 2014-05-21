@@ -48,7 +48,6 @@ import java.util.Iterator;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -156,7 +155,7 @@ public class IdentifiersToolKit extends JSplitPane {
       lh = new ListTransferHandler();
 
       JPanel panel = new JPanel(new GridLayout(1, 3));
-      DefaultListModel<String> indicators = new DefaultListModel<String>();
+      SortedListModel indicators = new SortedListModel();
 
       list1 = new JList<String>(indicators);
       list1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -171,7 +170,7 @@ public class IdentifiersToolKit extends JSplitPane {
       first_column.setBorder(BorderFactory.createTitledBorder("Evts externes"));
       panel.add(first_column);
 
-      DefaultListModel<String> list2Model = new DefaultListModel<String>();
+      SortedListModel list2Model = new SortedListModel();
       list2 = new JList<String>(list2Model);
       list2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list2.setDragEnabled(true);
@@ -185,7 +184,7 @@ public class IdentifiersToolKit extends JSplitPane {
       pan2.setBorder(BorderFactory.createTitledBorder("Inds et syns"));
       panel.add(pan2);
 
-      DefaultListModel<String> list3Model = new DefaultListModel<String>();
+      SortedListModel list3Model = new SortedListModel();
 
       list3 = new JList<String>(list3Model);
       list3.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -326,14 +325,14 @@ public class IdentifiersToolKit extends JSplitPane {
         builder = new GraphFactoryAEFD(file_name);
         Model m = builder.buildModel("None");
 
-        DefaultListModel<String> listModel =
-            (DefaultListModel<String>) l1.getModel();
+        SortedListModel listModel =
+            (SortedListModel) l1.getModel();
         Iterator<ExternalEvent> it_ext = m.iteratorExternalEvents();
         while (it_ext.hasNext()) {
           listModel.addElement(it_ext.next().toString());
         }
 
-        listModel = (DefaultListModel<String>) l2.getModel();
+        listModel = (SortedListModel) l2.getModel();
         listModel.removeAllElements();
 
         Iterator<Variable> it = m.iteratorExistingVariables();
@@ -347,7 +346,7 @@ public class IdentifiersToolKit extends JSplitPane {
           listModel.addElement(it2.next().toString());
         }
 
-        listModel = (DefaultListModel<String>) l3.getModel();
+        listModel = (SortedListModel) l3.getModel();
         Iterator<CommandEvent> it_cmds = m.iteratorCommands();
         while (it_cmds.hasNext()) {
           listModel.addElement(it_cmds.next().toString());
