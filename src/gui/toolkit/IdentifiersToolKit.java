@@ -325,8 +325,10 @@ public class IdentifiersToolKit extends JSplitPane {
         builder = new GraphFactoryAEFD(file_name);
         Model m = builder.buildModel("None");
 
-        SortedListModel listModel =
-            (SortedListModel) l1.getModel();
+        SortedListModel listModel;
+
+        listModel = (SortedListModel) l1.getModel();
+        listModel.removeAllElements();
         Iterator<ExternalEvent> it_ext = m.iteratorExternalEvents();
         while (it_ext.hasNext()) {
           listModel.addElement(it_ext.next().toString());
@@ -347,6 +349,7 @@ public class IdentifiersToolKit extends JSplitPane {
         }
 
         listModel = (SortedListModel) l3.getModel();
+        listModel.removeAllElements();
         Iterator<CommandEvent> it_cmds = m.iteratorCommands();
         while (it_cmds.hasNext()) {
           listModel.addElement(it_cmds.next().toString());
