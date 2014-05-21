@@ -62,13 +62,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 
 import abstractGraph.conditions.Variable;
+import abstractGraph.events.CommandEvent;
+import abstractGraph.events.ExternalEvent;
+import abstractGraph.events.SynchronisationEvent;
 import display.FizzimGui;
 
 import javax.swing.JButton;
-import javax.swing.BoxLayout;
 import javax.swing.JTextArea;
 
-import org.antlr.v4.codegen.model.AddToLabelList;
 import java.awt.FlowLayout;
 
 /**
@@ -167,7 +168,7 @@ public class IdentifiersToolKit extends JSplitPane {
       setMappings(list1);
       JPanel first_column = new JPanel(new BorderLayout());
       first_column.add(sp1, BorderLayout.CENTER);
-      first_column.setBorder(BorderFactory.createTitledBorder("Indicateurs"));
+      first_column.setBorder(BorderFactory.createTitledBorder("Evts externes"));
       panel.add(first_column);
 
       DefaultListModel<String> list2Model = new DefaultListModel<String>();
@@ -181,7 +182,7 @@ public class IdentifiersToolKit extends JSplitPane {
       setMappings(list2);
       JPanel pan2 = new JPanel(new BorderLayout());
       pan2.add(sp2, BorderLayout.CENTER);
-      pan2.setBorder(BorderFactory.createTitledBorder("????"));
+      pan2.setBorder(BorderFactory.createTitledBorder("Inds et syns"));
       panel.add(pan2);
 
       DefaultListModel<String> list3Model = new DefaultListModel<String>();
@@ -196,7 +197,7 @@ public class IdentifiersToolKit extends JSplitPane {
       setMappings(list3);
       JPanel pan3 = new JPanel(new BorderLayout());
       pan3.add(sp3, BorderLayout.CENTER);
-      pan3.setBorder(BorderFactory.createTitledBorder("????"));
+      pan3.setBorder(BorderFactory.createTitledBorder("Commandes"));
       panel.add(pan3);
 
       setPreferredSize(new Dimension(100, 200));
@@ -327,6 +328,12 @@ public class IdentifiersToolKit extends JSplitPane {
 
         DefaultListModel<String> listModel =
             (DefaultListModel<String>) l1.getModel();
+        Iterator<ExternalEvent> it_ext = m.iteratorExternalEvents();
+        while (it_ext.hasNext()) {
+          listModel.addElement(it_ext.next().toString());
+        }
+
+        listModel = (DefaultListModel<String>) l2.getModel();
         listModel.removeAllElements();
 
         Iterator<Variable> it = m.iteratorExistingVariables();
@@ -335,8 +342,18 @@ public class IdentifiersToolKit extends JSplitPane {
           listModel.addElement(var.toString());
         }
 
+        Iterator<SynchronisationEvent> it2 = m.iteratorSyns();
+        while (it2.hasNext()) {
+          listModel.addElement(it2.next().toString());
+        }
+
+        listModel = (DefaultListModel<String>) l3.getModel();
+        Iterator<CommandEvent> it_cmds = m.iteratorCommands();
+        while (it_cmds.hasNext()) {
+          listModel.addElement(it_cmds.next().toString());
+        }
+
       } catch (IOException ex) {
-        // TODO Auto-generated catch block
         ex.printStackTrace();
       }
 
