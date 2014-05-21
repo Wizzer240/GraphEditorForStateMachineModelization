@@ -1525,7 +1525,13 @@ public class FizzimGui extends JFrame {
           // write the number of the initial state in the file.
           writer.write(initial_state.getName());
           writer.write("\r\n");
-          StateObj final_state = transition.getEndState();
+
+          StateObj final_state;
+          if (transition instanceof LoopbackTransitionObj) {
+            final_state = transition.getStartState();
+          } else {
+            final_state = transition.getEndState();
+          }
           int page_final_state = final_state.getPage();
           if (page_final_state != page_init_state) {
             String final_page = String.valueOf(page_final_state);
