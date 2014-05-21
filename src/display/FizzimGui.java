@@ -21,7 +21,6 @@ package display;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -90,7 +89,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
@@ -139,6 +137,8 @@ public class FizzimGui extends JFrame {
   boolean loading = false;
 
   private File currFile = null;
+  private File currFile6lines = null;
+
   /* The DrawArea is the central editing window */
   private DrawArea drawArea1;
 
@@ -1037,12 +1037,9 @@ public class FizzimGui extends JFrame {
    * @return
    */
   public boolean tryToSave6lines(File file, String type, boolean overrideCheck) {
-    currFile = file;
+    currFile6lines = file;
     // checks file for correct pathname
     String temp = file.getName().toLowerCase();
-
-    System.out.println("Temporary file name " + temp);
-    System.out.println("Type : " + type);
 
     if (!temp.endsWith("." + type))
       file = new File(file.getAbsolutePath() + "." + type);
@@ -1311,12 +1308,12 @@ public class FizzimGui extends JFrame {
    * @param evt
    */
   private void FileItemSaveAs6LinesActionPerformed(ActionEvent evt) {
-    if (currFile == null) {
+    if (currFile6lines == null) {
       // Default to cwd
       FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
           .getProperty("user.dir")).getAbsoluteFile());
     } else {
-      FileSave6LinesAction.setSelectedFile(currFile);
+      FileSave6LinesAction.setSelectedFile(currFile6lines);
     }
 
     FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
@@ -1325,7 +1322,7 @@ public class FizzimGui extends JFrame {
 
     if (returnVal == JFileChooser.APPROVE_OPTION)
       if (tryToSave6lines(FileSave6LinesAction.getSelectedFile(), "txt", true))
-        setTitle("Graphe 6 lignes - " + currFile.getName());
+        setTitle("Graphe 6 lignes - " + currFile6lines.getName());
 
   }
 
@@ -1403,7 +1400,7 @@ public class FizzimGui extends JFrame {
               JOptionPane.QUESTION_MESSAGE, null, options,
               options[0]);
       if (n == JOptionPane.YES_OPTION) {
-        FileSave6LinesAction.setCurrentDirectory(currFile);
+        FileSave6LinesAction.setCurrentDirectory(currFile6lines);
         int returnVal = FileSave6LinesAction.showSaveDialog(this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -1416,14 +1413,14 @@ public class FizzimGui extends JFrame {
     }
     if (open) {
 
-      if (currFile == null) {
+      if (currFile6lines == null) {
         // Default to cwd
         // FileOpenAction.setCurrentDirectory(new
         // java.io.File("").getAbsoluteFile());
         FileOpen6LinesAction.setCurrentDirectory(new File(System
             .getProperty("user.dir")).getAbsoluteFile());
       } else {
-        FileOpen6LinesAction.setCurrentDirectory(currFile);
+        FileOpen6LinesAction.setCurrentDirectory(currFile6lines);
       }
       int returnVal = FileOpen6LinesAction.showOpenDialog(null);
 
@@ -1433,7 +1430,7 @@ public class FizzimGui extends JFrame {
         if (!tempFile.isDirectory() && fileName.endsWith(".txt")) {
 
           openFile6lines(tempFile);
-          setTitle("Fizzim - " + currFile.getName());
+          setTitle("Fizzim - " + currFile6lines.getName());
         } else {
           JOptionPane.showMessageDialog(this, "File must end with .txt",
               "error", JOptionPane.ERROR_MESSAGE);
@@ -1452,9 +1449,9 @@ public class FizzimGui extends JFrame {
    */
   private void openFile6lines(File selectedFile) {
     loading = true;
-    currFile = selectedFile;
+    currFile6lines = selectedFile;
     @SuppressWarnings("unused")
-    FileParser6lines fileParser = new FileParser6lines(currFile, this,
+    FileParser6lines fileParser = new FileParser6lines(currFile6lines, this,
         drawArea1);
     pages_tabbedPane.setComponentAt(1, central_scrolling_panel);
     pages_tabbedPane.setSelectedIndex(1);
@@ -1489,12 +1486,10 @@ public class FizzimGui extends JFrame {
    */
 
   public boolean saveFile6lines(File selectedFile) {
-    currFile = selectedFile;
-    System.out.println("Current file " + currFile);
-    try {
 
+    try {
       int j = 1;
-      BufferedWriter writer = new BufferedWriter(new FileWriter(currFile));
+      BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFile));
       // Put all the objects of the graph in object
       Vector<Object> object = drawArea1.getObjList();
       for (int i = 1; i < object.size(); i++) {
