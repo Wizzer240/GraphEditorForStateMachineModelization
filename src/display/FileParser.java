@@ -117,7 +117,7 @@ public class FileParser {
         current.trim().equals("") ||
         reference.trim().equals("")) {
       throw new InvalidParameterException(
-          "One of the two parameter is null or empty");
+          "One of the two parameter is null or empty.");
     }
 
     boolean valid1 = current.matches("\\d+\\.\\d+\\.\\d+");
@@ -125,7 +125,8 @@ public class FileParser {
 
     if (!(valid1 && valid2)) {
       throw new InvalidParameterException(
-          "One parameter does not match a version number.");
+          "One parameter does not match a version number." +
+              "(" + current + " or " + reference + ")");
     }
 
     if (current.equals(reference)) {
