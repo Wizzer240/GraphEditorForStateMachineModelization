@@ -34,14 +34,14 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
   private SelectOptions selectStatus = SelectOptions.NONE;
 
-  public Point startPt, endPt, startCtrlPt, endCtrlPt;
-  public int startStateIndex, endStateIndex;
-  public StateObj state;
-  public CubicCurve2D.Double loop;
+  private Point startPt, endPt, startCtrlPt, endCtrlPt;
+  private int startStateIndex, endStateIndex;
+  private StateObj state;
+  private CubicCurve2D.Double loop;
   private Vector<Point> stateBorderPts;
   private int x, y;
   private boolean ready = false;
-  String startS;
+  private String startS;
 
   private int xTemp, yTemp, tempSI, tempEI, lengthS, lengthE;
 
@@ -76,6 +76,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     color = c;
   }
 
+  @Override
   public void initTrans(StateObj _state) {
     if (_state != state) {
       state = _state;
@@ -87,6 +88,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public Object clone()
       throws CloneNotSupportedException {
@@ -147,6 +149,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
   }
 
+  @Override
   public void paintComponent(Graphics g) {
     if (ready && currPage == myPage) {
 
@@ -228,7 +231,6 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
   @Override
   public void adjustShapeOrPosition(int x, int y) {
-
     if (currPage == myPage) {
       if (selectStatus == SelectOptions.START) {
         Point currPt = new Point(x, y);
@@ -244,11 +246,11 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
         startPt.setLocation(stateBorderPts.get(startStateIndex).getX(),
             stateBorderPts.get(startStateIndex).getY());
       }
-      if (selectStatus == SelectOptions.STARTCTRL)
+      if (selectStatus == SelectOptions.STARTCTRL) {
         startCtrlPt.setLocation(x, y);
-      if (selectStatus == SelectOptions.ENDCTRL)
+      } else if (selectStatus == SelectOptions.ENDCTRL) {
         endCtrlPt.setLocation(x, y);
-      if (selectStatus == SelectOptions.END) {
+      } else if (selectStatus == SelectOptions.END) {
         Point currPt = new Point(x, y);
         double temp;
         double max = 1000000;

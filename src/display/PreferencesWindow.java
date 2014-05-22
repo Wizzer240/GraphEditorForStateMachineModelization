@@ -55,7 +55,7 @@ import javax.swing.border.LineBorder;
  * The Properties JDialog to be able to edit the configurations.
  */
 @SuppressWarnings("serial")
-public class Pref extends JDialog {
+public class PreferencesWindow extends JDialog {
 
   private DrawArea drawArea;
   private JColorChooser colorChooser;
@@ -66,7 +66,7 @@ public class Pref extends JDialog {
   private Color tempLTC;
 
   /** Creates new form Pref */
-  public Pref(Frame parent, DrawArea da) {
+  public PreferencesWindow(Frame parent, DrawArea da) {
     super(parent, true);
     drawArea = da;
     tempSC = drawArea.getDefSC();
