@@ -36,7 +36,9 @@ import graph.Model;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -48,7 +50,9 @@ import java.util.Iterator;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DropMode;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -69,8 +73,6 @@ import display.FizzimGui;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 
-import java.awt.FlowLayout;
-
 /**
  * The ListCutPaste example illustrates cut, copy, paste
  * and drag and drop using three instances of JList.
@@ -86,6 +88,15 @@ import java.awt.FlowLayout;
 @SuppressWarnings("serial")
 public class IdentifiersToolKit extends JSplitPane {
   ListTransferHandler lh;
+
+  public static void main(String args[]) {
+    JFrame frame = new JFrame();
+    FizzimGui fizzim = new FizzimGui();
+
+    frame.add(new IdentifiersToolKit(new FizzimGui()));
+    frame.pack();
+    frame.setVisible(true);
+  }
 
   public IdentifiersToolKit(FizzimGui fizzim) {
     super(JSplitPane.VERTICAL_SPLIT);
@@ -111,33 +122,38 @@ public class IdentifiersToolKit extends JSplitPane {
     FizzimGui.err_stream.add(outStream);
 
     JPanel bottom_panel = new JPanel();
-    // bottom_panel.setLayout(new BoxLayout(bottom_panel, BoxLayout.Y_AXIS));
-    bottom_panel.setLayout(new BorderLayout());
-    // bottom_panel.setPreferredSize(new Dimension(100, 30));
+    bottom_panel.setLayout(new BoxLayout(bottom_panel, BoxLayout.Y_AXIS));
+    // bottom_panel.setLayout(new BorderLayout());
+    bottom_panel.setPreferredSize(new Dimension(200, 200));
     // bottom_panel.setMaximumSize(new Dimension(200, 30));
 
     JPanel buttons_panel = new JPanel();
-    bottom_panel.add(buttons_panel, BorderLayout.NORTH);
-    buttons_panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    bottom_panel.add(buttons_panel);
+    buttons_panel.setLayout(new BoxLayout(buttons_panel, BoxLayout.X_AXIS));
 
-    JButton btnNewButton = new JButton("Rafraichir");
-    buttons_panel.add(btnNewButton);
+    Font myFont = new Font("Arial", Font.ROMAN_BASELINE | Font.BOLD, 12);
 
-    JButton clear_button = new JButton("Clear");
+    JButton refresh_button = new JButton("Rafraichir");
+    refresh_button.setMargin(new Insets(1, 1, 1, 1));
+    refresh_button.setFont(myFont);
+    buttons_panel.add(refresh_button);
+
+    JButton clear_button = new JButton("Effacer l'historique");
+    clear_button.setMargin(new Insets(1, 1, 1, 1));
+    clear_button.setFont(myFont);
     buttons_panel.add(clear_button);
     clear_button.addActionListener(new ActionListener() {
-
       @Override
       public void actionPerformed(ActionEvent arg0) {
         textArea.setText(null);
       }
     });
 
-    btnNewButton.addActionListener(new UpdateLists(upper_part));
+    refresh_button.addActionListener(new UpdateLists(upper_part));
 
     JScrollPane errors_panel = new JScrollPane();
     errors_panel.setViewportView(textArea);
-    bottom_panel.add(errors_panel, BorderLayout.CENTER);
+    bottom_panel.add(errors_panel);
 
     setBottomComponent(bottom_panel);
 
@@ -160,7 +176,7 @@ public class IdentifiersToolKit extends JSplitPane {
       list1 = new JList<String>(indicators);
       list1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       JScrollPane sp1 = new JScrollPane(list1);
-      sp1.setPreferredSize(new Dimension(100, 200));
+      // sp1.setPreferredSize(new Dimension(100, 200));
       list1.setDragEnabled(true);
       list1.setTransferHandler(lh);
       list1.setDropMode(DropMode.ON_OR_INSERT);
@@ -175,7 +191,7 @@ public class IdentifiersToolKit extends JSplitPane {
       list2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list2.setDragEnabled(true);
       JScrollPane sp2 = new JScrollPane(list2);
-      sp2.setPreferredSize(new Dimension(100, 200));
+      // sp2.setPreferredSize(new Dimension(100, 200));
       list2.setTransferHandler(lh);
       list2.setDropMode(DropMode.INSERT);
       setMappings(list2);
@@ -190,7 +206,7 @@ public class IdentifiersToolKit extends JSplitPane {
       list3.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list3.setDragEnabled(true);
       JScrollPane sp3 = new JScrollPane(list3);
-      sp3.setPreferredSize(new Dimension(100, 200));
+      // sp3.setPreferredSize(new Dimension(100, 200));
       list3.setTransferHandler(lh);
       list3.setDropMode(DropMode.ON);
       setMappings(list3);
@@ -199,7 +215,7 @@ public class IdentifiersToolKit extends JSplitPane {
       pan3.setBorder(BorderFactory.createTitledBorder("Commandes"));
       panel.add(pan3);
 
-      setPreferredSize(new Dimension(100, 200));
+      // setPreferredSize(new Dimension(200, 400));
       add(panel, BorderLayout.CENTER);
     }
 

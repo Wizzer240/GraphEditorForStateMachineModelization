@@ -419,7 +419,7 @@ public class FizzimGui extends JFrame {
     gbc_right.gridx = 2;
     gbc_right.gridy = 0;
     gbc_right.fill = GridBagConstraints.BOTH;
-    gbc_right.weightx = 0.8;
+    gbc_right.weightx = 0.6;
     gbc_right.weighty = 1;
 
     getContentPane().add(right, gbc_right);
@@ -484,7 +484,7 @@ public class FizzimGui extends JFrame {
     FileMenu.add(FileItemSaveAs);
 
     /* Open as 6 lines file */
-    FileItemOpen6Lines.setText("Open As 6 lines");
+    FileItemOpen6Lines.setText(locale.getString("menu_open6lines"));
     FileItemOpen6Lines.setMnemonic(java.awt.event.KeyEvent.VK_L);
     FileItemOpen6Lines.setDisplayedMnemonicIndex(11);
     FileItemOpen6Lines.addActionListener(new java.awt.event.ActionListener() {
@@ -495,7 +495,7 @@ public class FizzimGui extends JFrame {
     FileMenu.add(FileItemOpen6Lines);
 
     /* Save as 6 lines file */
-    FileItemSaveAs6Lines.setText("Save As 6 lines");
+    FileItemSaveAs6Lines.setText(locale.getString("menu_save6lines"));
     FileItemSaveAs6Lines.setMnemonic(java.awt.event.KeyEvent.VK_L);
     FileItemSaveAs6Lines.setDisplayedMnemonicIndex(11);
     FileItemSaveAs6Lines.addActionListener(new java.awt.event.ActionListener() {
@@ -1694,8 +1694,8 @@ public class FizzimGui extends JFrame {
     // TODO
   }
 
-  public static TeeOutputStream out_stream;
-  public static TeeOutputStream err_stream;
+  public static TeeOutputStream out_stream = new TeeOutputStream(System.out);
+  public static TeeOutputStream err_stream = new TeeOutputStream(System.err);
 
   /**
    * Duplicate the standard output into the given file. If its size is greater
@@ -1716,8 +1716,8 @@ public class FizzimGui extends JFrame {
       }
 
       /* We want to print in the standard "System.out" and in "file" */
-      out_stream = new TeeOutputStream(System.out, fos);
-      err_stream = new TeeOutputStream(System.err, fos);
+      out_stream.add(fos);
+      err_stream.add(fos);
       PrintStream ps_out = new PrintStream(out_stream);
       System.setOut(ps_out);
       PrintStream ps_err = new PrintStream(err_stream);
