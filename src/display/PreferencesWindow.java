@@ -50,14 +50,18 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
+
 import java.util.ResourceBundle;
+
+import locale.UTF8Control;
 
 /**
  * The Properties JDialog to be able to edit the configurations.
  */
 @SuppressWarnings("serial")
 public class PreferencesWindow extends JDialog {
-  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale.Preferences"); //$NON-NLS-1$
+  private static final ResourceBundle BUNDLE = 
+      ResourceBundle.getBundle("locale.Preferences", new UTF8Control()); //$NON-NLS-1$
 
   private DrawArea drawArea;
   private JColorChooser colorChooser;
@@ -77,6 +81,7 @@ public class PreferencesWindow extends JDialog {
     this.setTitle(BUNDLE.getString("preferences_title")); //$NON-NLS-1$
     colorChooser = drawArea.getColorChooser();
     initComponents();
+    setLocationRelativeTo(parent);
   }
 
   private Color getColor(String type) {
