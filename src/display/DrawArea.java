@@ -30,6 +30,7 @@ import java.util.*;
 
 import javax.swing.*;
 
+import locale.UTF8Control;
 import attributes.GlobalAttributes;
 import entities.GeneralObj;
 import entities.GeneralObjType;
@@ -47,6 +48,9 @@ import gui.StateEditorWindow;
 @SuppressWarnings("serial")
 public class DrawArea extends JPanel implements MouseListener,
     MouseMotionListener, ActionListener, Printable {
+
+  private static final ResourceBundle locale =
+      ResourceBundle.getBundle("locale.Editors", new UTF8Control());
 
   // holds all objects to be currently drawn
   private Vector<Object> objList;
@@ -495,7 +499,8 @@ public class DrawArea extends JPanel implements MouseListener,
                 if (obj.getType() == GeneralObjType.STATE)
                   stateObjs.add((StateObj) obj);
               }
-              new TransitionEditorWindow(fizzim_gui, this, (StateTransitionObj) s,
+              new TransitionEditorWindow(fizzim_gui, this,
+                  (StateTransitionObj) s,
                   stateObjs, false, null);
               // new TransProperties(this, frame, true, (StateTransitionObj) s,
               // stateObjs, false, null)
@@ -667,21 +672,29 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void mouseDragged(MouseEvent arg0) {
-
-    // keep movement within page
+    /* keep movement within page */
     int x = arg0.getX();
     int y = arg0.getY();
-    if (x < 0)
+    if (x < 0) {
       x = 0;
-    if (y < 0)
+    }
+    if (y < 0) {
       y = 0;
-    if (x > fizzim_gui.maxW)
+    }
+    if (x > fizzim_gui.maxW) {
       x = fizzim_gui.maxW;
-    if (y > fizzim_gui.maxH)
+    }
+    if (y > fizzim_gui.maxH) {
       y = fizzim_gui.maxH;
+    }
 
-    // move object if multiple select is off
-    if (!multipleSelect && !arg0.isControlDown() && arg0.getModifiers() == 16) {
+    /*
+     * Move single (!multipleSelect) object if multiple select is off
+     * (!isControlDown())
+     */
+    if (!multipleSelect && !arg0.isControlDown() &&
+        (arg0.getModifiers() == InputEvent.BUTTON1_MASK)) {
+
       for (int i = 1; i < objList.size(); i++) {
         GeneralObj s = (GeneralObj) objList.elementAt(i);
         if (s.getSelectStatus() != SelectOptions.NONE) {
@@ -690,18 +703,17 @@ public class DrawArea extends JPanel implements MouseListener,
             GeneralObj obj = (GeneralObj) objList.elementAt(j);
             if (obj.getType() != GeneralObjType.STATE && obj.isParentModified())
               obj.updateObj();
-
           }
           // break;
-
         }
       }
       repaint();
     }
 
-    // if multiple select is on, then check if any objects inside yet
-    else if (!arg0.isControlDown() && arg0.getModifiers() == 16) {
-      // correct box coordinates
+    /* if multiple select is on, then check if any objects inside yet */
+    else if (!arg0.isControlDown() &&
+        (arg0.getModifiers() == InputEvent.BUTTON1_MASK)) {
+      // Correct box coordinates
       if (x < mXTemp) {
         mX0 = x;
         mX1 = mXTemp;
@@ -740,19 +752,28 @@ public class DrawArea extends JPanel implements MouseListener,
 
   }
 
-  public void createPopup(GeneralObj obj, MouseEvent e) {
-    // store location of click and object that is clicked on
+  /**
+   * Open the panel associated with a Right Click on a component
+   * 
+   * @param obj
+   *          The selected component on which the right click is performed.
+   * @param e
+   *          The MouseEvent of the click (required for the positioning of the
+   *          panel).
+   */
+  private void createPopup(GeneralObj obj, MouseEvent e) {
+    /* Store the location of click and the object that is clicked on */
     rXTemp = e.getX();
     rYTemp = e.getY();
     tempObj = obj;
 
     JMenuItem menuItem;
 
-    // Create the popup menu.
+    /* Create the popup menu. */
     JPopupMenu popup = new JPopupMenu();
 
-    // create submenu for moving pages
-    JMenu pages = new JMenu("Move to Page...");
+    /* Create the submenu for moving the object to an other page */ 
+    JMenu pages = new JMenu(locale.getString("drawArea_move_to_page"));
 
     for (int i = 1; i < fizzim_gui.getPages(); i++) {
       if (i != currPage) {
@@ -761,16 +782,19 @@ public class DrawArea extends JPanel implements MouseListener,
         pages.add(menuItem);
       }
     }
-    if (obj == null)
+    /* What is that for ?*/
+    if (obj == null) {
       popup.add(pages);
-
+    }
+    
+    /* If the object is a sate */
     if (obj != null && obj.getType() == GeneralObjType.STATE) {
-      menuItem = new JMenuItem("Add Loopback Transition");
+      menuItem = new JMenuItem(locale.getString("drawArea_add_loopback_transition"));
       menuItem.setMnemonic(KeyEvent.VK_L);
       menuItem.addActionListener(this);
       popup.add(menuItem);
-
-      JMenu states = new JMenu("Add State Transition to...");
+      
+      JMenu states = new JMenu(locale.getString("drawArea_add_transition_to"));
       states.setMnemonic(KeyEvent.VK_T);
       states.setDisplayedMnemonicIndex(10);
       for (int j = 1; j < objList.size(); j++) {
@@ -783,21 +807,22 @@ public class DrawArea extends JPanel implements MouseListener,
         }
       }
       popup.add(states);
-
-      menuItem = new JMenuItem("Edit State Properties");
+      
+      menuItem = new JMenuItem(locale.getString("drawArea_edit_state_properties"));
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
       popup.add(pages);
     }
+    /* If the object is a common transition */
     if (obj != null && obj.getType() == GeneralObjType.TRANSITION) {
-
-      menuItem = new JMenuItem("Edit State Transition Properties");
+       
+      menuItem = new JMenuItem(locale.getString("drawArea_edit_transition_properties"));
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
       if (obj.getSelectStatus() == SelectOptions.TXT) {
-        JMenu pages2 = new JMenu("Move to Page...");
+        JMenu pages2 = new JMenu(locale.getString("drawArea_move_to_page"));
         StateTransitionObj sobj = (StateTransitionObj) obj;
         for (int i = 1; i < fizzim_gui.getPages(); i++) {
           if (i != currPage && (i == sobj.getEPage() || i == sobj.getSPage())) {
@@ -808,16 +833,18 @@ public class DrawArea extends JPanel implements MouseListener,
         }
         popup.add(pages2);
       }
-
+       
     }
+    /* If the object is a loopback transition */
     if (obj != null && obj.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
-      menuItem = new JMenuItem("Edit Loopback Transition Properties");
+      menuItem = new JMenuItem(locale.getString("drawArea_edit_loopback_properties"));
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
     }
+    /* If the object is a text */
     if (obj != null && obj.getType() == GeneralObjType.TEXT) {
-      menuItem = new JMenuItem("Edit Text");
+      menuItem = new JMenuItem(locale.getString("drawArea_edit_text"));
       menuItem.setMnemonic(KeyEvent.VK_E);
       menuItem.addActionListener(this);
       popup.add(menuItem);
@@ -825,7 +852,6 @@ public class DrawArea extends JPanel implements MouseListener,
     }
 
     popup.show(e.getComponent(), e.getX(), e.getY());
-
   }
 
   public void createPopup(MouseEvent e) {
@@ -836,24 +862,27 @@ public class DrawArea extends JPanel implements MouseListener,
 
     // Create the popup menu.
     JPopupMenu popup = new JPopupMenu();
-    menuItem = new JMenuItem("Quick New State");
+    menuItem = new JMenuItem(locale.getString("drawArea_quick_new_state"));
     menuItem.setMnemonic(KeyEvent.VK_Q);
     menuItem.addActionListener(this);
     popup.add(menuItem);
-    menuItem = new JMenuItem("New State");
+    menuItem = new JMenuItem(locale.getString("drawArea_new_state"));
     menuItem.setMnemonic(KeyEvent.VK_S);
     menuItem.addActionListener(this);
     popup.add(menuItem);
-    menuItem = new JMenuItem("New State Transition");
+    menuItem = new JMenuItem(
+        locale.getString("drawArea_new_state_transition"));
     menuItem.setMnemonic(KeyEvent.VK_T);
     menuItem.setDisplayedMnemonicIndex(10);
     menuItem.addActionListener(this);
     popup.add(menuItem);
-    menuItem = new JMenuItem("New Loopback Transition");
+    menuItem = new JMenuItem(
+        locale.getString("drawArea_new_loopback_transition"));
     menuItem.setMnemonic(KeyEvent.VK_L);
     menuItem.addActionListener(this);
     popup.add(menuItem);
-    menuItem = new JMenuItem("New Free Text");
+    menuItem = new JMenuItem(
+        locale.getString("drawArea_new_free_text"));
     menuItem.setMnemonic(KeyEvent.VK_F);
     menuItem.addActionListener(this);
     popup.add(menuItem);
@@ -872,35 +901,37 @@ public class DrawArea extends JPanel implements MouseListener,
 
     String input = source.getText();
 
-    if (input == "Edit Text") {
+    if (input == locale.getString("drawArea_edit_text")) {
       editText((TextObj) tempObj);
-    } else if (input == "Edit State Properties") {
+    } else if (input == locale.getString("drawArea_edit_state_properties")) {
       new StateEditorWindow(fizzim_gui, this, (StateObj) tempObj);
-    } else if (input == "Edit Loopback Transition Properties") {
+    } else if (input == locale.getString("drawArea_edit_loopback_properties")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
       for (int i = 1; i < objList.size(); i++) {
         GeneralObj obj = (GeneralObj) objList.get(i);
         if (obj.getType() == GeneralObjType.STATE)
           stateObjs.add((StateObj) obj);
       }
-      new TransitionEditorWindow(fizzim_gui, this, (LoopbackTransitionObj) tempObj,
+      new TransitionEditorWindow(fizzim_gui, this,
+          (LoopbackTransitionObj) tempObj,
           stateObjs, true, null);
       // new TransProperties(this, frame, true, (LoopbackTransitionObj) tempObj,
       // stateObjs, true, null)
       // .setVisible(true);
-    } else if (input == "Edit State Transition Properties") {
+    } else if (input == locale.getString("drawArea_edit_transition_properties")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
       for (int i = 1; i < objList.size(); i++) {
         GeneralObj obj = (GeneralObj) objList.get(i);
         if (obj.getType() == GeneralObjType.STATE)
           stateObjs.add((StateObj) obj);
       }
-      new TransitionEditorWindow(fizzim_gui, this, (StateTransitionObj) tempObj,
+      new TransitionEditorWindow(fizzim_gui, this,
+          (StateTransitionObj) tempObj,
           stateObjs, false, null);
       // new TransProperties(this, frame, true, (StateTransitionObj) tempObj,
       // stateObjs, false, null)
       // .setVisible(true);
-    } else if (input == "Quick New State") {
+    } else if (input == locale.getString("drawArea_quick_new_state")) {
       GeneralObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp
           - defaultStatesHeight / 2,
           rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
@@ -911,7 +942,7 @@ public class DrawArea extends JPanel implements MouseListener,
       state.updateAttrib(global_attributes);
       commitUndo();
 
-    } else if (input == "New State") {
+    } else if (input == locale.getString("drawArea_new_state")) {
       StateObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp
           - defaultStatesHeight / 2,
           rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
@@ -921,7 +952,7 @@ public class DrawArea extends JPanel implements MouseListener,
       objList.add(state);
       state.updateAttrib(global_attributes);
       new StateEditorWindow(fizzim_gui, this, state);
-    } else if (input == "New State Transition") {
+    } else if (input == locale.getString("drawArea_new_state_transition")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
       for (int i = 1; i < objList.size(); i++) {
         GeneralObj obj = (GeneralObj) objList.get(i);
@@ -948,7 +979,7 @@ public class DrawArea extends JPanel implements MouseListener,
             "error",
             JOptionPane.ERROR_MESSAGE);
       }
-    } else if (input == "Add Loopback Transition") {
+    } else if (input == locale.getString("drawArea_add_loopback_transition")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
       for (int i = 1; i < objList.size(); i++) {
         GeneralObj obj = (GeneralObj) objList.get(i);
@@ -977,7 +1008,7 @@ public class DrawArea extends JPanel implements MouseListener,
                 "error",
                 JOptionPane.ERROR_MESSAGE);
       }
-    } else if (input == "New Loopback Transition") {
+    } else if (input == locale.getString("drawArea_new_loopback_transition")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
       for (int i = 1; i < objList.size(); i++) {
         GeneralObj obj = (GeneralObj) objList.get(i);
@@ -1007,7 +1038,7 @@ public class DrawArea extends JPanel implements MouseListener,
                 "error",
                 JOptionPane.ERROR_MESSAGE);
       }
-    } else if (input == "New Free Text") {
+    } else if (input == locale.getString("drawArea_new_free_text")) {
       GeneralObj text = new TextObj("", rXTemp, rYTemp, currPage);
       objList.add(text);
       editText((TextObj) text);
