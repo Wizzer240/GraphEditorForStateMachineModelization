@@ -698,7 +698,7 @@ public class FizzimGui extends JFrame {
   }
 
   protected void FilePrefActionPerformed(ActionEvent evt) {
-    new Pref(this, drawArea1).setVisible(true);
+    new PreferencesWindow(this, drawArea1).setVisible(true);
   }
 
   protected void FileExportPNGActionPerformed(ActionEvent evt) {
