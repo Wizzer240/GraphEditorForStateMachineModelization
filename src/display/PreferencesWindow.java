@@ -50,12 +50,14 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
+import java.util.ResourceBundle;
 
 /**
  * The Properties JDialog to be able to edit the configurations.
  */
 @SuppressWarnings("serial")
 public class PreferencesWindow extends JDialog {
+  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("locale.Preferences"); //$NON-NLS-1$
 
   private DrawArea drawArea;
   private JColorChooser colorChooser;
@@ -72,7 +74,7 @@ public class PreferencesWindow extends JDialog {
     tempSC = drawArea.getDefSC();
     tempSTC = drawArea.getDefSTC();
     tempLTC = drawArea.getDefLTC();
-    this.setTitle("Preferences");
+    this.setTitle(BUNDLE.getString("preferences_title")); //$NON-NLS-1$
     colorChooser = drawArea.getColorChooser();
     initComponents();
   }
@@ -197,30 +199,30 @@ public class PreferencesWindow extends JDialog {
     globalTablePanel
         .setBorder(BorderFactory.createTitledBorder("Global Table"));
     tableVisCheckbox.setSelected(drawArea.getTableVis());
-    tableVisCheckbox.setText("Table Visible");
+    tableVisCheckbox.setText(BUNDLE.getString("preferences_table_visible_checkbox")); //$NON-NLS-1$
     tableVisCheckbox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     tableVisCheckbox.setMargin(new Insets(0, 0, 0, 0));
 
-    jLabel1.setText("Space between columns:");
+    jLabel1.setText(BUNDLE.getString("preferences_space_between_columns")); //$NON-NLS-1$
 
     spaceTextField.setText(String.valueOf(drawArea.getSpace()));
 
-    jLabel2.setText("pixels");
+    jLabel2.setText(BUNDLE.getString("preferences_pixels")); //$NON-NLS-1$
 
-    jLabel3.setText("Table Font:");
+    jLabel3.setText(BUNDLE.getString("preferences_table_font")); //$NON-NLS-1$
 
     // default state size
-    SPW.setText("Default State Width:");
-    SPH.setText("Default State Height:");
+    SPW.setText(BUNDLE.getString("preferences_default_state_width")); //$NON-NLS-1$
+    SPH.setText(BUNDLE.getString("preferences_default_state_height")); //$NON-NLS-1$
     SPWField.setValue(new Integer(drawArea.getStateW()));
     SPWField.setColumns(4);
     SPHField.setValue(new Integer(drawArea.getStateH()));
     SPHField.setColumns(4);
 
     // default colors
-    SC1.setText("Default State Color:");
-    STC1.setText("Default State Transition Color:");
-    LTC1.setText("Default Loopback Transition Color:");
+    SC1.setText(BUNDLE.getString("preferences_default_state_color")); //$NON-NLS-1$
+    STC1.setText(BUNDLE.getString("preferences_default_transition_color")); //$NON-NLS-1$
+    LTC1.setText(BUNDLE.getString("preferences_default_loopback_color")); //$NON-NLS-1$
 
     setUpColorBox(SC2, "SC");
     setUpColorBox(STC2, "STC");
@@ -421,7 +423,7 @@ public class PreferencesWindow extends JDialog {
 
     jPanel2.setBorder(BorderFactory
         .createTitledBorder("Draw Area"));
-    jLabel5.setText("Font:");
+    jLabel5.setText(BUNDLE.getString("preferences_font")); //$NON-NLS-1$
 
     drawAreaFontComboBox.setModel(new DefaultComboBoxModel<String>(fontNames));
     drawAreaFontComboBox.setSelectedItem(drawArea.getFont().getFontName());
@@ -433,17 +435,17 @@ public class PreferencesWindow extends JDialog {
         .getSize()));
 
     gridCheckbox.setSelected(drawArea.getGrid());
-    gridCheckbox.setText("Grid");
+    gridCheckbox.setText(BUNDLE.getString("preferences_grid")); //$NON-NLS-1$
     gridCheckbox.setBorder(BorderFactory.createEmptyBorder(0,
         0, 0, 0));
     gridCheckbox.setMargin(new Insets(0, 0, 0, 0));
 
-    gridSize.setText("Grid Size:");
+    gridSize.setText(BUNDLE.getString("preferences_grid_size")); //$NON-NLS-1$
 
     gridSTextField.setText(String.valueOf(drawArea.getGridSpace()));
 
-    lineWidth.setText("Line Width:");
-    pixels.setText("pixels");
+    lineWidth.setText(BUNDLE.getString("preferences_line_width")); //$NON-NLS-1$
+    pixels.setText(BUNDLE.getString("preferences_pixels")); //$NON-NLS-1$
 
     lineWidthTextField.setText(String.valueOf(drawArea.getLineWidth()));
     lineWidthTextField.setColumns(2);
@@ -452,9 +454,9 @@ public class PreferencesWindow extends JDialog {
 
     // gridSTextField.setText(String.valueOf(drawArea.getGridSpace()));
 
-    jLabel8.setText("pixels");
-    jLabel9.setText("pixels");
-    jLabel10.setText("pixels");
+    jLabel8.setText(BUNDLE.getString("preferences_pixels")); //$NON-NLS-1$
+    jLabel9.setText(BUNDLE.getString("preferences_pixels")); //$NON-NLS-1$
+    jLabel10.setText(BUNDLE.getString("preferences_pixels")); //$NON-NLS-1$
     GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
     jPanel2.setLayout(jPanel2Layout);
     jPanel2Layout.setHorizontalGroup(jPanel2Layout.
@@ -600,14 +602,14 @@ public class PreferencesWindow extends JDialog {
                     .addComponent(LTC2))
                 .addContainerGap()));
 
-    jButton1.setText("Cancel");
+    jButton1.setText(BUNDLE.getString("preferences_cancel")); //$NON-NLS-1$
     jButton1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         jButton1ActionPerformed(evt);
       }
     });
 
-    jButton2.setText("OK");
+    jButton2.setText(BUNDLE.getString("preferences_ok")); //$NON-NLS-1$
     jButton2.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         jButton2ActionPerformed(evt);
