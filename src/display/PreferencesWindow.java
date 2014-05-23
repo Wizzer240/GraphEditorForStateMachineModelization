@@ -60,7 +60,8 @@ import locale.UTF8Control;
  */
 @SuppressWarnings("serial")
 public class PreferencesWindow extends JDialog {
-  private static final ResourceBundle BUNDLE = 
+
+  private static final ResourceBundle BUNDLE =
       ResourceBundle.getBundle("locale.Preferences", new UTF8Control()); //$NON-NLS-1$
 
   private DrawArea drawArea;
@@ -204,7 +205,8 @@ public class PreferencesWindow extends JDialog {
     globalTablePanel
         .setBorder(BorderFactory.createTitledBorder("Global Table"));
     tableVisCheckbox.setSelected(drawArea.getTableVis());
-    tableVisCheckbox.setText(BUNDLE.getString("preferences_table_visible_checkbox")); //$NON-NLS-1$
+    tableVisCheckbox.setText(BUNDLE
+        .getString("preferences_table_visible_checkbox")); //$NON-NLS-1$
     tableVisCheckbox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     tableVisCheckbox.setMargin(new Insets(0, 0, 0, 0));
 

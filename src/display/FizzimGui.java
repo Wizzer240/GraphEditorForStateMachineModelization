@@ -895,21 +895,19 @@ public class FizzimGui extends JFrame {
 
   protected void TabChanged(ChangeEvent e) {
 
-    if (!loading)
-    {
+    if (!loading){
       JTabbedPane pane = (JTabbedPane) e.getSource();
 
       // Get current tab
       int sel = pane.getSelectedIndex();
       // fill all but current tab with empty panels
-      for (int i = 1; i < pages_tabbedPane.getTabCount(); i++)
-      {
-        if (i != sel)
-          pages_tabbedPane.setComponentAt(i, new JPanel());
+      for (int i = 1; i < pages_tabbedPane.getTabCount(); i++){
+        if (i != sel){
+          pages_tabbedPane.setComponentAt(i, new JPanel()); 
+        }
       }
 
-      if (sel == 0)
-      {
+      if (sel == 0){
         int index = pages_tabbedPane.getTabCount();
         pages_tabbedPane.addTab("Page " + String.valueOf(index),
             central_scrolling_panel);
@@ -997,6 +995,7 @@ public class FizzimGui extends JFrame {
       }
     }
     if (createNew) {
+      loading = true;
       for (int i = pages_tabbedPane.getTabCount() - 1; i > 1; i--) {
         pages_tabbedPane.remove(i);
       }
@@ -1009,6 +1008,8 @@ public class FizzimGui extends JFrame {
       }
       initGlobal();
       drawArea1.open(global_attributes);
+      
+      loading = false;
     }
   }
 
