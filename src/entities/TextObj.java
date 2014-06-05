@@ -30,7 +30,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 
@@ -63,6 +62,7 @@ public class TextObj extends GeneralObj {
   private int col1W = 0, col2W = 0, col3W = 0, col4W = 0;
 
   public TextObj(int x, int y, GlobalAttributes globals, Font font) {
+    super(null, globals);
     selectStatus = SelectOptions.NONE;
     tX = x;
     tY = y;
@@ -79,6 +79,7 @@ public class TextObj extends GeneralObj {
   }
 
   public TextObj(int x, int y, GlobalAttributes globals, int page) {
+    super(null, globals);
     selectStatus = SelectOptions.NONE;
     tX = x;
     tY = y;
@@ -93,7 +94,8 @@ public class TextObj extends GeneralObj {
     tableVis = visibility;
   }
 
-  public TextObj(String s, int x, int y, int page) {
+  public TextObj(GlobalAttributes globals, String s, int x, int y, int page) {
+    super(null, globals);
     selectStatus = SelectOptions.NONE;
     text = s;
     tX = x;
@@ -169,7 +171,7 @@ public class TextObj extends GeneralObj {
             .get(j);
 
         String name = "   " + obj.getName();
-        
+
         if (fm != null && col1W < fm.stringWidth(name)) {
           col1W = fm.stringWidth(name);
         }
@@ -497,6 +499,7 @@ public class TextObj extends GeneralObj {
 
   @Override
   public LinkedList<ObjAttribute> getAttributes(GlobalAttributes globals) {
-    throw new NotImplementedException();
+    return null;
+    // throw new NotImplementedException();
   }
 }

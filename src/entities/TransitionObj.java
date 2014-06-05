@@ -31,6 +31,10 @@ import attributes.ObjAttribute;
 
 public abstract class TransitionObj extends GeneralObj implements Cloneable {
 
+  public TransitionObj(String name, GlobalAttributes globals) {
+    super(name, globals);
+  }
+
   public abstract void setModifiedTrue();
 
   public abstract void updateObj();

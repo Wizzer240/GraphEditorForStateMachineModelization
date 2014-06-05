@@ -21,7 +21,8 @@ package entities;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -34,6 +35,19 @@ import attributes.ObjAttribute;
  *        text boxes)
  */
 public abstract class GeneralObj implements Cloneable {
+
+  /* List of obj attributes for the object */
+  LinkedList<ObjAttribute> attrib = new LinkedList<ObjAttribute>();
+  LinkedList<ObjAttribute> global;
+  GlobalAttributes allGlobal;
+
+  public GeneralObj(String name, GlobalAttributes globals) {
+    global = getAttributes(globals);
+    allGlobal = globals;
+    if (name != null) {
+      setName(name);
+    }
+  }
 
   /**
    * Manages the display of the object
@@ -112,13 +126,6 @@ public abstract class GeneralObj implements Cloneable {
 
   public abstract void notifyChange(GeneralObj oldObj, GeneralObj clonedObj);
 
-  String objName;
-
-  /* List of obj attributes for the object */
-  LinkedList<ObjAttribute> attrib = new LinkedList<ObjAttribute>();
-  LinkedList<ObjAttribute> global;
-  GlobalAttributes allGlobal;
-
   public LinkedList<ObjAttribute> getAttributeList() {
     return attrib;
   }
@@ -189,13 +196,10 @@ public abstract class GeneralObj implements Cloneable {
         // if wasnt fixed, then it doesnt exist and needs to be created
         if (!breaker) {
           ObjAttribute cloned = null;
-          try {
-            cloned = (ObjAttribute) g.clone();
-          } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-          }
+          cloned = (ObjAttribute) g.clone();
+
           if (cloned.getName().equals("name")) {
-            cloned.setValue(objName);
+            cloned.setValue(getName());
             cloned.setEditable(1, ObjAttribute.LOCAL);
           }
           attrib.add(i, cloned);
@@ -257,11 +261,35 @@ public abstract class GeneralObj implements Cloneable {
   }
 
   public String getName() {
-    return objName;
+    for (ObjAttribute attribute : attrib) {
+      if (attribute.getName().equals("name")) {
+        return attribute.getValue();
+      }
+    }
+    throw new Error("Name not found in the attributes " + attrib);
   }
 
   public void setName(String str) {
-    objName = str;
+    for (ObjAttribute attribute : attrib) {
+      if (attribute.getName().equals("name")) {
+        attribute.setValue(str);
+        return;
+      }
+    }
+    /* The name attribute does not exist, it is be created. */
+    for (ObjAttribute global_attr : getAttributes(allGlobal)) {
+      if (global_attr.getName().equals("name")) {
+        ObjAttribute name_attribute;
+        name_attribute = (ObjAttribute) global_attr.clone();
+
+        name_attribute.setValue(str);
+        name_attribute.setEditable(1, ObjAttribute.LOCAL);
+        attrib.add(0, name_attribute);
+        return;
+      }
+    }
+    throw new Error("Global name attribute not found in "
+        + getAttributes(allGlobal));
   }
 
   public abstract void save(BufferedWriter writer) throws IOException;

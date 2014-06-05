@@ -21,14 +21,39 @@ package display;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.print.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.ResourceBundle;
+import java.util.TreeSet;
+import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.JColorChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.RepaintManager;
 
 import locale.UTF8Control;
 import attributes.GlobalAttributes;
@@ -41,8 +66,8 @@ import entities.StateObj;
 import entities.StateTransitionObj;
 import entities.TextObj;
 import entities.TransitionObj;
-import gui.TransitionEditorWindow;
 import gui.StateEditorWindow;
+import gui.TransitionEditorWindow;
 
 // Written by: Michael Zimmer - mike@zimmerdesignservices.com
 
@@ -921,8 +946,9 @@ public class DrawArea extends JPanel implements MouseListener,
       // stateObjs, false, null)
       // .setVisible(true);
     } else if (input == locale.getString("drawArea_quick_new_state")) {
-      GeneralObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp
-          - defaultStatesHeight / 2,
+      GeneralObj state = new StateObj(global_attributes,
+          rXTemp - defaultStatesWidth / 2, rYTemp
+              - defaultStatesHeight / 2,
           rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
           createSCounter
               .get(currPage), currPage,
@@ -936,8 +962,9 @@ public class DrawArea extends JPanel implements MouseListener,
       commitUndo();
 
     } else if (input == locale.getString("drawArea_new_state")) {
-      StateObj state = new StateObj(rXTemp - defaultStatesWidth / 2, rYTemp
-          - defaultStatesHeight / 2,
+      StateObj state = new StateObj(global_attributes,
+          rXTemp - defaultStatesWidth / 2, rYTemp
+              - defaultStatesHeight / 2,
           rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
           createSCounter
               .get(currPage), currPage,
@@ -958,7 +985,8 @@ public class DrawArea extends JPanel implements MouseListener,
 
       }
       if (stateObjs.size() > 1) {
-        GeneralObj trans = new StateTransitionObj(createTCounter, currPage,
+        GeneralObj trans = new StateTransitionObj(global_attributes,
+            createTCounter, currPage,
             this, defaultStateTransitionsColor);
         createTCounter++;
         objList.add(trans);
@@ -985,7 +1013,8 @@ public class DrawArea extends JPanel implements MouseListener,
 
       }
       if (stateObjs.size() > 0) {
-        GeneralObj trans = new LoopbackTransitionObj(rXTemp, rYTemp,
+        GeneralObj trans = new LoopbackTransitionObj(global_attributes,
+            rXTemp, rYTemp,
             createTCounter, currPage, defaultTransitionsColor);
         createTCounter++;
         objList.add(trans);
@@ -1014,7 +1043,8 @@ public class DrawArea extends JPanel implements MouseListener,
 
       }
       if (stateObjs.size() > 0) {
-        GeneralObj trans = new LoopbackTransitionObj(rXTemp, rYTemp,
+        GeneralObj trans = new LoopbackTransitionObj(global_attributes,
+            rXTemp, rYTemp,
             createTCounter, currPage, defaultTransitionsColor);
         createTCounter++;
         objList.add(trans);
@@ -1034,15 +1064,18 @@ public class DrawArea extends JPanel implements MouseListener,
                 JOptionPane.ERROR_MESSAGE);
       }
     } else if (input == locale.getString("drawArea_new_free_text")) {
-      GeneralObj text = new TextObj("", rXTemp, rYTemp, currPage);
+      GeneralObj text = new TextObj(global_attributes, "", rXTemp, rYTemp,
+          currPage);
       objList.add(text);
       editText((TextObj) text);
     } else if (checkStateName(input)) {
+
       /*
        * Creation of a new transition using the "Add Transition State to..."
        * menu
        */
-      GeneralObj trans = new StateTransitionObj(createTCounter, currPage, this,
+      GeneralObj trans = new StateTransitionObj(global_attributes,
+          createTCounter, currPage, this,
           (StateObj) tempObj, getStateObj(input), defaultStateTransitionsColor);
       createTCounter++;
       objList.add(trans);
@@ -1824,7 +1857,8 @@ public class DrawArea extends JPanel implements MouseListener,
      * new LinkedList<ObjAttribute>(globalList
      * .get(EnumGlobalList.STATES)), stateName, grid, currPage, defSC);
      */
-    GeneralObj state = new StateObj(x0, y0, x1, y1, stateName, currPage,
+    GeneralObj state = new StateObj(global_attributes,
+        x0, y0, x1, y1, stateName, currPage,
         defaultStateTransitionsColor, grid, gridS);
 
     // Check if the name of the state is an Integer, if it's the case, set
@@ -1853,8 +1887,8 @@ public class DrawArea extends JPanel implements MouseListener,
 
     StateObj source = getStateObj(sourceState);
     StateObj destination = getStateObj(endState);
-    StateTransitionObj trans = new StateTransitionObj(createTCounter, currPage,
-        this,
+    StateTransitionObj trans = new StateTransitionObj(global_attributes,
+        createTCounter, currPage, this,
         source, destination, defaultStateTransitionsColor);
     createTCounter++;
     objList.add(trans);
@@ -1885,6 +1919,7 @@ public class DrawArea extends JPanel implements MouseListener,
     point1.setLocation(544.0, 185.0);
 
     LoopbackTransitionObj trans = new LoopbackTransitionObj(
+        global_attributes,
         point1,
         point2,
         point3,

@@ -126,10 +126,14 @@ public class ObjAttribute implements Cloneable {
     comment = comm;
   }
 
-  public Object clone()
-      throws CloneNotSupportedException
-  {
-    ObjAttribute copy = (ObjAttribute) super.clone();
+  public Object clone() {
+    ObjAttribute copy;
+    try {
+      copy = (ObjAttribute) super.clone();
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+      return null;
+    }
     copy.editable = editable.clone();
     // TODO color?
     return copy;

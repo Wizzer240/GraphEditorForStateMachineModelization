@@ -19,13 +19,6 @@ package gui;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -35,6 +28,12 @@ import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
@@ -62,6 +61,13 @@ public class TransitionEditorPanel extends JPanel {
   private TransPropertiesPanel second_tab;
   private JTextArea[] fields;
   private TransitionObj transition;
+
+  /*
+   * This constant values correspond to the position of the tab in the
+   * JTabbedPane. Tabs are numbered beginning at 0.
+   */
+  private static final int GENERAL_TAB = 0;
+  private static final int DETAILS_TAB = 1;
 
   /**
    * Create the panel that is used in the editor of the states
@@ -152,7 +158,7 @@ public class TransitionEditorPanel extends JPanel {
      */
     window.getBtnOk().addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-        updateData(1);
+        updateData(DETAILS_TAB);
         second_tab.TPOKActionPerformed(evt);
       }
     });
@@ -170,14 +176,14 @@ public class TransitionEditorPanel extends JPanel {
    * @details This is used when changing tabs
    */
   public void updateData(int tab_selected) {
-    if (tab_selected == 0) { // We select the general tab
+    if (tab_selected == GENERAL_TAB) { // We select the general tab
       /* We force the commit the current cell of tab 2 */
       TableCellEditor cell_editor = second_tab.getTable().getCellEditor();
       if (cell_editor != null)
         cell_editor.stopCellEditing();
       /* We get the value of the fields and update the first tab */
       LinkedList<ObjAttribute> attributes = transition.getAttributeList();
-      int y_index = 0;
+      int y_index = DETAILS_TAB;
       for (ObjAttribute one_attribute : attributes) {
         String value = (String) one_attribute.get(1);
         fields[y_index].setText(value);

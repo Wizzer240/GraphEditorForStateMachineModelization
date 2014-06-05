@@ -21,13 +21,6 @@ package gui;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -36,17 +29,23 @@ import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellEditor;
 
+import locale.UTF8Control;
 import attributes.ObjAttribute;
 import display.DrawArea;
 import display.StatePropertiesPanel;
 import entities.StateObj;
-import locale.UTF8Control;
 
 /**
  * The edge editor panel is composed of two tabs:
@@ -63,6 +62,13 @@ public class StateEditorPanel extends JPanel {
   private JTextArea[] fields;
   private StatePropertiesPanel second_tab;
   private StateObj state;
+
+  /*
+   * This constant values correspond to the position of the tab in the
+   * JTabbedPane. Tabs are numbered beginning at 0.
+   */
+  private static final int GENERAL_TAB = 0;
+  private static final int DETAILS_TAB = 1;
 
   /**
    * Create the panel that is used in the editor of the states
@@ -172,7 +178,7 @@ public class StateEditorPanel extends JPanel {
     window.getBtnOk().addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         /* We update the data of the details tab with the data in General */
-        updateData(1);
+        updateData(DETAILS_TAB);
         second_tab.SPOKActionPerformed(evt);
       }
     });
@@ -190,7 +196,7 @@ public class StateEditorPanel extends JPanel {
    * @details This is used when changing tabs
    */
   public void updateData(int tab_selected) {
-    if (tab_selected == 0) { // We select the general tab
+    if (tab_selected == GENERAL_TAB) { // We select the general tab
       /* We force the commit the current cell of tab 2 */
       TableCellEditor cell_editor = second_tab.getTable().getCellEditor();
       if (cell_editor != null)
@@ -205,13 +211,17 @@ public class StateEditorPanel extends JPanel {
         y_index++;
       }
 
-    } else if (tab_selected == 1) { // We select the details tab
+    } else if (tab_selected == DETAILS_TAB) { // We select the details tab
       /* We update the value of the name in the JTable */
       LinkedList<ObjAttribute> attributes = state.getAttributeList();
       int y_index = 0;
       for (ObjAttribute one_attribute : attributes) {
         String value = fields[y_index].getText();
         one_attribute.set(1, value);
+        /* This ugly line is necessary since name is duplicated within states... */
+        if (one_attribute.getName().equals("name")) {
+          state.setName(value);
+        }
         /* This line is necessary to consider the new value added as local. */
         one_attribute.setEditable(1, ObjAttribute.LOCAL);
 

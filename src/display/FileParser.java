@@ -474,10 +474,12 @@ public class FileParser {
     TransitionObj obj;
     String name = newList.get(0).getValue();
     if (startState.equals(endState)) {
-      obj = new LoopbackTransitionObj(sP, eP, sCP, eCP, newList, name,
+      obj = new LoopbackTransitionObj(global_attributes,
+          sP, eP, sCP, eCP, newList, name,
           startState, endState, sStateIndex, eStateIndex, page, currColor);
     } else {
-      obj = new StateTransitionObj(sP, eP, sCP, eCP, newList, name, startState,
+      obj = new StateTransitionObj(global_attributes,
+          sP, eP, sCP, eCP, newList, name, startState,
           endState, sStateIndex, eStateIndex, page, pS, pSC, pE, pEC, drawArea,
           stub1, currColor);
     }
@@ -510,7 +512,8 @@ public class FileParser {
     if (compareVersions(ver, "8.03.16") > 0) // ver >= 80316
       currColor = new Color(Integer.parseInt(tempList3.get(i + 20)));
     String name = newList.get(0).getValue();
-    StateObj state = new StateObj(x0, y0, x1, y1, newList, name, reset1, page,
+    StateObj state = new StateObj(global_attributes,
+        x0, y0, x1, y1, newList, name, reset1, page,
         currColor);
 
     objList.add(state);
@@ -525,7 +528,7 @@ public class FileParser {
     int page = Integer.parseInt(tempList3.get(8));
 
     if (!text.equals("fzm_globalTable")) {
-      TextObj obj = new TextObj(text, x, y, page);
+      TextObj obj = new TextObj(global_attributes, text, x, y, page);
       objList.add(obj);
     } else {
       TextObj obj = new TextObj(x, y, global_attributes, page);
