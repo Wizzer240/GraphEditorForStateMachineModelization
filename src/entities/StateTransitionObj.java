@@ -21,7 +21,12 @@ package entities;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -30,8 +35,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import display.DrawArea;
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
+import display.DrawArea;
 
 public class StateTransitionObj extends TransitionObj implements Cloneable {
 
@@ -73,8 +79,10 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   int len;
   double angle;
 
-  public StateTransitionObj(int numb, int page, DrawArea da, Color c) {
-    objName = "trans" + numb;
+  public StateTransitionObj(GlobalAttributes globals,
+      int numb, int page, DrawArea da, Color c) {
+    super("trans" + numb, globals);
+
     myPage = page;
     drawArea = da;
     pageS = new Point(0, 0);
@@ -84,28 +92,26 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     color = c;
   }
 
-  public StateTransitionObj(int numb, int page, DrawArea da, StateObj start,
+  public StateTransitionObj(GlobalAttributes globals,
+      int numb, int page, DrawArea da, StateObj start,
       StateObj end, Color c) {
-    objName = "trans" + numb;
-    myPage = page;
-    drawArea = da;
-    pageS = new Point(0, 0);
-    pageE = new Point(0, 0);
-    pageSC = new Point(0, 0);
-    pageEC = new Point(0, 0);
+    this(globals, numb, page, da, c);
+
     startPt = new Point(0, 0);
     endPt = new Point(0, 0);
     startCtrlPt = new Point(0, 0);
     endCtrlPt = new Point(0, 0);
     curve = new CubicCurve2D.Double();
-    color = c;
+
   }
 
-  public StateTransitionObj(Point sp, Point ep, Point scp, Point ecp,
+  public StateTransitionObj(GlobalAttributes globals,
+      Point sp, Point ep, Point scp, Point ecp,
       LinkedList<ObjAttribute> newList,
       String name, String start, String end, int sIndex, int eIndex,
       int page, Point ps, Point psc, Point pe, Point pec, DrawArea da,
       boolean s, Color c) {
+    super(name, globals);
     startPt = sp;
     endPt = ep;
     startCtrlPt = scp;
@@ -113,7 +119,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     startStateIndex = sIndex;
     endStateIndex = eIndex;
     attrib = newList;
-    objName = name;
+
     curve = new CubicCurve2D.Double(startPt.getX(), startPt.getY(), startCtrlPt
         .getX(), startCtrlPt.getY(), endCtrlPt.getX(), endCtrlPt.getY(), endPt
         .getX(), endPt.getY());

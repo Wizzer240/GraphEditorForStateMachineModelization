@@ -191,11 +191,8 @@ public class GlobalAttributes {
       LinkedList<ObjAttribute> newList = (LinkedList<ObjAttribute>) oldList
           .clone();
       for (int j = 0; j < oldList.size(); j++) {
-        try {
-          newList.set(j, (ObjAttribute) oldList.get(j).clone());
-        } catch (CloneNotSupportedException e) {
-          e.printStackTrace();
-        }
+        newList.set(j, (ObjAttribute) oldList.get(j).clone());
+
       }
       result.set(i, newList);
 

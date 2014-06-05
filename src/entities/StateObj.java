@@ -21,7 +21,9 @@ package entities;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -47,6 +49,8 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   /**
    * @details The coordinates are the ones of the rectangle containing the state
+   * @param The
+   *          global attributes.
    * @param _x0
    *          Horizontal initial coordinate of the upper left point
    * @param _y0
@@ -67,17 +71,16 @@ public class StateObj extends GeneralObj implements Cloneable {
    * @param i
    *          ??
    */
-  public StateObj(int _x0, int _y0, int _x1, int _y1, int numb, int page,
+  public StateObj(GlobalAttributes globals,
+      int _x0, int _y0, int _x1, int _y1, int numb, int page,
       Color border_color, boolean b, int i) {
-
+    super("state" + numb, globals);
     x0 = _x0;
     y0 = _y0;
     x1 = _x1;
     y1 = _y1;
     selectStatus = SelectOptions.NONE;
     color = border_color;
-
-    objName = "state" + numb;
     myPage = page;
 
     grid = b;
@@ -85,15 +88,15 @@ public class StateObj extends GeneralObj implements Cloneable {
 
   }
 
-  public StateObj(int x02, int y02, int x12, int y12,
+  public StateObj(GlobalAttributes globals, int x02, int y02, int x12, int y12,
       LinkedList<ObjAttribute> newList, String name, boolean b, int page,
       Color c) {
+    super(name, globals);
     x0 = x02;
     y0 = y02;
     x1 = x12;
     y1 = y12;
     attrib = newList;
-    objName = name;
     reset = b;
     selectStatus = SelectOptions.NONE;
     myPage = page;

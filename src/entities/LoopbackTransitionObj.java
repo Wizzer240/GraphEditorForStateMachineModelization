@@ -21,13 +21,17 @@ package entities;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.CubicCurve2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
 
 public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
@@ -47,18 +51,22 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
 
   private double ctrlAngleS, ctrlAngleE;
 
-  public LoopbackTransitionObj(int _x, int _y, int numb, int page, Color c) {
-    objName = "trans" + numb;
+  public LoopbackTransitionObj(GlobalAttributes globals,
+      int _x, int _y, int numb, int page, Color c) {
+    super("trans" + numb, globals);
+
     x = _x;
     y = _y;
     myPage = page;
     color = c;
   }
 
-  public LoopbackTransitionObj(Point sp, Point ep, Point scp, Point ecp,
+  public LoopbackTransitionObj(GlobalAttributes globals,
+      Point sp, Point ep, Point scp, Point ecp,
       LinkedList<ObjAttribute> newList,
       String name, String start, String end, int sIndex, int eIndex, int page,
       Color c) {
+    super(name, globals);
     startPt = sp;
     endPt = ep;
     startCtrlPt = scp;
@@ -66,7 +74,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     startStateIndex = sIndex;
     endStateIndex = eIndex;
     attrib = newList;
-    objName = name;
+
     loop = new CubicCurve2D.Double(startPt.getX(), startPt.getY(),
         startCtrlPt.getX(), startCtrlPt.getY(), endCtrlPt.getX(),
         endCtrlPt.getY(), endPt.getX(), endPt.getY());
