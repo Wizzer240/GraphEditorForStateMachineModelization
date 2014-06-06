@@ -943,9 +943,6 @@ public class DrawArea extends JPanel implements MouseListener,
       new TransitionEditorWindow(fizzim_gui, this,
           (LoopbackTransitionObj) tempObj,
           stateObjs, true, null);
-      // new TransProperties(this, frame, true, (LoopbackTransitionObj) tempObj,
-      // stateObjs, true, null)
-      // .setVisible(true);
     } else if (input == locale.getString("drawArea_edit_transition_properties")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
       for (int i = 1; i < objList.size(); i++) {
@@ -956,21 +953,21 @@ public class DrawArea extends JPanel implements MouseListener,
       new TransitionEditorWindow(fizzim_gui, this,
           (StateTransitionObj) tempObj,
           stateObjs, false, null);
-      // new TransProperties(this, frame, true, (StateTransitionObj) tempObj,
-      // stateObjs, false, null)
-      // .setVisible(true);
     } else if (input == locale.getString("drawArea_quick_new_state")) {
-      GeneralObj state = new StateObj(global_attributes,
-          rXTemp - defaultStatesWidth / 2, rYTemp
-              - defaultStatesHeight / 2,
-          rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
-          createSCounter, currPage,
-          defaultStatesColor, grid, gridS);
-      createSCounter++;
+      GeneralObj state;
+      do {
+        state = new StateObj(global_attributes,
+            rXTemp - defaultStatesWidth / 2, rYTemp
+                - defaultStatesHeight / 2,
+            rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
+            createSCounter, currPage,
+            defaultStatesColor, grid, gridS);
+        createSCounter++;
+
+      } while (checkStateNames(state.getName()));
       objList.add(state);
       state.updateAttrib(global_attributes);
       commitUndo();
-
     } else if (input == locale.getString("drawArea_new_state")) {
       StateObj state = new StateObj(global_attributes,
           rXTemp - defaultStatesWidth / 2, rYTemp
@@ -1001,9 +998,6 @@ public class DrawArea extends JPanel implements MouseListener,
         trans.updateAttrib(global_attributes);
         new TransitionEditorWindow(fizzim_gui, this, (TransitionObj) trans,
             stateObjs, false, null);
-        // new TransProperties(this, frame, true, (TransitionObj) trans,
-        // stateObjs, false, null)
-        // .setVisible(true);
       } else {
         JOptionPane.showMessageDialog(this,
             "Must be more than 2 states before a transition can be created",
@@ -1029,9 +1023,6 @@ public class DrawArea extends JPanel implements MouseListener,
         trans.updateAttrib(global_attributes);
         new TransitionEditorWindow(fizzim_gui, this, (TransitionObj) trans,
             stateObjs, true, (StateObj) tempObj);
-        // new TransProperties(this, frame, true, (TransitionObj) trans,
-        // stateObjs, true, (StateObj) tempObj)
-        // .setVisible(true);
       } else {
         JOptionPane
             .showMessageDialog(
@@ -1060,9 +1051,6 @@ public class DrawArea extends JPanel implements MouseListener,
 
         new TransitionEditorWindow(fizzim_gui, this, (TransitionObj) trans,
             stateObjs, true, null);
-        // new TransProperties(this, frame, true, (TransitionObj) trans,
-        // stateObjs, true, null)
-        // .setVisible(true);
       } else {
         JOptionPane
             .showMessageDialog(
@@ -1076,7 +1064,7 @@ public class DrawArea extends JPanel implements MouseListener,
           currPage);
       objList.add(text);
       editText((TextObj) text);
-    } else if (checkStateName(input)) {
+    } else if (checkStateNames(input)) {
       GeneralObj trans = new StateTransitionObj(global_attributes,
           createTCounter, currPage, this,
           (StateObj) tempObj, getStateObj(input), defaultStateTransitionsColor);
@@ -1163,16 +1151,6 @@ public class DrawArea extends JPanel implements MouseListener,
     return null;
   }
 
-  private boolean checkStateName(String input) {
-    for (int j = 1; j < objList.size(); j++) {
-      GeneralObj obj1 = (GeneralObj) objList.get(j);
-      if (obj1.getType() == GeneralObjType.STATE
-          && obj1.getName().equals(input))
-        return true;
-    }
-    return false;
-  }
-
   // update state attribute lists when global list is updated
   public void updateStates() {
     String resetName = null;
@@ -1254,6 +1232,21 @@ public class DrawArea extends JPanel implements MouseListener,
       return true;
     else
       return false;
+  }
+
+  /**
+   * 
+   * @param input
+   * @return true if an object is already named `input`.
+   */
+  private boolean checkStateNames(String input) {
+    for (int j = 1; j < objList.size(); j++) {
+      GeneralObj obj1 = (GeneralObj) objList.get(j);
+      if (obj1.getType() == GeneralObjType.STATE
+          && obj1.getName().equals(input))
+        return true;
+    }
+    return false;
   }
 
   // check for duplicate names
