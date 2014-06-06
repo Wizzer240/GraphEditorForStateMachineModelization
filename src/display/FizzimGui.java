@@ -70,7 +70,6 @@ import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -91,6 +90,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
@@ -112,7 +112,7 @@ public class FizzimGui extends JFrame {
   private static final ResourceBundle locale =
       ResourceBundle.getBundle("locale.Menus", new UTF8Control());
 
-  static final String currVer = "14.03.2";
+  static final String currVer = "14.03.3";
 
   /*
    * Global attributes for the machine, the inputs, outputs, states and
@@ -808,19 +808,19 @@ public class FizzimGui extends JFrame {
 
   protected void TabChanged(ChangeEvent e) {
 
-    if (!loading){
+    if (!loading) {
       JTabbedPane pane = (JTabbedPane) e.getSource();
 
       // Get current tab
       int sel = pane.getSelectedIndex();
       // fill all but current tab with empty panels
-      for (int i = 1; i < pages_tabbedPane.getTabCount(); i++){
-        if (i != sel){
-          pages_tabbedPane.setComponentAt(i, new JPanel()); 
+      for (int i = 1; i < pages_tabbedPane.getTabCount(); i++) {
+        if (i != sel) {
+          pages_tabbedPane.setComponentAt(i, new JPanel());
         }
       }
 
-      if (sel == 0){
+      if (sel == 0) {
         int index = pages_tabbedPane.getTabCount();
         pages_tabbedPane.addTab("Page " + String.valueOf(index),
             central_scrolling_panel);
@@ -920,7 +920,7 @@ public class FizzimGui extends JFrame {
       }
       initGlobal();
       drawArea1.open(global_attributes);
-      
+
       loading = false;
     }
 
