@@ -21,6 +21,12 @@ package display;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import entities.GeneralObj;
+import entities.LoopbackTransitionObj;
+import entities.StateObj;
+import entities.TransitionObj;
+import gui.toolkit.IdentifiersToolKit;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -66,13 +72,12 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Vector;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -93,6 +98,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
@@ -100,17 +106,11 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
-import utils.TeeOutputStream;
-import entities.GeneralObj;
-import entities.LoopbackTransitionObj;
-import entities.StateObj;
-import entities.TransitionObj;
-import gui.toolkit.IdentifiersToolKit;
 import locale.UTF8Control;
+import utils.TeeOutputStream;
 import attributes.EnumVisibility;
 import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
-import display.GlobalProperties;
 
 /* This file was originally created with matisse GUI Builder for MyEclipse.
  * Due to bugs and limitations, in is now being manually edited
@@ -200,7 +200,7 @@ public class FizzimGui extends JFrame {
             "def_type", "", Color.black, "", "", editable));
 
     global_attributes.addTransitionAttribute(
-        new ObjAttribute("name", "def_name", EnumVisibility.YES,
+        new ObjAttribute("name", "def_name", EnumVisibility.NO,
             "def_type", "", Color.black, "", "", editable));
 
     global_attributes.addStateAttribute(
@@ -213,13 +213,13 @@ public class FizzimGui extends JFrame {
     // "def_type", "", Color.black, "", "", editable));
 
     global_attributes.addTransitionAttribute(
-        new ObjAttribute(event_field, "", EnumVisibility.NO,
+        new ObjAttribute(event_field, "", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
     global_attributes.addTransitionAttribute(
-        new ObjAttribute(condition_field, "", EnumVisibility.NO,
+        new ObjAttribute(condition_field, "", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
     global_attributes.addTransitionAttribute(
-        new ObjAttribute(action_field, "", EnumVisibility.NO,
+        new ObjAttribute(action_field, "", EnumVisibility.YES,
             "def_type", "", Color.black, "", "", editable));
   }
 
@@ -895,19 +895,19 @@ public class FizzimGui extends JFrame {
 
   protected void TabChanged(ChangeEvent e) {
 
-    if (!loading){
+    if (!loading) {
       JTabbedPane pane = (JTabbedPane) e.getSource();
 
       // Get current tab
       int sel = pane.getSelectedIndex();
       // fill all but current tab with empty panels
-      for (int i = 1; i < pages_tabbedPane.getTabCount(); i++){
-        if (i != sel){
-          pages_tabbedPane.setComponentAt(i, new JPanel()); 
+      for (int i = 1; i < pages_tabbedPane.getTabCount(); i++) {
+        if (i != sel) {
+          pages_tabbedPane.setComponentAt(i, new JPanel());
         }
       }
 
-      if (sel == 0){
+      if (sel == 0) {
         int index = pages_tabbedPane.getTabCount();
         pages_tabbedPane.addTab("Page " + String.valueOf(index),
             central_scrolling_panel);
@@ -1008,7 +1008,7 @@ public class FizzimGui extends JFrame {
       }
       initGlobal();
       drawArea1.open(global_attributes);
-      
+
       loading = false;
     }
   }
@@ -1370,13 +1370,13 @@ public class FizzimGui extends JFrame {
       FileSave6LinesAction.setSelectedFile(currFile6lines);
     }
 
-    FileSave6LinesAction.setCurrentDirectory(new java.io.File(System
-        .getProperty("user.dir")).getAbsoluteFile());
     int returnVal = FileSave6LinesAction.showSaveDialog(this);
 
-    if (returnVal == JFileChooser.APPROVE_OPTION)
-      if (tryToSave6lines(FileSave6LinesAction.getSelectedFile(), "txt", true))
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+      if (tryToSave6lines(FileSave6LinesAction.getSelectedFile(), "txt", true)) {
         setTitle("Graphe 6 lignes - " + currFile6lines.getName());
+      }
+    }
 
   }
 

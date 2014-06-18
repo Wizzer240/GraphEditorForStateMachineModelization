@@ -52,6 +52,7 @@ import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DropMode;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -60,6 +61,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
@@ -69,9 +71,6 @@ import abstractGraph.events.CommandEvent;
 import abstractGraph.events.ExternalEvent;
 import abstractGraph.events.SynchronisationEvent;
 import display.FizzimGui;
-
-import javax.swing.JButton;
-import javax.swing.JTextArea;
 
 /**
  * The ListCutPaste example illustrates cut, copy, paste
@@ -338,8 +337,8 @@ public class IdentifiersToolKit extends JSplitPane {
 
       GraphFactoryAEFD builder;
       try {
-        builder = new GraphFactoryAEFD(file_name);
-        Model m = builder.buildModel("None");
+        builder = new GraphFactoryAEFD();
+        Model m = builder.buildModel(file_name, "None");
 
         SortedListModel listModel;
 

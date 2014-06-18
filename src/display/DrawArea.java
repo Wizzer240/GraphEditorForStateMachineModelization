@@ -1131,6 +1131,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
     }
     repaint();
+    System.out.print(createSCounter.toString());
 
   }
 
@@ -1241,7 +1242,7 @@ public class DrawArea extends JPanel implements MouseListener,
     for (int j = 1; j < objList.size(); j++) {
       GeneralObj obj1 = (GeneralObj) objList.get(j);
       if (obj1.getType() == GeneralObjType.STATE
-          && obj1.getName().equals(input))
+          && obj1.getName().equals(input) && obj1.getPage() == currPage)
         return true;
     }
     return false;
