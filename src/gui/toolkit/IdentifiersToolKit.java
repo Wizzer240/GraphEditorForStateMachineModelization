@@ -173,7 +173,7 @@ public class IdentifiersToolKit extends JSplitPane {
       SortedListModel indicators = new SortedListModel();
 
       list1 = new JList<String>(indicators);
-      list1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      // list1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       JScrollPane sp1 = new JScrollPane(list1);
       // sp1.setPreferredSize(new Dimension(100, 200));
       list1.setDragEnabled(true);
@@ -187,7 +187,7 @@ public class IdentifiersToolKit extends JSplitPane {
 
       SortedListModel list2Model = new SortedListModel();
       list2 = new JList<String>(list2Model);
-      list2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      // list2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list2.setDragEnabled(true);
       JScrollPane sp2 = new JScrollPane(list2);
       // sp2.setPreferredSize(new Dimension(100, 200));
@@ -202,7 +202,7 @@ public class IdentifiersToolKit extends JSplitPane {
       SortedListModel list3Model = new SortedListModel();
 
       list3 = new JList<String>(list3Model);
-      list3.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      // list3.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list3.setDragEnabled(true);
       JScrollPane sp3 = new JScrollPane(list3);
       // sp3.setPreferredSize(new Dimension(100, 200));
