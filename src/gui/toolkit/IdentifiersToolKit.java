@@ -63,10 +63,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 
-import abstractGraph.conditions.Variable;
+import abstractGraph.conditions.BooleanVariable;
+import abstractGraph.conditions.EnumeratedVariable;
 import abstractGraph.events.CommandEvent;
 import abstractGraph.events.ExternalEvent;
 import abstractGraph.events.SynchronisationEvent;
@@ -352,9 +352,9 @@ public class IdentifiersToolKit extends JSplitPane {
         listModel = (SortedListModel) l2.getModel();
         listModel.removeAllElements();
 
-        Iterator<Variable> it = m.iteratorExistingVariables();
+        Iterator<EnumeratedVariable> it = m.iteratorExistingVariables();
         while (it.hasNext()) {
-          Variable var = it.next();
+          BooleanVariable var = (BooleanVariable) it.next();
           listModel.addElement(var.toString());
         }
 
