@@ -121,7 +121,7 @@ public class FizzimGui extends JFrame {
   private static final ResourceBundle locale =
       ResourceBundle.getBundle("locale.Menus", new UTF8Control());
 
-  static final String currVer = "14.03.2";
+  static final String currVer = "14.03.4";
 
   public static final String action_field = "Action";
   public static final String condition_field = "Garde";
