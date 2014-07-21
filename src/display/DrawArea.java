@@ -502,7 +502,8 @@ public class DrawArea extends JPanel implements MouseListener,
       for (int i = 1; i < objList.size(); i++) {
         GeneralObj s = (GeneralObj) objList.elementAt(i);
         if (s.getSelectStatus() != SelectOptions.NONE
-            && s.setSelectStatus(e.getX(), e.getY())) {
+            && s.setSelectStatus(e.getX(), e.getY())
+            && s.getPage() == currPage) {
           bestMatch = s;
 
           if (!doubleClick) {
@@ -555,7 +556,8 @@ public class DrawArea extends JPanel implements MouseListener,
         for (int i = 1; i < objList.size(); i++) {
           GeneralObj s = (GeneralObj) objList.elementAt(i);
           if (s.getType() == GeneralObjType.TEXT
-              && s.setSelectStatus(e.getX(), e.getY())) {
+              && s.setSelectStatus(e.getX(), e.getY())
+              && s.getPage() == currPage) {
             bestMatch = s;
 
             if (e.getButton() == MouseEvent.BUTTON3 || e.getModifiers() == 20) {
@@ -574,7 +576,8 @@ public class DrawArea extends JPanel implements MouseListener,
           GeneralObj s = (GeneralObj) objList.elementAt(i);
           if ((s.getType() == GeneralObjType.TRANSITION ||
               s.getType() == GeneralObjType.LOOPBACK_TRANSITION)
-              && s.setSelectStatus(e.getX(), e.getY())) {
+              && s.setSelectStatus(e.getX(), e.getY())
+              && s.getPage() == currPage) {
             bestMatch = s;
             GeneralObjType type = s.getType();
 
@@ -593,7 +596,8 @@ public class DrawArea extends JPanel implements MouseListener,
         for (int i = 1; i < objList.size(); i++) {
           GeneralObj s = (GeneralObj) objList.elementAt(i);
           if (s.getType() == GeneralObjType.STATE
-              && s.setSelectStatus(e.getX(), e.getY())) {
+              && s.setSelectStatus(e.getX(), e.getY())
+              && s.getPage() == currPage) {
             bestMatch = s;
 
             if (e.getButton() == MouseEvent.BUTTON3 || e.getModifiers() == 20) {
