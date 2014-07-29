@@ -112,7 +112,7 @@ public class FizzimGui extends JFrame {
   private static final ResourceBundle locale =
       ResourceBundle.getBundle("locale.Menus", new UTF8Control());
 
-  static final String currVer = "14.03.4";
+  static final String currVer = "14.03.5";
 
   /*
    * Global attributes for the machine, the inputs, outputs, states and
