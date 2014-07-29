@@ -183,7 +183,7 @@ public class TransitionEditorPanel extends JPanel {
         cell_editor.stopCellEditing();
       /* We get the value of the fields and update the first tab */
       LinkedList<ObjAttribute> attributes = transition.getAttributeList();
-      int y_index = DETAILS_TAB;
+      int y_index = 0;
       for (ObjAttribute one_attribute : attributes) {
         String value = (String) one_attribute.get(1);
         fields[y_index].setText(value);
