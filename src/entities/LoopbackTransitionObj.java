@@ -581,11 +581,16 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     writer.write("## START LOOPBACK TRANSITION OBJECT\n");
   }
 
+  /**
+   * Initialize a transition during the opening of a file.
+   * Called when opening a file after having loaded the information from the
+   * file.
+   */
   public void makeConnections(Vector<Object> objList) {
     for (int i = 1; i < objList.size(); i++) {
       GeneralObj obj = (GeneralObj) objList.get(i);
       if (obj.getType() == GeneralObjType.STATE) {
-        if (obj.getName().equals(startS))
+        if (obj.getName().equals(startS) && obj.getPage() == myPage)
           state = (StateObj) obj;
       }
     }
