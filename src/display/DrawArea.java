@@ -1926,11 +1926,10 @@ public class DrawArea extends JPanel implements MouseListener,
         name, state, state, sIndex,
         sIndex,
         currPage, defaultStateTransitionsColor);
-    // GeneralObj trans1 = new LoopbackTransitionObj(x0, y0, x1, y1, globalList
-    // , name, state, state, createSCounter.indexOf(state),
-    // createSCounter.indexOf(state), currPage, defaultStateTransitionsColor);
-    // trans.initTrans(getStateObj(state));
-    // trans.adjustShapeOrPosition(x0, y0);
+    StateObj source = getStateObj(state);
+    trans.initTrans(source);
+    trans.adjustShapeOrPosition(x0, y0);
+
     createTCounter++;
     objList.add(trans);
     trans.updateAttrib(global_attributes);

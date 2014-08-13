@@ -337,7 +337,7 @@ public class IdentifiersToolKit extends JSplitPane {
 
       GraphFactoryAEFD builder;
       try {
-        builder = new GraphFactoryAEFD();
+        builder = new GraphFactoryAEFD(null);
         Model m = builder.buildModel(file_name, "None");
 
         SortedListModel listModel;
