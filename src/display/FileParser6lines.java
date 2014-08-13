@@ -87,11 +87,11 @@ public class FileParser6lines {
         obj = drawArea.addNewState(end_state, x0, y0, x1, y1);
       }
 
-      if (source_state.equals(end_state)) {
-        obj = drawArea.addNewLoopbackTransition(source_state, x0, y0, x1, y1);
-      } else {
-        obj = drawArea.addNewTransition(source_state, end_state);
-      }
+      // if (source_state.equals(end_state)) {
+      // obj = drawArea.addNewLoopbackTransition(source_state, x0, y0, x1, y1);
+      // } else {
+      obj = drawArea.addNewTransition(source_state, end_state);
+      // }
 
       LinkedList<ObjAttribute> attributes = obj.getAttributeList();
       for (ObjAttribute attribute : attributes) {
