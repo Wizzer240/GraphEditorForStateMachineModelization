@@ -228,11 +228,12 @@ public class FileParser {
         }
         openGlobal(tempList);
       } else if (line.equals("<SCounter>")) {
-        String line2 = getNextUsefulLine(reader);
-        String line3 = reader.readLine();
-        if (!line3.equals("<SCounter>")) {
+        String index = getNextUsefulLine(reader);
+        String counter = reader.readLine();
+        if (!counter.equals("<SCounter>")) {
         }
-        drawArea.setSCounter(Integer.valueOf(line3), line2);
+        drawArea.setSCounter(Integer.valueOf(index),
+            Integer.valueOf(counter));
       } else if (line.equals("<TCounter>")) {
         String line2 = getNextUsefulLine(reader);
         drawArea.setTCounter(line2);

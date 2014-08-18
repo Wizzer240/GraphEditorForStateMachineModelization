@@ -913,7 +913,6 @@ public class FizzimGui extends JFrame {
             central_scrolling_panel);
         pages_tabbedPane.setSelectedIndex(index);
         drawArea1.setCurrPage(index);
-        drawArea1.setSCounter(index, 0);
       } else {
         // set current tab
         drawArea1.setCurrPage(sel);
@@ -2224,7 +2223,6 @@ public class FizzimGui extends JFrame {
     this.addNewTab(pageName);
     pages_tabbedPane.setSelectedIndex(index);
     drawArea1.setCurrPage(index);
-    drawArea1.setSCounter(index, 0);
   }
 
   /**

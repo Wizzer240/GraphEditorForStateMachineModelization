@@ -42,6 +42,8 @@ import java.awt.print.PrinterException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.TreeSet;
@@ -144,7 +146,11 @@ public class DrawArea extends JPanel implements MouseListener,
   private boolean fileModified = false;
 
   // used for auto generation of state and transition names
-  private Vector<Integer> createSCounter;
+  /**
+   * A HashMap : page number -> counter for the states in that page.
+   * If a counter for a page does not exist, it is considered to be 0.
+   */
+  private LinkedHashMap<Integer, Integer> createSCounter;
   private int createTCounter = 0;
 
   // pages
@@ -170,9 +176,7 @@ public class DrawArea extends JPanel implements MouseListener,
     objList = new Vector<Object>();
     undoList = new Vector<Vector<Object>>();
     tempList = new Vector<Object>();
-    createSCounter = new Vector<Integer>();
-    createSCounter.add(0, 0);
-    createSCounter.add(1, 0);
+    createSCounter = new LinkedHashMap<>();
     this.setFocusable(true);
     this.requestFocus();
     currUndoIndex = -1;
@@ -951,12 +955,10 @@ public class DrawArea extends JPanel implements MouseListener,
             rXTemp - defaultStatesWidth / 2, rYTemp
                 - defaultStatesHeight / 2,
             rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
-            createSCounter
-                .get(currPage), currPage,
+            getSCounter(currPage), currPage,
             defaultStatesColor, grid, gridS);
 
-        int temp_value = createSCounter.get(currPage) + 1;
-        createSCounter.set(currPage, temp_value);
+        incrementSCounter(currPage);
       } while (checkStateNames(state.getName()));
 
       objList.add(state);
@@ -967,11 +969,9 @@ public class DrawArea extends JPanel implements MouseListener,
           rXTemp - defaultStatesWidth / 2, rYTemp
               - defaultStatesHeight / 2,
           rXTemp + defaultStatesWidth / 2, rYTemp + defaultStatesHeight / 2,
-          createSCounter
-              .get(currPage), currPage,
+          getSCounter(currPage), currPage,
           defaultStatesColor, grid, gridS);
-      int temp_value = createSCounter.get(currPage) + 1;
-      createSCounter.set(currPage, temp_value);
+      incrementSCounter(currPage);
       objList.add(state);
       state.updateAttrib(global_attributes);
       new StateEditorWindow(fizzim_gui, this, state);
@@ -1135,7 +1135,6 @@ public class DrawArea extends JPanel implements MouseListener,
       }
     }
     repaint();
-    System.out.print(createSCounter.toString());
 
   }
 
@@ -1272,12 +1271,25 @@ public class DrawArea extends JPanel implements MouseListener,
 
   public void save(BufferedWriter writer) throws IOException {
     writer.write("## START PREFERENCES\n");
-    int j = 1;
-    do {
-      writer.write("<SCounter>\n" + createSCounter.get(j) + "\n" + j
-          + "\n</SCounter>\n");
-      j++;
-    } while (j < createSCounter.size());
+    /**
+     * For the state counters, we do not have a set of open pages.
+     * So we first iterate over all the objects, in order to retrived the
+     * existing pages, and then we write the counters for these pages. This
+     * allows us to "purge" of old counter that are not used anymore
+     */
+    LinkedHashSet<Integer> list_of_open_pages = new LinkedHashSet<>();
+    for (Object object : objList) {
+      if (object instanceof GeneralObj) {
+        list_of_open_pages.add(((GeneralObj) object).getPage());
+      }
+    }
+
+    for (int page_index : list_of_open_pages) {
+      writer.write("<SCounter>\n" + page_index + "\n" +
+          getSCounter(page_index) + "\n"
+          + "</SCounter>\n");
+    }
+
     writer.write("<TCounter>\n" + createTCounter + "\n</TCounter>\n");
     writer.write("<TableVis>\n" + tableVis + "\n</TableVis>\n");
     writer.write("<TableSpace>\n" + space + "\n</TableSpace>\n");
@@ -1497,7 +1509,6 @@ public class DrawArea extends JPanel implements MouseListener,
     tempOld = null;
     tempClone = null;
     fileModified = false;
-    createSCounter.add(0, 0);
     createTCounter = 0;
     updateStates();
     updateTrans(); // Added by pz, but no sure why (initial paint of flags is
@@ -1506,12 +1517,31 @@ public class DrawArea extends JPanel implements MouseListener,
 
   }
 
-  public void setSCounter(int index, String readLine) {
-    createSCounter.add(index, Integer.parseInt(readLine));
+  /**
+   * @param page_index
+   *          The index of a page.
+   * @return The counter for that page. In particular, it is zero if it has not
+   *         been set before.
+   */
+  public int getSCounter(int page_index) {
+    Integer value = createSCounter.get(page_index);
+    if (value == null) {
+      return 0;
+    } else {
+      return value;
+    }
   }
 
-  public void setSCounter(int index, int readLine) {
-    createSCounter.add(index, readLine);
+  @Deprecated
+  public void setSCounter(int page_index, int value) {
+    createSCounter.put(page_index, value);
+  }
+
+  /**
+   * Increment the state counter of a page
+   */
+  public void incrementSCounter(int page_index) {
+    createSCounter.put(page_index, getSCounter(page_index));
   }
 
   public void setTCounter(String readLine) {
@@ -1859,15 +1889,8 @@ public class DrawArea extends JPanel implements MouseListener,
         x0, y0, x1, y1, stateName, currPage,
         defaultStateTransitionsColor, grid, gridS);
 
-    // Check if the name of the state is an Integer, if it's the case, set
-    // createSCounter to that Integer + 1.
-    if (stateName.matches("^\\p{Digit}+$")) {
-      if (Integer.valueOf(stateName) >= createSCounter.get(currPage)) {
-        createSCounter.set(currPage, Integer.valueOf(stateName) + 1);
-      }
-    } else {
-      createSCounter.set(currPage, createSCounter.get(currPage) + 1);
-    }
+    incrementSCounter(currPage);
+
     objList.add(state);
     state.updateAttrib(global_attributes);
 
@@ -1905,7 +1928,8 @@ public class DrawArea extends JPanel implements MouseListener,
     // ((y0+y1)/2+StateH)*2,
     // createTCounter, currPage, defLTC);
     String name = "trans" + createTCounter;
-    int sIndex = createSCounter.indexOf(state);
+    // int sIndex = createSCounter.indexOf(state);
+    int sIndex = 0;
     Point point1 = new Point();
     Point point2 = new Point();
     Point point3 = new Point();
@@ -1936,4 +1960,5 @@ public class DrawArea extends JPanel implements MouseListener,
     return trans;
 
   }
+
 }
