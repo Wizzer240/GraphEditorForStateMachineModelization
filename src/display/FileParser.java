@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
@@ -64,7 +63,7 @@ public class FileParser {
 
   private GlobalAttributes global_attributes;
   private DrawArea drawArea;
-  private Vector<GeneralObj> objList;;
+  private LinkedList<GeneralObj> objList;;
   private String ver;
 
   public FileParser(File _file, FizzimGui _fizzim, DrawArea _drawArea) {
@@ -72,7 +71,7 @@ public class FileParser {
     fizzim = _fizzim;
     drawArea = _drawArea;
     tempList = new ArrayList<>();
-    objList = new Vector<>();
+    objList = new LinkedList<>();
     try {
       parse();
     } catch (IOException e) {

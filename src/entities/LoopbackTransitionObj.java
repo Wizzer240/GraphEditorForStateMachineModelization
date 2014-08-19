@@ -28,6 +28,7 @@ import java.awt.Point;
 import java.awt.geom.CubicCurve2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -424,10 +425,12 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     modified = false;
   }
 
+  @Override
   public void setModifiedTrue() {
     modified = true;
   }
 
+  @Override
   public void updateObj() {
     int newPage = state.getPage();
 
@@ -462,12 +465,11 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     }
   }
 
+  @Override
   public void notifyChange(GeneralObj old, GeneralObj clone) {
     if (old.equals(state)) {
       state = (StateObj) clone;
-
     }
-
   }
 
   public boolean isParentModified() {
@@ -578,9 +580,9 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     writer.write("## START LOOPBACK TRANSITION OBJECT\n");
   }
 
-  public void makeConnections(Vector<GeneralObj> objList) {
-    for (int i = 0; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+  @Override
+  public void makeConnections(Collection<GeneralObj> objList) {
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.STATE) {
         if (obj.getName().equals(startS))
           state = (StateObj) obj;

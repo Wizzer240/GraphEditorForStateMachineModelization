@@ -32,6 +32,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -145,9 +146,9 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     return stub;
   }
 
-  public void makeConnections(Vector<GeneralObj> objList) {
-    for (int i = 0; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+  @Override
+  public void makeConnections(Collection<GeneralObj> objList) {
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.STATE) {
         if (obj.getName().equals(startS)) {
           startState = (StateObj) obj;
@@ -822,6 +823,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     modified = false;
   }
 
+  @Override
   public void setModifiedTrue() {
     modified = true;
   }
