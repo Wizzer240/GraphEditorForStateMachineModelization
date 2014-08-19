@@ -42,10 +42,10 @@ import display.DrawArea;
 public class StateTransitionObj extends TransitionObj implements Cloneable {
 
   private SelectOptions selectStatus = SelectOptions.NONE;
-  public Point startPt, endPt, startCtrlPt, endCtrlPt;
-  public int startStateIndex, endStateIndex;
-  public StateObj startState = null, endState = null, oldState;
-  public CubicCurve2D.Double curve;
+  private Point startPt, endPt, startCtrlPt, endCtrlPt;
+  private int startStateIndex, endStateIndex;
+  private StateObj startState = null, endState = null;
+  private CubicCurve2D.Double curve;
   private Vector<Point> startBorderPts;
   private Vector<Point> endBorderPts;
   private boolean ready = false;
@@ -897,10 +897,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   }
 
   public boolean containsParent(GeneralObj oldObj) {
-    if (oldObj.equals(startState) || oldObj.equals(endState))
-      return true;
-    else
-      return false;
+    return oldObj.equals(startState) || oldObj.equals(endState);
   }
 
   public Point getCenter(int page) {

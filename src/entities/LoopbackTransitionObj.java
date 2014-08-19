@@ -64,7 +64,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   public LoopbackTransitionObj(GlobalAttributes globals,
       Point sp, Point ep, Point scp, Point ecp,
       LinkedList<ObjAttribute> newList,
-      String name, String start, String end, int sIndex, int eIndex, int page,
+      String name, String start, int sIndex, int eIndex, int page,
       Color c) {
     super(name, globals);
     startPt = sp;
@@ -483,10 +483,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   }
 
   public boolean containsParent(GeneralObj oldObj) {
-    if (oldObj.equals(state))
-      return true;
-    else
-      return false;
+    return oldObj.equals(state);
   }
 
   public Point getCenter(int page) {
