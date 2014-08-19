@@ -578,8 +578,8 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     writer.write("## START LOOPBACK TRANSITION OBJECT\n");
   }
 
-  public void makeConnections(Vector<Object> objList) {
-    for (int i = 1; i < objList.size(); i++) {
+  public void makeConnections(Vector<GeneralObj> objList) {
+    for (int i = 0; i < objList.size(); i++) {
       GeneralObj obj = (GeneralObj) objList.get(i);
       if (obj.getType() == GeneralObjType.STATE) {
         if (obj.getName().equals(startS))
@@ -587,7 +587,6 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
       }
     }
     stateBorderPts = state.getBorderPts();
-
   }
 
   /**

@@ -45,6 +45,7 @@ import javax.swing.JOptionPane;
 import attributes.EnumVisibility;
 import attributes.GlobalAttributes;
 import attributes.ObjAttribute;
+import entities.GeneralObj;
 import entities.LoopbackTransitionObj;
 import entities.StateObj;
 import entities.StateTransitionObj;
@@ -63,15 +64,15 @@ public class FileParser {
 
   private GlobalAttributes global_attributes;
   private DrawArea drawArea;
-  private Vector<Object> objList;;
+  private Vector<GeneralObj> objList;;
   private String ver;
 
   public FileParser(File _file, FizzimGui _fizzim, DrawArea _drawArea) {
     file = _file;
     fizzim = _fizzim;
     drawArea = _drawArea;
-    tempList = new ArrayList<String>();
-    objList = new Vector<Object>();
+    tempList = new ArrayList<>();
+    objList = new Vector<>();
     try {
       parse();
     } catch (IOException e) {
@@ -378,7 +379,7 @@ public class FileParser {
     }
     reader.close();
 
-    drawArea.open(objList);
+    drawArea.open(global_attributes, objList);
   }
 
   private void openGlobal(ArrayList<String> list) {
@@ -406,7 +407,6 @@ public class FileParser {
 
     drawArea.updateGlobal(global_attributes);
     fizzim.updateGlobal(global_attributes);
-    objList.add(global_attributes);
     tempList.clear();
   }
 
@@ -471,7 +471,7 @@ public class FileParser {
     if (startState.equals(endState)) {
       obj = new LoopbackTransitionObj(global_attributes,
           sP, eP, sCP, eCP, newList, name,
-          startState, endState, sStateIndex, eStateIndex, page, currColor);
+          startState, sStateIndex, eStateIndex, page, currColor);
     } else {
       obj = new StateTransitionObj(global_attributes,
           sP, eP, sCP, eCP, newList, name, startState,

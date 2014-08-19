@@ -70,7 +70,7 @@ public abstract class TransitionObj extends GeneralObj implements Cloneable {
   public void initTrans(StateObj start) {
   }
 
-  public abstract void makeConnections(Vector<Object> objList);
+  public abstract void makeConnections(Vector<GeneralObj> objList);
 
   public double getAngle(Point outer, Point inner) {
     int dx = (int) outer.getX() - (int) inner.getX();
