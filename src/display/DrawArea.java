@@ -1603,12 +1603,11 @@ public class DrawArea extends JPanel implements MouseListener,
    * Increment the state counter of a page
    */
   public void incrementSCounter(int page_index) {
-    createSCounter.put(page_index, getSCounter(page_index));
+    createSCounter.put(page_index, getSCounter(page_index) + 1);
   }
 
   public void setTCounter(String readLine) {
     createTCounter = Integer.parseInt(readLine);
-
   }
 
   public void updateGlobal(GlobalAttributes globalList2) {
