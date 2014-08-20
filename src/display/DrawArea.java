@@ -1344,9 +1344,16 @@ public class DrawArea extends JPanel implements MouseListener,
    *          When deleting a state, we also delete all the transitions going or
    *          leaving this state.
    */
+  private static final boolean DEBUG_DELETE = true;
+
   public void delete() {
 
     setUndoPoint(null, null);
+
+    if (DEBUG_DELETE) {
+      /* We print the name of the objects being selected */
+      System.err.println(selectedObjects);
+    }
 
     /** Transitions to delete */
     Set<TransitionObj> transitions_to_delete = new LinkedHashSet<>();
@@ -1367,6 +1374,9 @@ public class DrawArea extends JPanel implements MouseListener,
         for (GeneralObj state : selectedObjects) {
           if (obj.containsParent(state)) {
             transitions_to_delete.add((TransitionObj) obj);
+            if (DEBUG_DELETE) {
+              System.err.println("** Debug 1 : " + state + " / " + obj + "**");
+            }
             break;
           }
         }
@@ -1375,10 +1385,6 @@ public class DrawArea extends JPanel implements MouseListener,
       if (obj.getType() == GeneralObjType.TEXT && objsSelected) {
         TextObj txt = (TextObj) obj;
         if (txt.getGlobalTable() && txt.getSelectStatus() != SelectOptions.NONE) {
-          System.err.println("First : " + txt.getGlobalTable());
-          System.err
-              .println("Second : "
-                  + (txt.getSelectStatus() != SelectOptions.NONE));
           String error = "To remove global table, go to 'File->Preferences'";
           JOptionPane.showMessageDialog(fizzim_gui,
               error,
@@ -1394,6 +1400,10 @@ public class DrawArea extends JPanel implements MouseListener,
         for (Object object_bis : selectedObjects) {
           if (object_bis.equals(obj)) {
             selectedObjects.remove(object_bis);
+            if (DEBUG_DELETE) {
+              System.err.println("** Debug 2 : " + obj + " / " + object_bis
+                  + "**");
+            }
             break;
           }
         }
@@ -1404,6 +1414,10 @@ public class DrawArea extends JPanel implements MouseListener,
         /** If the object is selected and is a transition, we simply remove it */
         if ((obj.getType() == GeneralObjType.TRANSITION || obj.getType() == GeneralObjType.LOOPBACK_TRANSITION)) {
           general_obj_iterator.remove();
+
+          if (DEBUG_DELETE) {
+            System.err.println("** Debug 3 : " + obj + "**");
+          }
           commitUndo();
           break;
         }
@@ -1419,6 +1433,9 @@ public class DrawArea extends JPanel implements MouseListener,
                 "error",
                 JOptionPane.ERROR_MESSAGE);
           } else {
+            if (DEBUG_DELETE) {
+              System.err.println("** Debug 4 : " + obj + "**");
+            }
             general_obj_iterator.remove();
             commitUndo();
             break;
@@ -1435,8 +1452,12 @@ public class DrawArea extends JPanel implements MouseListener,
             if (t.getType() == GeneralObjType.TRANSITION
                 || t.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
               TransitionObj transition = (TransitionObj) t;
-              if (transition.containsParent(obj))
+              if (transition.containsParent(obj)) {
                 transitions_to_delete.add(transition);
+                if (DEBUG_DELETE) {
+                  System.err.println("** Debug 5 : " + obj + " / " + t + "**");
+                }
+              }
             }
           }
           // make sure state gets deleted at correct time
