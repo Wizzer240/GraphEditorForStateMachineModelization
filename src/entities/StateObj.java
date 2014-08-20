@@ -368,6 +368,7 @@ public class StateObj extends GeneralObj implements Cloneable {
     return false;
   }
 
+  @Override
   public void notifyChange(GeneralObj old, GeneralObj clone) {
 
   }

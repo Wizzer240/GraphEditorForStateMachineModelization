@@ -28,6 +28,7 @@ import java.awt.Point;
 import java.awt.geom.CubicCurve2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -64,7 +65,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   public LoopbackTransitionObj(GlobalAttributes globals,
       Point sp, Point ep, Point scp, Point ecp,
       LinkedList<ObjAttribute> newList,
-      String name, String start, String end, int sIndex, int eIndex, int page,
+      String name, String start, int sIndex, int eIndex, int page,
       Color c) {
     super(name, globals);
     startPt = sp;
@@ -424,10 +425,12 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     modified = false;
   }
 
+  @Override
   public void setModifiedTrue() {
     modified = true;
   }
 
+  @Override
   public void updateObj() {
     int newPage = state.getPage();
 
@@ -462,12 +465,11 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     }
   }
 
+  @Override
   public void notifyChange(GeneralObj old, GeneralObj clone) {
     if (old.equals(state)) {
       state = (StateObj) clone;
-
     }
-
   }
 
   public boolean isParentModified() {
@@ -483,10 +485,7 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
   }
 
   public boolean containsParent(GeneralObj oldObj) {
-    if (oldObj.equals(state))
-      return true;
-    else
-      return false;
+    return oldObj.equals(state);
   }
 
   public Point getCenter(int page) {
@@ -581,21 +580,15 @@ public class LoopbackTransitionObj extends TransitionObj implements Cloneable {
     writer.write("## START LOOPBACK TRANSITION OBJECT\n");
   }
 
-  /**
-   * Initialize a transition during the opening of a file.
-   * Called when opening a file after having loaded the information from the
-   * file.
-   */
-  public void makeConnections(Vector<Object> objList) {
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+  @Override
+  public void makeConnections(Collection<GeneralObj> objList) {
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.STATE) {
         if (obj.getName().equals(startS) && obj.getPage() == myPage)
           state = (StateObj) obj;
       }
     }
     stateBorderPts = state.getBorderPts();
-
   }
 
   /**

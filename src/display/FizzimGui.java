@@ -1492,7 +1492,7 @@ public class FizzimGui extends JFrame {
       int j = 1;
       BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFile));
       // Put all the objects of the graph in object
-      Vector<Object> object = drawArea1.getObjList();
+      LinkedList<GeneralObj> object = drawArea1.getObjList();
       for (int i = 1; i < object.size(); i++) {
         GeneralObj temp = (GeneralObj) object.get(i);
         // verify that the object is a transition.

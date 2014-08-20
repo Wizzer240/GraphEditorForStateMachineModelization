@@ -43,9 +43,12 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -71,22 +74,22 @@ import entities.TransitionObj;
 import gui.StateEditorWindow;
 import gui.TransitionEditorWindow;
 
-// Written by: Michael Zimmer - mike@zimmerdesignservices.com
-
 @SuppressWarnings("serial")
 public class DrawArea extends JPanel implements MouseListener,
     MouseMotionListener, ActionListener, Printable {
 
+  private static final boolean PRINT_EVENTS_LOG = false;
+
   private static final ResourceBundle locale =
       ResourceBundle.getBundle("locale.Editors", new UTF8Control());
 
-  // holds all objects to be currently drawn
-  private Vector<Object> objList;
+  /** Collection of the GeneralObj to display */
+  private LinkedList<GeneralObj> objList;
   // holds previous lists of objects
-  private Vector<Vector<Object>> undoList;
+  private Vector<Collection<GeneralObj>> undoList;
 
   // temp lists
-  private Vector<Object> tempList;
+  private LinkedList<GeneralObj> tempList;
 
   // keeps track of current position in undo array
   private int currUndoIndex;
@@ -103,12 +106,17 @@ public class DrawArea extends JPanel implements MouseListener,
   private GeneralObj tempClone;
 
   // for multiple object select
+  /** True iff several objects are selected ? */
   private boolean multipleSelect = false;
+  /** True iff a single object is selected ? */
   private boolean objsSelected = false;
   private int mXTemp = 0;
   private int mYTemp = 0;
   private int mX0, mY0, mX1, mY1;
-  private LinkedList<Integer> selectedIndices = new LinkedList<Integer>();
+  /**
+   * The set of all the selected objects.
+   */
+  private Set<GeneralObj> selectedObjects = new LinkedHashSet<>();
   // private boolean ctrlDown = false;
 
   // Fonts
@@ -173,16 +181,18 @@ public class DrawArea extends JPanel implements MouseListener,
     global_attributes = globals;
 
     // create arrays to store created objects
-    objList = new Vector<Object>();
-    undoList = new Vector<Vector<Object>>();
-    tempList = new Vector<Object>();
+
+    objList = new LinkedList<>();
+    undoList = new Vector<>();
+    tempList = new LinkedList<>();
     createSCounter = new LinkedHashMap<>();
+
     this.setFocusable(true);
     this.requestFocus();
     currUndoIndex = -1;
 
     // global attributes stored at index 0 of object array
-    objList.add(globals);
+    // objList.add(globals);
 
     TextObj globalTable = new TextObj(10, 10, globals, tableFont, tableVis);
 
@@ -207,8 +217,7 @@ public class DrawArea extends JPanel implements MouseListener,
 
     // paint all objects
     if (objList != null) {
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj s = (GeneralObj) objList.elementAt(i);
+      for (GeneralObj s : objList) {
         s.paintComponent(g2D, currPage);
       }
     }
@@ -237,18 +246,17 @@ public class DrawArea extends JPanel implements MouseListener,
       undoList.add(objList);
     // replace objlist with a previous list
     if (currUndoIndex > 0) {
-      objList = (Vector<Object>) undoList.elementAt(currUndoIndex);
+      objList = (LinkedList<GeneralObj>) undoList.elementAt(currUndoIndex);
       currUndoIndex--;
     }
     // unselect all states
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj s = (GeneralObj) objList.elementAt(i);
+    for (GeneralObj s : objList) {
       s.unselect();
     }
     objsSelected = false;
 
     // update
-    global_attributes = (GlobalAttributes) objList.get(0);
+    // global_attributes = (GlobalAttributes) objList.get(0);
     updateStates();
     updateTrans();
     updateGlobalTable();
@@ -268,10 +276,11 @@ public class DrawArea extends JPanel implements MouseListener,
   public void redo() {
     // if redo is possible, replace objlist with wanted list
     if (currUndoIndex < undoList.size() - 2) {
-      objList = (Vector<Object>) undoList.elementAt(currUndoIndex + 2);
+      objList =
+          (LinkedList<GeneralObj>) undoList.elementAt(currUndoIndex + 2);
       currUndoIndex++;
     }
-    global_attributes = (GlobalAttributes) objList.get(0);
+    // global_attributes = (GlobalAttributes) objList.get(0);
     updateStates();
     updateTrans();
     updateGlobalTable();
@@ -292,14 +301,14 @@ public class DrawArea extends JPanel implements MouseListener,
    */
 
   // this method is called whenever a global attribute is about to be modified
-  @SuppressWarnings("unchecked")
   public GlobalAttributes setUndoPoint() {
     tempList = null;
-    tempList = (Vector<Object>) objList.clone();
-    GlobalAttributes oldGlobal = (GlobalAttributes) objList.get(0);
-    GlobalAttributes newGlobal = oldGlobal.clone();
+    tempList = (LinkedList<GeneralObj>) objList.clone();
+    // TODO remove this : GlobalAttributes oldGlobal = (GlobalAttributes)
+    // objList.get(0);
+    GlobalAttributes newGlobal = global_attributes.clone();
 
-    objList.set(0, newGlobal);
+    // TODO: remove this: objList.set(0, newGlobal);
     global_attributes = newGlobal;
 
     return newGlobal;
@@ -309,13 +318,10 @@ public class DrawArea extends JPanel implements MouseListener,
   @SuppressWarnings("unchecked")
   private void setUndoPointMultiple() {
     tempList = null;
-    tempList = (Vector<Object>) objList.clone();
+    tempList = (LinkedList<GeneralObj>) objList.clone();
 
     // go through all selected objects and clone
-    for (int i = 0; i < selectedIndices.size(); i++) {
-      GeneralObj oldObj = (GeneralObj) tempList.get(selectedIndices
-          .get(i)
-          .intValue());
+    for (GeneralObj oldObj : selectedObjects) {
       GeneralObj clonedObj = null;
       try {
         clonedObj = (GeneralObj) oldObj.clone();
@@ -325,8 +331,11 @@ public class DrawArea extends JPanel implements MouseListener,
 
       // if a state, create clone of children transitions
       if (oldObj.getType() == GeneralObjType.STATE) {
-        for (int j = 1; j < objList.size(); j++) {
-          GeneralObj s = (GeneralObj) objList.elementAt(j);
+
+        Iterator<GeneralObj> general_obj_iterator = objList.iterator();
+        while (general_obj_iterator.hasNext()) {
+          GeneralObj s = general_obj_iterator.next();
+
           // check all objects that have to be modified state as a parent
           if (s.getType() != GeneralObjType.STATE && s.containsParent(oldObj)) {
             GeneralObj clonedObj2 = null;
@@ -341,23 +350,30 @@ public class DrawArea extends JPanel implements MouseListener,
             clonedObj2.setParentModified(true);
 
             // add cloned child to object list
-            int objListIndex = objList.indexOf(s);
-            objList.set(objListIndex, clonedObj2);
+            // TODO: check this part.
+            // int objListIndex = objList.indexOf(s);
+            // objList.set(objListIndex, clonedObj2);
+            general_obj_iterator.remove();
+            objList.add(clonedObj2);
+
           }
         }
       }
-      objList.set(selectedIndices.get(i).intValue(), clonedObj);
+      objList.remove(oldObj);
+      objList.add(clonedObj);
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private void setUndoPoint(int index, GeneralObjType type) {
+  /**
+   * 
+   * @param oldObj
+   * @param type
+   */
+  private void setUndoPoint(GeneralObj oldObj, GeneralObjType type) {
     tempList = null;
-    tempList = (Vector<Object>) objList.clone();
+    tempList = (LinkedList<GeneralObj>) objList.clone();
 
-    if (index != -1) {
-
-      GeneralObj oldObj = (GeneralObj) tempList.elementAt(index);
+    if (oldObj != null) {
       GeneralObj clonedObj = null;
       try {
         clonedObj = (GeneralObj) oldObj.clone();
@@ -369,11 +385,13 @@ public class DrawArea extends JPanel implements MouseListener,
       tempClone = clonedObj;
 
       // if a state, create clone of children transitions
-
       if (type == GeneralObjType.STATE) {
         fizzim_gui.updateGlobal(setUndoPoint());
-        for (int i = 1; i < objList.size(); i++) {
-          GeneralObj s = (GeneralObj) objList.elementAt(i);
+        LinkedList<GeneralObj> to_be_added_after_iteration = new LinkedList<>();
+        Iterator<GeneralObj> general_obj_iterator = objList.iterator();
+        while (general_obj_iterator.hasNext()) {
+          GeneralObj s = general_obj_iterator.next();
+
           // check all objects that have to be modified state as a parent
           if (s.getType() != GeneralObjType.STATE && s.containsParent(oldObj)) {
             GeneralObj clonedObj2 = null;
@@ -388,12 +406,19 @@ public class DrawArea extends JPanel implements MouseListener,
             clonedObj2.setParentModified(true);
 
             // add cloned child to object list
-            int objListIndex = objList.indexOf(s);
-            objList.set(objListIndex, clonedObj2);
+            // TODO: check this part.
+            // int objListIndex = objList.indexOf(s);
+            // objList.set(objListIndex, clonedObj2);
+            general_obj_iterator.remove();
+            to_be_added_after_iteration.add(clonedObj2);
+
           }
         }
+        /** We add the created object (we cannot add it during the iteration) */
+        objList.addAll(to_be_added_after_iteration);
       }
-      objList.set(index, clonedObj);
+      objList.remove(oldObj);
+      objList.add(clonedObj);
     }
   }
 
@@ -402,6 +427,10 @@ public class DrawArea extends JPanel implements MouseListener,
     objList = tempList;
   }
 
+  /**
+   * Register the current state of the drawArea as the first entry in the
+   * history.
+   */
   // If a modification actually occurred,
   // the temp list is stored to the undo list array
   public void commitUndo() {
@@ -419,32 +448,46 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void mouseClicked(MouseEvent e) {
-    // System.out.println("mouseClicked:" + " Button:" + e.getButton() +
-    // " Modifiers:" + e.getModifiers() + " Popup Trigger:" + e.isPopupTrigger()
-    // + " ControlDown:" + e.isControlDown());
+    if (PRINT_EVENTS_LOG) {
+      System.out.println("mouseClicked:" + " Button:" + e.getButton() +
+          " Modifiers:" + e.getModifiers() + " Popup Trigger:"
+          + e.isPopupTrigger()
+          + " ControlDown:" + e.isControlDown());
+    }
   }
 
   public void mouseEntered(MouseEvent e) {
-    // System.out.println("mouseEntered:" + " Button:" + e.getButton() +
-    // " Modifiers:" + e.getModifiers() + " Popup Trigger:" + e.isPopupTrigger()
-    // + " ControlDown:" + e.isControlDown());
+    if (PRINT_EVENTS_LOG) {
+      System.out.println("mouseEntered:" + " Button:" + e.getButton() +
+          " Modifiers:" + e.getModifiers() + " Popup Trigger:"
+          + e.isPopupTrigger()
+          + " ControlDown:" + e.isControlDown());
+    }
   }
 
   public void mouseExited(MouseEvent e) {
-    // System.out.println("mouseeExited:" + " Button:" + e.getButton() +
-    // " Modifiers:" + e.getModifiers() + " Popup Trigger:" + e.isPopupTrigger()
-    // + " ControlDown:" + e.isControlDown());
+    if (PRINT_EVENTS_LOG) {
+      System.out.println("mouseeExited:" + " Button:" + e.getButton() +
+          " Modifiers:" + e.getModifiers() + " Popup Trigger:"
+          + e.isPopupTrigger()
+          + " ControlDown:" + e.isControlDown());
+    }
   }
 
   public void mouseHandle(MouseEvent e) {
 
   }
 
+  /**
+   * TODO: think about the use of setUndoPoint
+   */
   public void mousePressed(MouseEvent e) {
-
-    // System.out.println("mousePressed:" + " Button:" + e.getButton() +
-    // " Modifiers:" + e.getModifiers() + " Popup Trigger:" + e.isPopupTrigger()
-    // + " ControlDown:" + e.isControlDown());
+    if (PRINT_EVENTS_LOG) {
+      System.out.println("mousePressed:" + " Button:" + e.getButton() +
+          " Modifiers:" + e.getModifiers() + " Popup Trigger:"
+          + e.isPopupTrigger()
+          + " ControlDown:" + e.isControlDown());
+    }
     GeneralObj bestMatch = null;
     boolean doubleClick = false;
     // check for double click
@@ -458,9 +501,8 @@ public class DrawArea extends JPanel implements MouseListener,
     if (e.isControlDown() && e.getButton() == MouseEvent.BUTTON1) {
       // store selected objects and their indices
       int numbSel = 0;
-      LinkedList<Integer> tempIndices = new LinkedList<Integer>();
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj obj = (GeneralObj) objList.get(i);
+      Set<GeneralObj> tempIndices = new LinkedHashSet<>();
+      for (GeneralObj obj : objList) {
         if (obj.getType() == GeneralObjType.STATE
             || obj.getType() == GeneralObjType.TEXT) {
           if (obj.getSelectStatus() != SelectOptions.NONE) {
@@ -470,11 +512,11 @@ public class DrawArea extends JPanel implements MouseListener,
             } else {
               obj.setSelectStatus(true);
               numbSel++;
-              tempIndices.add(new Integer(i));
+              tempIndices.add(obj);
             }
           } else if (obj.setSelectStatus(e.getX(), e.getY())) {
             numbSel++;
-            tempIndices.add(new Integer(i));
+            tempIndices.add(obj);
           }
         } else {
           obj.unselect();
@@ -482,7 +524,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
       // if multiple items selected so far, update global selection list.
       if (numbSel > 1) {
-        selectedIndices = tempIndices;
+        selectedObjects = tempIndices;
         objsSelected = true;
       }
     } else if (objsSelected) { // if multiple object selected
@@ -490,10 +532,7 @@ public class DrawArea extends JPanel implements MouseListener,
       if (e.getButton() == MouseEvent.BUTTON1 && e.getModifiers() != 20) {
         boolean move = false;
 
-        for (int i = 0; i < selectedIndices.size(); i++) {
-          GeneralObj obj = (GeneralObj) objList.get(selectedIndices
-              .get(i)
-              .intValue());
+        for (GeneralObj obj : selectedObjects) {
           if ((obj.getType() == GeneralObjType.STATE || obj.getType() == GeneralObjType.TEXT)
               && obj.setBoxSelectStatus(e.getX(), e.getY())) {
             move = true;
@@ -509,8 +548,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
     } else {
       // if object already selected
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj s = (GeneralObj) objList.elementAt(i);
+      for (GeneralObj s : (Collection<GeneralObj>) objList.clone()) {
         if (s.getSelectStatus() != SelectOptions.NONE
             && s.setSelectStatus(e.getX(), e.getY())
             && s.getPage() == currPage) {
@@ -519,18 +557,18 @@ public class DrawArea extends JPanel implements MouseListener,
           if (!doubleClick) {
             // if right click, create popup menu
             if (e.getButton() == MouseEvent.BUTTON3 || e.getModifiers() == 20) {
-              setUndoPoint(i, s.getType());
+              setUndoPoint(s, s.getType());
               createPopup(s, e);
-            } else
-              setUndoPoint(i, s.getType());
+            } else {
+              setUndoPoint(s, s.getType());
+            }
             break;
           } else {
             if (s.getType() == GeneralObjType.STATE) {
               new StateEditorWindow(fizzim_gui, this, (StateObj) s);
             } else if (s.getType() == GeneralObjType.TRANSITION) {
               Vector<StateObj> stateObjs = new Vector<StateObj>();
-              for (int j = 1; j < objList.size(); j++) {
-                GeneralObj obj = (GeneralObj) objList.get(j);
+              for (GeneralObj obj : objList) {
                 if (obj.getType() == GeneralObjType.STATE)
                   stateObjs.add((StateObj) obj);
               }
@@ -542,8 +580,7 @@ public class DrawArea extends JPanel implements MouseListener,
               // .setVisible(true);
             } else if (s.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
               Vector<StateObj> stateObjs = new Vector<StateObj>();
-              for (int j = 1; j < objList.size(); j++) {
-                GeneralObj obj = (GeneralObj) objList.get(j);
+              for (GeneralObj obj : objList) {
                 if (obj.getType() == GeneralObjType.STATE)
                   stateObjs.add((StateObj) obj);
               }
@@ -563,18 +600,18 @@ public class DrawArea extends JPanel implements MouseListener,
 
       // check for text at mouse location
       if (bestMatch == null) {
-        for (int i = 1; i < objList.size(); i++) {
-          GeneralObj s = (GeneralObj) objList.elementAt(i);
+        for (GeneralObj s : objList) {
           if (s.getType() == GeneralObjType.TEXT
               && s.setSelectStatus(e.getX(), e.getY())
               && s.getPage() == currPage) {
             bestMatch = s;
 
             if (e.getButton() == MouseEvent.BUTTON3 || e.getModifiers() == 20) {
-              setUndoPoint(i, GeneralObjType.TEXT);
+              setUndoPoint(s, GeneralObjType.TEXT);
               createPopup(s, e);
-            } else
-              setUndoPoint(i, GeneralObjType.TEXT);
+            } else {
+              setUndoPoint(s, GeneralObjType.TEXT);
+            }
             break;
           }
         }
@@ -582,8 +619,7 @@ public class DrawArea extends JPanel implements MouseListener,
 
       // check for transition at mouse position
       if (bestMatch == null) {
-        for (int i = 1; i < objList.size(); i++) {
-          GeneralObj s = (GeneralObj) objList.elementAt(i);
+        for (GeneralObj s : objList) {
           if ((s.getType() == GeneralObjType.TRANSITION ||
               s.getType() == GeneralObjType.LOOPBACK_TRANSITION)
               && s.setSelectStatus(e.getX(), e.getY())
@@ -592,10 +628,11 @@ public class DrawArea extends JPanel implements MouseListener,
             GeneralObjType type = s.getType();
 
             if (e.getButton() == MouseEvent.BUTTON3 || e.getModifiers() == 20) {
-              setUndoPoint(i, type);
+              setUndoPoint(s, type);
               createPopup(s, e);
-            } else
-              setUndoPoint(i, type);
+            } else {
+              setUndoPoint(s, type);
+            }
             break;
           }
         }
@@ -603,18 +640,18 @@ public class DrawArea extends JPanel implements MouseListener,
 
       // if no transitions found at that position, look through state objects
       if (bestMatch == null) {
-        for (int i = 1; i < objList.size(); i++) {
-          GeneralObj s = (GeneralObj) objList.elementAt(i);
+        for (GeneralObj s : objList) {
           if (s.getType() == GeneralObjType.STATE
               && s.setSelectStatus(e.getX(), e.getY())
               && s.getPage() == currPage) {
             bestMatch = s;
 
             if (e.getButton() == MouseEvent.BUTTON3 || e.getModifiers() == 20) {
-              setUndoPoint(i, GeneralObjType.STATE);
+              setUndoPoint(s, GeneralObjType.STATE);
               createPopup(s, e);
-            } else
-              setUndoPoint(i, GeneralObjType.STATE);
+            } else {
+              setUndoPoint(s, GeneralObjType.STATE);
+            }
             break;
           }
         }
@@ -624,7 +661,7 @@ public class DrawArea extends JPanel implements MouseListener,
       if (bestMatch == null
           && (e.getButton() == MouseEvent.BUTTON3 || e.getModifiers() == 20)) {
         createPopup(e);
-        setUndoPoint(-1, null);
+        setUndoPoint(null, null);
       }
 
       // now do multiple select if still nothing found
@@ -638,7 +675,7 @@ public class DrawArea extends JPanel implements MouseListener,
         mY1 = 0;
         multipleSelect = true;
         objsSelected = false;
-        selectedIndices.clear();
+        selectedObjects.clear();
       }
 
       repaint();
@@ -646,13 +683,15 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void mouseReleased(MouseEvent e) {
-    // System.out.println("mouseReleased:" + " Button:" + e.getButton() +
-    // " Modifiers:" + e.getModifiers() + " Popup Trigger:" + e.isPopupTrigger()
-    // + " ControlDown:" + e.isControlDown());
-
+    if (PRINT_EVENTS_LOG) {
+      System.out.println("mouseReleased:" + " Button:" + e.getButton() +
+          " Modifiers:" + e.getModifiers() + " Popup Trigger:"
+          + e.isPopupTrigger()
+          + " ControlDown:" + e.isControlDown());
+    }
     multipleSelect = false;
     if (!objsSelected) {
-      selectedIndices.clear();
+      selectedObjects.clear();
     }
 
     // done modifying all objects, so notify state objects that they are done
@@ -661,13 +700,11 @@ public class DrawArea extends JPanel implements MouseListener,
 
     toCommit = false;
 
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj t = (GeneralObj) objList.elementAt(i);
+    for (GeneralObj t : objList) {
       // check for modified state
       if (t.isModified() && t.getType() == GeneralObjType.STATE) {
         toCommit = true;
-        for (int j = 1; j < objList.size(); j++) {
-          GeneralObj obj = (GeneralObj) objList.elementAt(j);
+        for (GeneralObj obj : objList) {
           if (obj.getType() != GeneralObjType.STATE && obj.isParentModified())
             obj.updateObj();
           obj.setParentModified(false);
@@ -679,8 +716,7 @@ public class DrawArea extends JPanel implements MouseListener,
           t.getType() == GeneralObjType.LOOPBACK_TRANSITION)
           && t.isModified()) {
         toCommit = true;
-        for (int j = 1; j < objList.size(); j++) {
-          GeneralObj obj = (GeneralObj) objList.elementAt(j);
+        for (GeneralObj obj : objList) {
           if ((obj.getType() == GeneralObjType.TEXT) && obj.isParentModified())
             obj.updateObj();
           obj.setParentModified(false);
@@ -700,13 +736,10 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void updateTransitions() {
-    for (int j = 1; j < objList.size(); j++) {
-      GeneralObj obj = (GeneralObj) objList.elementAt(j);
+    for (GeneralObj obj : objList) {
       if (obj.getType() != GeneralObjType.STATE && obj.isParentModified())
         obj.updateObj();
-
     }
-
   }
 
   public void mouseDragged(MouseEvent arg0) {
@@ -733,12 +766,10 @@ public class DrawArea extends JPanel implements MouseListener,
     if (!multipleSelect && !arg0.isControlDown() &&
         (arg0.getModifiers() == InputEvent.BUTTON1_MASK)) {
 
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj s = (GeneralObj) objList.elementAt(i);
+      for (GeneralObj s : objList) {
         if (s.getSelectStatus() != SelectOptions.NONE) {
           s.adjustShapeOrPosition(x, y);
-          for (int j = 1; j < objList.size(); j++) {
-            GeneralObj obj = (GeneralObj) objList.elementAt(j);
+          for (GeneralObj obj : objList) {
             if (obj.getType() != GeneralObjType.STATE && obj.isParentModified())
               obj.updateObj();
           }
@@ -769,19 +800,18 @@ public class DrawArea extends JPanel implements MouseListener,
 
       int tempNumb = 0;
       objsSelected = false;
-      selectedIndices.clear();
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj s = (GeneralObj) objList.elementAt(i);
+      selectedObjects.clear();
+      for (GeneralObj s : objList) {
         if ((s.getType() == GeneralObjType.STATE || s.getType() == GeneralObjType.TEXT)
             && s.setBoxSelectStatus(mX0, mY0, mX1, mY1)) {
           tempNumb++;
-          selectedIndices.add(new Integer(i));
+          selectedObjects.add(s);
         }
       }
       if (tempNumb > 1)
         objsSelected = true;
       else
-        selectedIndices.clear();
+        selectedObjects.clear();
       repaint();
     }
   }
@@ -823,8 +853,7 @@ public class DrawArea extends JPanel implements MouseListener,
       JMenu states = new JMenu(locale.getString("drawArea_add_transition_to"));
       states.setMnemonic(KeyEvent.VK_T);
       states.setDisplayedMnemonicIndex(10);
-      for (int j = 1; j < objList.size(); j++) {
-        GeneralObj obj1 = (GeneralObj) objList.get(j);
+      for (GeneralObj obj1 : objList) {
         if (obj1.getType() == GeneralObjType.STATE
             && !obj.getName().equals(obj1.getName())
             && obj.getPage() == obj1.getPage()) {
@@ -914,6 +943,14 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   // called when item on popup menu is selected
+  /**
+   * @brief
+   *        Executed when we do any creation action.
+   * 
+   * @details When we click right on the draw area (on an empty or filled
+   *          space), a menu is displayed. When selection any of the options,
+   *          this function is called.
+   */
   public void actionPerformed(ActionEvent e) {
     JMenuItem source = (JMenuItem) (e.getSource());
 
@@ -929,8 +966,7 @@ public class DrawArea extends JPanel implements MouseListener,
       new StateEditorWindow(fizzim_gui, this, (StateObj) tempObj);
     } else if (input == locale.getString("drawArea_edit_loopback_properties")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj obj = (GeneralObj) objList.get(i);
+      for (GeneralObj obj : objList) {
         if (obj.getType() == GeneralObjType.STATE)
           stateObjs.add((StateObj) obj);
       }
@@ -939,8 +975,7 @@ public class DrawArea extends JPanel implements MouseListener,
           stateObjs, true, null);
     } else if (input == locale.getString("drawArea_edit_transition_properties")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj obj = (GeneralObj) objList.get(i);
+      for (GeneralObj obj : objList) {
         if (obj.getType() == GeneralObjType.STATE && obj.getPage() == currPage)
           stateObjs.add((StateObj) obj);
       }
@@ -977,8 +1012,7 @@ public class DrawArea extends JPanel implements MouseListener,
       new StateEditorWindow(fizzim_gui, this, state);
     } else if (input == locale.getString("drawArea_new_state_transition")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj obj = (GeneralObj) objList.get(i);
+      for (GeneralObj obj : objList) {
 
         if (obj.getType() == GeneralObjType.STATE) {
           stateObjs.add((StateObj) obj);
@@ -1002,8 +1036,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
     } else if (input == locale.getString("drawArea_add_loopback_transition")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj obj = (GeneralObj) objList.get(i);
+      for (GeneralObj obj : objList) {
 
         if (obj.getType() == GeneralObjType.STATE) {
           stateObjs.add((StateObj) obj);
@@ -1029,8 +1062,7 @@ public class DrawArea extends JPanel implements MouseListener,
       }
     } else if (input == locale.getString("drawArea_new_loopback_transition")) {
       Vector<StateObj> stateObjs = new Vector<StateObj>();
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj obj = (GeneralObj) objList.get(i);
+      for (GeneralObj obj : objList) {
 
         if (obj.getType() == GeneralObjType.STATE) {
           stateObjs.add((StateObj) obj);
@@ -1084,8 +1116,7 @@ public class DrawArea extends JPanel implements MouseListener,
         if (!objsSelected) {
           tempObj.setPage(page);
 
-          for (int j = 1; j < objList.size(); j++) {
-            GeneralObj obj = (GeneralObj) objList.elementAt(j);
+          for (GeneralObj obj : objList) {
             if (obj.getType() != GeneralObjType.STATE && obj.isParentModified())
               obj.updateObj();
             obj.setParentModified(false);
@@ -1096,10 +1127,7 @@ public class DrawArea extends JPanel implements MouseListener,
           unselectObjs();
         } else {
           // move all states
-          for (int i = 0; i < selectedIndices.size(); i++) {
-            GeneralObj obj = (GeneralObj) objList.get(selectedIndices
-                .get(i)
-                .intValue());
+          for (GeneralObj obj : selectedObjects) {
             if (obj.getType() == GeneralObjType.STATE
                 || obj.getType() == GeneralObjType.TEXT) {
               obj.setPage(page);
@@ -1107,18 +1135,15 @@ public class DrawArea extends JPanel implements MouseListener,
                 obj.setModified(true);
             }
           }
-          for (int j = 1; j < objList.size(); j++) {
-            GeneralObj obj = (GeneralObj) objList.elementAt(j);
+          for (GeneralObj obj : objList) {
             if (obj.getType() != GeneralObjType.STATE && obj.isParentModified()) {
               TransitionObj trans = (TransitionObj) obj;
               trans.updateObjPages(page);
             }
             obj.setParentModified(false);
           }
-          for (int k = 0; k < selectedIndices.size(); k++) {
-            GeneralObj obj = (GeneralObj) objList.get(selectedIndices
-                .get(k)
-                .intValue());
+          for (Object object_bis : selectedObjects) {
+            GeneralObj obj = (GeneralObj) object_bis;
             if (obj.getType() == GeneralObjType.STATE) {
               obj.setModified(false);
             }
@@ -1127,7 +1152,7 @@ public class DrawArea extends JPanel implements MouseListener,
           unselectObjs();
           objsSelected = false;
           multipleSelect = false;
-          selectedIndices.clear();
+          selectedObjects.clear();
           commitUndo();
 
         }
@@ -1144,8 +1169,8 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   private StateObj getStateObj(String name) {
-    for (int j = 1; j < objList.size(); j++) {
-      GeneralObj obj1 = (GeneralObj) objList.get(j);
+
+    for (GeneralObj obj1 : objList) {
       if (obj1.getType() == GeneralObjType.STATE && obj1.getName().equals(name)
           && obj1.getPage() == currPage)
         return (StateObj) obj1;
@@ -1161,8 +1186,7 @@ public class DrawArea extends JPanel implements MouseListener,
           "reset_state"))
         resetName = global_attributes.getMachineAttributes().get(j).getValue();
     }
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj o = (GeneralObj) objList.elementAt(i);
+    for (GeneralObj o : objList) {
       if (o.getType() == GeneralObjType.STATE) {
         StateObj s = (StateObj) o;
         s.updateAttrib(global_attributes);
@@ -1177,11 +1201,10 @@ public class DrawArea extends JPanel implements MouseListener,
 
   // update transition attribute lists when global list is updated
   public void updateTrans() {
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj o = (GeneralObj) objList.elementAt(i);
-      if (o.getType() == GeneralObjType.TRANSITION
-          || o.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
-        TransitionObj s = (TransitionObj) o;
+    for (GeneralObj object : objList) {
+      if (object.getType() == GeneralObjType.TRANSITION
+          || object.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
+        TransitionObj s = (TransitionObj) object;
         s.updateAttrib(global_attributes);
       }
     }
@@ -1223,8 +1246,7 @@ public class DrawArea extends JPanel implements MouseListener,
   public boolean checkStateNames() {
     TreeSet<String> stateSet = new TreeSet<String>();
     int stateCounter = 0;
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.STATE && obj.getPage() == currPage) {
         stateSet.add(obj.getName());
         stateCounter++;
@@ -1242,8 +1264,7 @@ public class DrawArea extends JPanel implements MouseListener,
    * @return true if an object is already named `input`.
    */
   private boolean checkStateNames(String input) {
-    for (int j = 1; j < objList.size(); j++) {
-      GeneralObj obj1 = (GeneralObj) objList.get(j);
+    for (GeneralObj obj1 : objList) {
       if (obj1.getType() == GeneralObjType.STATE
           && obj1.getName().equals(input) && obj1.getPage() == currPage)
         return true;
@@ -1255,8 +1276,7 @@ public class DrawArea extends JPanel implements MouseListener,
   public boolean checkTransNames() {
     TreeSet<String> transSet = new TreeSet<String>();
     int transCounter = 0;
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.TRANSITION
           || obj.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
         transSet.add(obj.getName());
@@ -1308,38 +1328,57 @@ public class DrawArea extends JPanel implements MouseListener,
     writer.write("## START OBJECTS\n");
 
     // tell every object to save itself
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+    for (GeneralObj obj : objList) {
       obj.save(writer);
     }
     writer.write("## END OBJECTS\n");
 
   }
 
+  /**
+   * @brief
+   *        Executed we do the delete action.
+   * 
+   * @details
+   *          It deletes the objects (transitions and states) that are selected.
+   *          When deleting a state, we also delete all the transitions going or
+   *          leaving this state.
+   */
   public void delete() {
 
-    setUndoPoint(-1, null);
-    // indices of transitions to delete
-    LinkedList<Integer> trans = new LinkedList<Integer>();
+    setUndoPoint(null, null);
+
+    /** Transitions to delete */
+    Set<TransitionObj> transitions_to_delete = new LinkedHashSet<>();
+
     // find indices of all transitions to delete
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
-      // for deleteing multiple selected objects, find transitions
-      boolean toDel = false;
+    Iterator<GeneralObj> general_obj_iterator = objList.iterator();
+    while (general_obj_iterator.hasNext()) {
+      GeneralObj obj = general_obj_iterator.next();
+      // for deleting multiple selected objects, find transitions
+
+      /**
+       * If the current object is a transition, we delete it if it is connected
+       * to a selected state.
+       */
       if ((obj.getType() == GeneralObjType.TRANSITION || obj.getType() == GeneralObjType.LOOPBACK_TRANSITION)
           && objsSelected) {
-        for (int j = 0; j < selectedIndices.size(); j++) {
-          GeneralObj state = (GeneralObj) objList.get(selectedIndices
-              .get(j)
-              .intValue());
-          if (obj.containsParent(state))
-            toDel = true;
+
+        for (GeneralObj state : selectedObjects) {
+          if (obj.containsParent(state)) {
+            transitions_to_delete.add((TransitionObj) obj);
+            break;
+          }
         }
       }
       // make sure global table isnt removed
       if (obj.getType() == GeneralObjType.TEXT && objsSelected) {
         TextObj txt = (TextObj) obj;
         if (txt.getGlobalTable() && txt.getSelectStatus() != SelectOptions.NONE) {
+          System.err.println("First : " + txt.getGlobalTable());
+          System.err
+              .println("Second : "
+                  + (txt.getSelectStatus() != SelectOptions.NONE));
           String error = "To remove global table, go to 'File->Preferences'";
           JOptionPane.showMessageDialog(fizzim_gui,
               error,
@@ -1347,20 +1386,24 @@ public class DrawArea extends JPanel implements MouseListener,
               JOptionPane.ERROR_MESSAGE);
         }
         // remove from selected indices
-        for (int j = 0; j < selectedIndices.size(); j++) {
-          Integer tempInt = selectedIndices.get(j);
-          if (tempInt.intValue() == i) {
-            selectedIndices.remove(j);
+
+        /**
+         * We remove from the selection the object we are dealing with (which is
+         * a text).
+         */
+        for (Object object_bis : selectedObjects) {
+          if (object_bis.equals(obj)) {
+            selectedObjects.remove(object_bis);
             break;
           }
         }
       }
 
-      // for delteing single object, if it is a state remove the transitions
+      // for deleting single object, if it is a state remove the transitions
       if (!objsSelected && obj.getSelectStatus() != SelectOptions.NONE) {
-        // if transition, just delete
+        /** If the object is selected and is a transition, we simply remove it */
         if ((obj.getType() == GeneralObjType.TRANSITION || obj.getType() == GeneralObjType.LOOPBACK_TRANSITION)) {
-          objList.remove(i);
+          general_obj_iterator.remove();
           commitUndo();
           break;
         }
@@ -1376,52 +1419,72 @@ public class DrawArea extends JPanel implements MouseListener,
                 "error",
                 JOptionPane.ERROR_MESSAGE);
           } else {
-            objList.remove(i);
+            general_obj_iterator.remove();
             commitUndo();
             break;
           }
         }
 
+        /*
+         * The current object is a state and is selected. Then we must delete
+         * all the transitions connected to this state
+         */
         // if state, add transitions to delete
         if (obj.getType() == GeneralObjType.STATE) {
-          for (int j = 1; j < objList.size(); j++) {
-            GeneralObj t = (GeneralObj) objList.elementAt(j);
+          for (GeneralObj t : objList) {
             if (t.getType() == GeneralObjType.TRANSITION
                 || t.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
-              TransitionObj tran = (TransitionObj) t;
-              if (tran.containsParent(obj))
-                trans.add(new Integer(j));
+              TransitionObj transition = (TransitionObj) t;
+              if (transition.containsParent(obj))
+                transitions_to_delete.add(transition);
             }
           }
           // make sure state gets deleted at correct time
-          selectedIndices.add(new Integer(i));
+          selectedObjects.add(obj);
         }
       }
-      if (toDel)
-        trans.add(new Integer(i));
 
     }
+    /**
+     * We delete all the objects that are selected and the transitions that must
+     * be deleted because we delete its state(s).
+     */
     // delete all selected
-
-    while (selectedIndices.size() > 0 || trans.size() > 0) {
-      int i1 = -1;
-      int i2 = -1;
-      if (selectedIndices.size() > 0)
-        i1 = selectedIndices.get((selectedIndices.size() - 1)).intValue();
-      if (trans.size() > 0)
-        i2 = trans.get((trans.size() - 1)).intValue();
-      if (i1 > i2) {
-        objList.remove(i1);
-        selectedIndices.removeLast();
-      } else {
-        objList.remove(i2);
-        trans.removeLast();
-      }
+    Iterator<GeneralObj> object_iterator = selectedObjects.iterator();
+    while (object_iterator.hasNext()) {
+      GeneralObj object = object_iterator.next();
+      object_iterator.remove();
+      objList.remove(object);
     }
+    Iterator<TransitionObj> transitions_iterator = transitions_to_delete
+        .iterator();
+    while (transitions_iterator.hasNext()) {
+      TransitionObj transition = transitions_iterator.next();
+      transitions_iterator.remove();
+      objList.remove(transition);
+    }
+    /*
+     * OLD CODE. Replaced
+     * while (selectedObjects.size() > 0 || trans.size() > 0) {
+     * int i1 = -1;
+     * int i2 = -1;
+     * if (selectedObjects.size() > 0)
+     * i1 = objList.indexOf(arg0)
+     * i1 = selectedObjects.get((selectedObjects.size() - 1)).intValue();
+     * if (trans.size() > 0)
+     * i2 = trans.get((trans.size() - 1)).intValue();
+     * if (i1 > i2) {
+     * objList.remove(i1);
+     * selectedObjects.removeLast();
+     * } else {
+     * objList.remove(i2);
+     * trans.removeLast();
+     * }
+     * }
+     */
 
     commitUndo();
     objsSelected = false;
-
   }
 
   public static void disableDoubleBuffering(Component c) {
@@ -1439,8 +1502,7 @@ public class DrawArea extends JPanel implements MouseListener,
     if (pageIndex > 0) {
       return (NO_SUCH_PAGE);
     } else {
-      for (int i = 1; i < objList.size(); i++) {
-        GeneralObj s = (GeneralObj) objList.elementAt(i);
+      for (GeneralObj s : objList) {
         s.unselect();
       }
       Graphics2D g2d = (Graphics2D) g;
@@ -1456,7 +1518,8 @@ public class DrawArea extends JPanel implements MouseListener,
     }
   }
 
-  public void open(Vector<Object> objList2) {
+  public void open(GlobalAttributes global_attributes,
+      LinkedList<GeneralObj> objList2) {
     loading = true;
     currPage = 1;
     objList = objList2;
@@ -1469,8 +1532,7 @@ public class DrawArea extends JPanel implements MouseListener,
     tempOld = null;
     tempClone = null;
     fileModified = false;
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj s = (GeneralObj) objList.elementAt(i);
+    for (GeneralObj s : objList) {
       if (s.getType() == GeneralObjType.TRANSITION
           || s.getType() == GeneralObjType.LOOPBACK_TRANSITION) {
         TransitionObj t = (TransitionObj) s;
@@ -1496,10 +1558,10 @@ public class DrawArea extends JPanel implements MouseListener,
     currPage = 1;
     global_attributes = globals;
     objList.clear();
-    objList.add(global_attributes);
-    TextObj globalTable = new TextObj(10, 10, global_attributes, tableFont);
 
+    TextObj globalTable = new TextObj(10, 10, global_attributes, tableFont);
     objList.add(globalTable);
+
     undoList.clear();
     undoList.add(objList);
     tempList.clear();
@@ -1568,8 +1630,7 @@ public class DrawArea extends JPanel implements MouseListener,
   public String[] getStateNames() {
     ArrayList<String> names = new ArrayList<String>();
     names.add("null");
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj s = (GeneralObj) objList.get(i);
+    for (GeneralObj s : objList) {
       if (s.getType() == GeneralObjType.STATE)
         names.add(s.getName());
     }
@@ -1592,18 +1653,20 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void removePage(int tab) {
-    for (int i = objList.size() - 1; i > 0; i--) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+    Iterator<GeneralObj> general_obj_iterator = objList.iterator();
+    while (general_obj_iterator.hasNext()) {
+      GeneralObj obj = general_obj_iterator.next();
+
       if (obj.getType() != GeneralObjType.TRANSITION) {
         if (obj.getPage() == tab) {
-          objList.remove(i);
+          general_obj_iterator.remove();
         }
         if (obj.getPage() > tab)
           obj.decrementPage();
       } else {
         StateTransitionObj obj1 = (StateTransitionObj) obj;
         if (obj1.getSPage() == tab || obj1.getEPage() == tab)
-          objList.remove(i);
+          general_obj_iterator.remove();
         if (obj1.getSPage() > tab)
           obj1.decrementSPage();
         if (obj1.getEPage() > tab)
@@ -1615,8 +1678,7 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void unselectObjs() {
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj s = (GeneralObj) objList.elementAt(i);
+    for (GeneralObj s : objList) {
       s.unselect();
     }
   }
@@ -1626,7 +1688,6 @@ public class DrawArea extends JPanel implements MouseListener,
     undoList.add(objList);
     tempList.clear();
     currUndoIndex = 0;
-
   }
 
   public String getPageName(int page) {
@@ -1646,8 +1707,7 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void updateGlobalTable() {
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.TEXT) {
         TextObj textObj = (TextObj) obj;
         if (textObj.getGlobalTable())
@@ -1703,8 +1763,7 @@ public class DrawArea extends JPanel implements MouseListener,
   public void setGrid(boolean b, int i) {
     grid = b;
     gridS = i;
-    for (int j = 1; j < objList.size(); j++) {
-      GeneralObj obj = (GeneralObj) objList.get(j);
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.STATE) {
         StateObj obj1 = (StateObj) obj;
         obj1.setGrid(b, i);
@@ -1725,9 +1784,7 @@ public class DrawArea extends JPanel implements MouseListener,
       StateTransitionObj transObj, String type) {
     int totalNumb = 0;
     int numb = 0;
-    for (int i = 1; i < objList.size(); i++) {
-
-      GeneralObj obj = (GeneralObj) objList.get(i);
+    for (GeneralObj obj : objList) {
       // find number that transition is out of total number
       if (obj.getType() == GeneralObjType.TRANSITION) {
         StateTransitionObj trans = (StateTransitionObj) obj;
@@ -1750,8 +1807,7 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void pageConnUpdate(StateObj startState, StateObj endState) {
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.TRANSITION) {
         StateTransitionObj trans = (StateTransitionObj) obj;
         if (trans
@@ -1767,8 +1823,7 @@ public class DrawArea extends JPanel implements MouseListener,
 
   // for redrawing all page connectors when page is resized
   public void updatePageConn() {
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.TRANSITION) {
         StateTransitionObj trans = (StateTransitionObj) obj;
         if (trans.getSPage() != trans.getEPage())
@@ -1778,8 +1833,7 @@ public class DrawArea extends JPanel implements MouseListener,
   }
 
   public void moveOnResize(int maxW, int maxH) {
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+    for (GeneralObj obj : objList) {
       // move text objects onto page
       if (obj.getType() == GeneralObjType.TEXT) {
         TextObj text = (TextObj) obj;
@@ -1848,7 +1902,7 @@ public class DrawArea extends JPanel implements MouseListener,
     return Redraw;
   }
 
-  public Vector<Object> getObjList() {
+  public LinkedList<GeneralObj> getObjList() {
     return objList;
   }
 
@@ -1947,7 +2001,7 @@ public class DrawArea extends JPanel implements MouseListener,
         point3,
         point4,
         new LinkedList<ObjAttribute>(global_attributes.getTransAttributes()),
-        name, state, state, sIndex,
+        name, state, sIndex,
         sIndex,
         currPage, defaultStateTransitionsColor);
     StateObj source = getStateObj(state);

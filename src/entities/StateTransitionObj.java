@@ -32,6 +32,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -42,10 +43,10 @@ import display.DrawArea;
 public class StateTransitionObj extends TransitionObj implements Cloneable {
 
   private SelectOptions selectStatus = SelectOptions.NONE;
-  public Point startPt, endPt, startCtrlPt, endCtrlPt;
-  public int startStateIndex, endStateIndex;
-  public StateObj startState = null, endState = null, oldState;
-  public CubicCurve2D.Double curve;
+  private Point startPt, endPt, startCtrlPt, endCtrlPt;
+  private int startStateIndex, endStateIndex;
+  private StateObj startState = null, endState = null;
+  private CubicCurve2D.Double curve;
   private Vector<Point> startBorderPts;
   private Vector<Point> endBorderPts;
   private boolean ready = false;
@@ -145,9 +146,9 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     return stub;
   }
 
-  public void makeConnections(Vector<Object> objList) {
-    for (int i = 1; i < objList.size(); i++) {
-      GeneralObj obj = (GeneralObj) objList.get(i);
+  @Override
+  public void makeConnections(Collection<GeneralObj> objList) {
+    for (GeneralObj obj : objList) {
       if (obj.getType() == GeneralObjType.STATE) {
         if (obj.getName().equals(startS) && obj.getPage() == myPage) {
           startState = (StateObj) obj;
@@ -822,6 +823,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
     modified = false;
   }
 
+  @Override
   public void setModifiedTrue() {
     modified = true;
   }
@@ -897,10 +899,7 @@ public class StateTransitionObj extends TransitionObj implements Cloneable {
   }
 
   public boolean containsParent(GeneralObj oldObj) {
-    if (oldObj.equals(startState) || oldObj.equals(endState))
-      return true;
-    else
-      return false;
+    return oldObj.equals(startState) || oldObj.equals(endState);
   }
 
   public Point getCenter(int page) {
