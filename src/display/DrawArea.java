@@ -547,11 +547,14 @@ public class DrawArea extends JPanel implements MouseListener,
         createPopup(null, e);
       }
     } else {
+      /** We unselect everything */
+      unselectObjs();
+
       // if object already selected
       for (GeneralObj s : (Collection<GeneralObj>) objList.clone()) {
         if (s.getSelectStatus() != SelectOptions.NONE
-            && s.setSelectStatus(e.getX(), e.getY())
-            && s.getPage() == currPage) {
+            && s.getPage() == currPage
+            && s.setSelectStatus(e.getX(), e.getY())) {
           bestMatch = s;
 
           if (!doubleClick) {
@@ -602,8 +605,8 @@ public class DrawArea extends JPanel implements MouseListener,
       if (bestMatch == null) {
         for (GeneralObj s : objList) {
           if (s.getType() == GeneralObjType.TEXT
-              && s.setSelectStatus(e.getX(), e.getY())
-              && s.getPage() == currPage) {
+              && s.getPage() == currPage
+              && s.setSelectStatus(e.getX(), e.getY())) {
             bestMatch = s;
 
             if (e.getButton() == MouseEvent.BUTTON3 || e.getModifiers() == 20) {
@@ -622,8 +625,8 @@ public class DrawArea extends JPanel implements MouseListener,
         for (GeneralObj s : objList) {
           if ((s.getType() == GeneralObjType.TRANSITION ||
               s.getType() == GeneralObjType.LOOPBACK_TRANSITION)
-              && s.setSelectStatus(e.getX(), e.getY())
-              && s.getPage() == currPage) {
+              && s.getPage() == currPage
+              && s.setSelectStatus(e.getX(), e.getY())) {
             bestMatch = s;
             GeneralObjType type = s.getType();
 
@@ -642,8 +645,8 @@ public class DrawArea extends JPanel implements MouseListener,
       if (bestMatch == null) {
         for (GeneralObj s : objList) {
           if (s.getType() == GeneralObjType.STATE
-              && s.setSelectStatus(e.getX(), e.getY())
-              && s.getPage() == currPage) {
+              && s.getPage() == currPage
+              && s.setSelectStatus(e.getX(), e.getY())) {
             bestMatch = s;
 
             if (e.getButton() == MouseEvent.BUTTON3 || e.getModifiers() == 20) {
@@ -680,6 +683,7 @@ public class DrawArea extends JPanel implements MouseListener,
 
       repaint();
     }
+
   }
 
   public void mouseReleased(MouseEvent e) {
@@ -1416,7 +1420,8 @@ public class DrawArea extends JPanel implements MouseListener,
           general_obj_iterator.remove();
 
           if (DEBUG_DELETE) {
-            System.err.println("** Debug 3 : " + obj + "**");
+            System.err.println("** Debug 3 : " + obj + " : "
+                + obj.getSelectStatus() + "**");
           }
           commitUndo();
           break;
