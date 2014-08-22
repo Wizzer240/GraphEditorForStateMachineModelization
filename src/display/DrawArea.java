@@ -547,8 +547,6 @@ public class DrawArea extends JPanel implements MouseListener,
         createPopup(null, e);
       }
     } else {
-      /** We unselect everything */
-      unselectObjs();
 
       // if object already selected
       for (GeneralObj s : (Collection<GeneralObj>) objList.clone()) {
